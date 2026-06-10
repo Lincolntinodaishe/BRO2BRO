@@ -547,7 +547,7 @@ function HowItWorks() {
     },
     {
       number: "02",
-      title: "Chat with Bro AI",
+      title: "Chat with Bro.AI",
       body: "Talk to a judgment-free wellness companion using proven motivational interviewing techniques. It adapts to your age, your language, your situation.",
       icon: MessageCircle,
       color: "bg-black",
@@ -1062,7 +1062,7 @@ function Footer() {
       title: "Product",
       links: [
         { label: "How It Works",  href: "#how-it-works" },
-        { label: "Bro.Bro.AI Chat",  href: "/dashboard/chat" },
+        { label: "Chat with Bro.AI",  href: "/dashboard/chat" },
         { label: "Find Resources",href: "/dashboard/resources" },
         { label: "Community",     href: "/dashboard/community" },
         { label: "Mentors",       href: "/dashboard/mentors" },
