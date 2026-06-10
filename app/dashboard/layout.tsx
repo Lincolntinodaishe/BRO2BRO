@@ -3,6 +3,7 @@ import { useState } from "react";
 import { usePathname } from "next/navigation";
 import { Sidebar } from "@/components/dashboard/sidebar";
 import { Header } from "@/components/dashboard/header";
+import { cn } from "@/lib/utils";
 
 const pageTitles: Record<string, string> = {
   "/dashboard":              "Overview",
@@ -16,21 +17,38 @@ const pageTitles: Record<string, string> = {
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const pathname = usePathname();
   const title = pageTitles[pathname] ?? "Dashboard";
 
   return (
-    <div className="min-h-screen bg-gray-50 flex">
+    <div className="min-h-screen bg-gray-50">
       <Sidebar
         open={sidebarOpen}
         onClose={() => setSidebarOpen(false)}
+        collapsed={sidebarCollapsed}
+        onToggleCollapse={() => setSidebarCollapsed((p) => !p)}
       />
-      <div className="flex-1 flex flex-col min-w-0 lg:ml-64">
+
+      {/* Main content — offset by sidebar width */}
+      <div
+        className={cn(
+          "flex flex-col min-h-screen transition-all duration-300",
+          sidebarCollapsed ? "lg:ml-[68px]" : "lg:ml-64"
+        )}
+      >
         <Header
           title={title}
           onMenuClick={() => setSidebarOpen(true)}
         />
-        <main className="flex-1 p-4 sm:p-6 lg:p-8">
+        <main
+          className={cn(
+            "flex-1 min-h-0",
+            pathname === "/dashboard/chat"
+              ? "p-2 sm:p-4 lg:p-6 flex flex-col"
+              : "p-4 sm:p-6 lg:p-8"
+          )}
+        >
           {children}
         </main>
       </div>

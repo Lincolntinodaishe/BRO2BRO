@@ -44,6 +44,14 @@ body {
 .msg-in  { animation: slideInLeft  0.25s ease-out; }
 .msg-out { animation: slideInRight 0.25s ease-out; }
 
+/* Chat markdown content */
+.chat-markdown {
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+.chat-markdown > *:first-child { margin-top: 0; }
+.chat-markdown > *:last-child { margin-bottom: 0; }
+
 /* Typing dots */
 @keyframes blink {
   0%, 80%, 100% { opacity: 0; }
@@ -102,6 +110,22 @@ body {
 }
 .marquee-track:hover {
   animation-play-state: paused;
+}
+
+/* Typewriter cursor blink */
+@keyframes cursorBlink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+.typewriter-cursor {
+  display: inline-block;
+  width: 2px;
+  height: 0.9em;
+  background: #f59e0b;
+  border-radius: 1px;
+  vertical-align: text-bottom;
+  margin-left: 3px;
+  animation: cursorBlink 0.75s ease-in-out infinite;
 }
 
 /* Shimmer for loading states */

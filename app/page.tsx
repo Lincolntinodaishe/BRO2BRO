@@ -9,7 +9,7 @@ import {
   Calendar, Star, CheckCircle, Activity, Zap, Phone,
   Brain, ChevronRight, Play, Quote, Scissors, UserCheck,
   Building2, Menu, X, Mail, Globe, Award, TrendingUp,
-  Lock, Sparkles, HeartHandshake
+  Lock, Sparkles,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -18,21 +18,42 @@ import { cn } from "@/lib/utils";
 
 /* ─── NAVBAR ─────────────────────────────────────────────── */
 function Navbar() {
-  const [scrolled, setScrolled] = useState(false);
+  const [scrolled, setScrolled]     = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
-
-  useEffect(() => {
-    const handler = () => setScrolled(window.scrollY > 12);
-    window.addEventListener("scroll", handler);
-    return () => window.removeEventListener("scroll", handler);
-  }, []);
+  const [activeSection, setActive]  = useState("");
 
   const links = [
-    { label: "How It Works", href: "#how-it-works" },
-    { label: "Features",     href: "#features" },
-    { label: "Community",    href: "#community" },
-    { label: "Providers",    href: "#providers" },
+    { label: "How It Works", href: "#how-it-works", id: "how-it-works" },
+    { label: "Features",     href: "#features",     id: "features"     },
+    { label: "Community",    href: "#community",    id: "community"    },
+    { label: "Providers",    href: "#providers",    id: "providers"    },
   ];
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 12);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  /* Scroll-spy with IntersectionObserver */
+  useEffect(() => {
+    const sectionIds = links.map((l) => l.id);
+    const observers: IntersectionObserver[] = [];
+
+    sectionIds.forEach((id) => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      const obs = new IntersectionObserver(
+        ([entry]) => { if (entry.isIntersecting) setActive(id); },
+        { threshold: 0.25, rootMargin: "-10% 0px -60% 0px" }
+      );
+      obs.observe(el);
+      observers.push(obs);
+    });
+
+    return () => observers.forEach((o) => o.disconnect());
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <nav
@@ -51,17 +72,33 @@ function Navbar() {
             <span className="text-xl font-black tracking-widest text-gray-900 uppercase">BRO2BRO</span>
           </Link>
 
-          {/* Desktop nav */}
+          {/* Desktop nav — scroll-spy underline + text magnify on hover */}
           <div className="hidden lg:flex items-center gap-7">
-            {links.map((l) => (
-              <a
-                key={l.href}
-                href={l.href}
-                className="text-sm font-medium text-gray-600 hover:text-black transition-colors"
-              >
-                {l.label}
-              </a>
-            ))}
+            {links.map((l) => {
+              const isActive = activeSection === l.id;
+              return (
+                <a
+                  key={l.href}
+                  href={l.href}
+                  className={cn(
+                    "relative group/link inline-block text-sm font-medium transition-colors duration-200",
+                    isActive ? "text-black" : "text-gray-500 hover:text-black"
+                  )}
+                >
+                  {/* Text with magnify on hover */}
+                  <span className="inline-block transition-transform duration-200 origin-bottom group-hover/link:scale-[1.1]">
+                    {l.label}
+                  </span>
+                  {/* Animated underline */}
+                  <span
+                    className={cn(
+                      "absolute left-0 -bottom-0.5 h-[2px] bg-black rounded-full transition-all duration-300",
+                      isActive ? "w-full" : "w-0 group-hover/link:w-full"
+                    )}
+                  />
+                </a>
+              );
+            })}
           </div>
 
           {/* Auth CTA */}
@@ -98,7 +135,10 @@ function Navbar() {
               key={l.href}
               href={l.href}
               onClick={() => setMobileOpen(false)}
-              className="block px-3 py-2.5 rounded-xl text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors"
+              className={cn(
+                "block px-3 py-2.5 rounded-xl text-sm font-medium hover:bg-gray-50 transition-colors",
+                activeSection === l.id ? "text-black font-semibold" : "text-gray-700"
+              )}
             >
               {l.label}
             </a>
@@ -123,8 +163,46 @@ function Navbar() {
   );
 }
 
+/* ─── TYPEWRITER HOOK ─────────────────────────────────────── */
+function useTypewriter(words: string[], speed = 70, pause = 2200, eraseSpeed = 40) {
+  const [displayed, setDisplayed] = useState("");
+  const [wordIdx, setWordIdx]     = useState(0);
+  const [typing, setTyping]       = useState(true);
+
+  useEffect(() => {
+    const current = words[wordIdx];
+    if (typing) {
+      if (displayed.length < current.length) {
+        const t = setTimeout(() => setDisplayed(current.slice(0, displayed.length + 1)), speed);
+        return () => clearTimeout(t);
+      } else {
+        const t = setTimeout(() => setTyping(false), pause);
+        return () => clearTimeout(t);
+      }
+    } else {
+      if (displayed.length > 0) {
+        const t = setTimeout(() => setDisplayed(displayed.slice(0, -1)), eraseSpeed);
+        return () => clearTimeout(t);
+      } else {
+        setWordIdx((i) => (i + 1) % words.length);
+        setTyping(true);
+      }
+    }
+  }, [displayed, typing, wordIdx, words, speed, pause, eraseSpeed]);
+
+  return displayed;
+}
+
 /* ─── HERO ────────────────────────────────────────────────── */
 function Hero() {
+  const rotatingPhrase = useTypewriter([
+    "Preventive Care",
+    "Mental Wellness",
+    "Trusted Connections",
+    "Better Blood Pressure",
+    "Community Support",
+  ]);
+
   return (
     <section className="relative min-h-screen flex flex-col items-center justify-center pt-24 pb-16 px-4 gradient-mesh overflow-hidden">
       {/* Decorative blobs */}
@@ -139,6 +217,15 @@ function Hero() {
           We Built<br />
           What Comes Next.
         </h1>
+
+        {/* Typewriter rotating phrase */}
+        <div className="flex items-center justify-center gap-2 mb-5">
+          <span className="text-xs font-semibold text-gray-400 uppercase tracking-widest">Now powering</span>
+          <span className="text-sm font-bold text-gray-900 min-w-[180px] text-left">
+            {rotatingPhrase}
+            <span className="typewriter-cursor" />
+          </span>
+        </div>
 
         {/* Sub */}
         <p className="text-lg sm:text-xl text-gray-500 max-w-2xl mx-auto mb-10 leading-relaxed">

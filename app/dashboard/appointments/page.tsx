@@ -1,110 +1,23 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Calendar, Clock, MapPin, Phone, Plus, CheckCircle,
   XCircle, AlertCircle, ChevronRight, Video, Building2,
-  Scissors, Heart, Filter, Bell
+  Scissors, Heart, Bell
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import { Avatar } from "@/components/ui/avatar";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
-
-type ApptStatus = "confirmed" | "pending" | "completed" | "cancelled";
-type ApptType = "clinic" | "barbershop" | "virtual" | "ai";
-
-interface Appointment {
-  id: string;
-  title: string;
-  provider: string;
-  providerType: ApptType;
-  date: string;
-  time: string;
-  location: string;
-  phone?: string;
-  status: ApptStatus;
-  notes?: string;
-  reminder: boolean;
-}
-
-const APPOINTMENTS: Appointment[] = [
-  {
-    id: "1",
-    title: "Blood Pressure Check",
-    provider: "UAMS Community Clinic",
-    providerType: "clinic",
-    date: "Tomorrow",
-    time: "2:00 PM",
-    location: "4301 W Markham St, Little Rock",
-    phone: "(501) 686-7000",
-    status: "confirmed",
-    reminder: true,
-  },
-  {
-    id: "2",
-    title: "Weekly Wellness Check-in",
-    provider: "Bro.AI",
-    providerType: "ai",
-    date: "Monday, Jun 16",
-    time: "8:00 AM",
-    location: "In-app",
-    status: "confirmed",
-    notes: "Automated weekly check-in — covers BP, stress, sleep, and activity.",
-    reminder: true,
-  },
-  {
-    id: "3",
-    title: "Barbershop Talk Follow-up",
-    provider: "Joe's Classic Cuts",
-    providerType: "barbershop",
-    date: "Friday, Jun 20",
-    time: "10:00 AM",
-    location: "1523 Main St, Little Rock",
-    phone: "(501) 555-0142",
-    status: "pending",
-    reminder: false,
-  },
-  {
-    id: "4",
-    title: "Mental Wellness Session",
-    provider: "Dr. Angela Moore, LCSW",
-    providerType: "virtual",
-    date: "Mon, Jun 23",
-    time: "6:00 PM",
-    location: "Telehealth — Zoom link sent to email",
-    phone: "(501) 555-0199",
-    status: "confirmed",
-    notes: "First session. Free through BRO2BRO Community Partnership.",
-    reminder: true,
-  },
-  {
-    id: "5",
-    title: "Diabetes Screening",
-    provider: "Baptist Health Clinic",
-    providerType: "clinic",
-    date: "Tue, Jun 10",
-    time: "9:30 AM",
-    location: "11 Stagecoach Dr, Little Rock",
-    phone: "(501) 202-3000",
-    status: "completed",
-    reminder: false,
-  },
-  {
-    id: "6",
-    title: "Primary Care Visit",
-    provider: "Central AR Family Health",
-    providerType: "clinic",
-    date: "May 28",
-    time: "11:00 AM",
-    location: "700 S University Ave, Little Rock",
-    status: "cancelled",
-    notes: "Cancelled by provider — need to reschedule.",
-    reminder: false,
-  },
-];
+import {
+  Appointment,
+  ApptStatus,
+  ApptType,
+  loadAppointments,
+  saveAppointments,
+} from "@/lib/appointments-store";
 
 const STATUS_CONFIG: Record<ApptStatus, { label: string; color: string; icon: typeof CheckCircle }> = {
   confirmed:  { label: "Confirmed",  color: "bg-green-50 text-green-700",  icon: CheckCircle  },
@@ -209,7 +122,28 @@ function AppointmentCard({ appt, onCancel }: { appt: Appointment; onCancel: (id:
   );
 }
 
-function BookModal({ onClose }: { onClose: () => void }) {
+const TYPE_TITLES: Record<string, string> = {
+  clinic: "Clinic Visit",
+  barbershop: "Barbershop Screening",
+  virtual: "Virtual Counseling",
+  ai: "AI Check-in",
+};
+
+const TYPE_PROVIDERS: Record<string, string> = {
+  clinic: "UAMS Community Clinic",
+  barbershop: "Partner Barbershop",
+  virtual: "Telehealth Provider",
+  ai: "Bro.AI",
+};
+
+const TYPE_LOCATIONS: Record<string, string> = {
+  clinic: "4301 W Markham St, Little Rock",
+  barbershop: "1523 Main St, Little Rock",
+  virtual: "Telehealth — link sent to email",
+  ai: "In-app",
+};
+
+function BookModal({ onClose, onBook }: { onClose: () => void; onBook: (appt: Appointment) => void }) {
   const [step, setStep] = useState<1 | 2 | 3>(1);
   const [type, setType] = useState("");
   const [form, setForm] = useState({ date: "", time: "", notes: "" });
@@ -225,7 +159,22 @@ function BookModal({ onClose }: { onClose: () => void }) {
   const slots = ["9:00 AM", "10:00 AM", "11:30 AM", "2:00 PM", "3:30 PM", "4:30 PM", "6:00 PM"];
 
   async function handleBook() {
-    await new Promise((r) => setTimeout(r, 1000));
+    await new Promise((r) => setTimeout(r, 800));
+    const newAppt: Appointment = {
+      id: Date.now().toString(),
+      title: TYPE_TITLES[type] ?? "Appointment",
+      provider: TYPE_PROVIDERS[type] ?? "Provider",
+      providerType: type as ApptType,
+      date: form.date
+        ? new Date(form.date).toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" })
+        : "TBD",
+      time: form.time,
+      location: TYPE_LOCATIONS[type] ?? "",
+      notes: form.notes || undefined,
+      status: "confirmed",
+      reminder: true,
+    };
+    onBook(newAppt);
     setBooked(true);
   }
 
@@ -347,12 +296,20 @@ function BookModal({ onClose }: { onClose: () => void }) {
 }
 
 export default function AppointmentsPage() {
-  const [appointments, setAppointments] = useState(APPOINTMENTS);
+  const [appointments, setAppointments] = useState<Appointment[]>([]);
   const [showModal, setShowModal] = useState(false);
 
+  useEffect(() => {
+    setAppointments(loadAppointments());
+  }, []);
+
+  useEffect(() => {
+    if (appointments.length > 0) saveAppointments(appointments);
+  }, [appointments]);
+
   function cancelAppt(id: string) {
-    setAppointments((prev) =>
-      prev.map((a) => a.id === id ? { ...a, status: "cancelled" as ApptStatus } : a)
+    setAppointments((prev: Appointment[]) =>
+      prev.map((a: Appointment) => a.id === id ? { ...a, status: "cancelled" as ApptStatus } : a)
     );
   }
 
@@ -428,7 +385,12 @@ export default function AppointmentsPage() {
         </TabsContent>
       </Tabs>
 
-      {showModal && <BookModal onClose={() => setShowModal(false)} />}
+      {showModal && (
+        <BookModal
+          onClose={() => setShowModal(false)}
+          onBook={(appt) => setAppointments((prev: Appointment[]) => [...prev, appt])}
+        />
+      )}
     </div>
   );
 }
