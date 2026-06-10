@@ -106,7 +106,7 @@ function Navbar() {
             <Link href="/dashboard/chat">
               <Button variant="outline" size="sm" className="gap-1.5 border-amber-300 text-amber-700 hover:bg-amber-50 hover:border-amber-400">
                 <MessageCircle className="h-3.5 w-3.5" />
-                Chat with AI
+                Chat with Bro.AI
               </Button>
             </Link>
             <Link href="/login">
@@ -147,7 +147,7 @@ function Navbar() {
             <Link href="/dashboard/chat" onClick={() => setMobileOpen(false)}>
               <Button variant="outline" className="w-full gap-1.5 border-amber-300 text-amber-700">
                 <MessageCircle className="h-3.5 w-3.5" />
-                Chat with AI
+                Chat with Bro.AI
               </Button>
             </Link>
             <Link href="/login" onClick={() => setMobileOpen(false)}>
@@ -613,7 +613,7 @@ function UserTypes() {
       desc: "Get free AI wellness support, find nearby clinics, book appointments, and join accountability crews. No clinical language. No judgment.",
       cta: "Get started free",
       color: "bg-black",
-      tags: ["AI Chat", "Resources", "Crews", "Appointments"],
+      tags: ["Bro.AI Chat", "Resources", "Crews", "Appointments"],
     },
     {
       icon: Scissors,
@@ -1062,7 +1062,7 @@ function Footer() {
       title: "Product",
       links: [
         { label: "How It Works",  href: "#how-it-works" },
-        { label: "AI Chat Demo",  href: "/dashboard/chat" },
+        { label: "Bro.Bro.AI Chat",  href: "/dashboard/chat" },
         { label: "Find Resources",href: "/dashboard/resources" },
         { label: "Community",     href: "/dashboard/community" },
         { label: "Mentors",       href: "/dashboard/mentors" },

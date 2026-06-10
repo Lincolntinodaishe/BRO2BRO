@@ -26,7 +26,7 @@ const notifications = [
 /* ── Search palette ─────────────────────────────────────────── */
 const SEARCH_ITEMS = [
   { label: "Overview",       href: "/dashboard",              icon: LayoutDashboard, type: "Page" },
-  { label: "AI Chat",        href: "/dashboard/chat",         icon: MessageCircle,   type: "Page" },
+  { label: "Chat with Bro.AI",        href: "/dashboard/chat",         icon: MessageCircle,   type: "Page" },
   { label: "Find Resources", href: "/dashboard/resources",    icon: MapPin,          type: "Page" },
   { label: "Community",      href: "/dashboard/community",    icon: Users,           type: "Page" },
   { label: "Mentors",        href: "/dashboard/mentors",      icon: UserCheck,       type: "Page" },

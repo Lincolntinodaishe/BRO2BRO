@@ -224,7 +224,7 @@ export default function DashboardOverview() {
       {/* Quick actions */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
         {[
-          { label: "Chat with AI",      href: "/dashboard/chat",         icon: MessageCircle, color: "bg-black text-white" },
+          { label: "Chat with Bro.AI",      href: "/dashboard/chat",         icon: MessageCircle, color: "bg-black text-white" },
           { label: "Find Resources",    href: "/dashboard/resources",    icon: MapPin,        color: "bg-amber-50 text-amber-700" },
           { label: "Connect a Mentor",  href: "/dashboard/mentors",      icon: Star,          color: "bg-teal-50 text-teal-700" },
           { label: "Book Appointment",  href: "/dashboard/appointments", icon: Calendar,      color: "bg-blue-50 text-blue-700" },
