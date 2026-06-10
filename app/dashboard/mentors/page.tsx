@@ -307,7 +307,7 @@ export default function MentorsPage() {
         <div>
           <p className="text-sm font-semibold text-amber-900">All mentors are community-verified</p>
           <p className="text-xs text-amber-700 mt-0.5">
-            Verified mentors have completed background checks and Pulse&apos;s peer mentor training. They are not medical professionals — they are men who&apos;ve navigated what you&apos;re facing.
+            Verified mentors have completed background checks and BRO2BRO&apos;s peer mentor training. They are not medical professionals — they are men who&apos;ve navigated what you&apos;re facing.
           </p>
         </div>
       </div>

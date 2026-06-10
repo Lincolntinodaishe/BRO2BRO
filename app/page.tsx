@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import uamsHealthLogo from "@/brand_assets/uams-logo_health_horizontal_dark.png";
+import bro2broLogo from "@/brand_assets/Bro2Bro logo.png";
 import {
   ArrowRight, Heart, Shield, Users, MessageCircle, MapPin,
   Calendar, Star, CheckCircle, Activity, Zap, Phone,
@@ -46,10 +47,8 @@ function Navbar() {
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2.5">
-            <div className="h-8 w-8 rounded-full bg-black flex items-center justify-center shrink-0">
-              <Heart className="h-4 w-4 text-amber-400 fill-amber-400" />
-            </div>
-            <span className="text-2xl font-black tracking-tight text-gray-900">Pulse</span>
+            <Image src={bro2broLogo} alt="BRO2BRO" height={36} className="h-9 w-auto" />
+            <span className="text-xl font-black tracking-widest text-gray-900 uppercase">BRO2BRO</span>
           </Link>
 
           {/* Desktop nav */}
@@ -143,7 +142,7 @@ function Hero() {
 
         {/* Sub */}
         <p className="text-lg sm:text-xl text-gray-500 max-w-2xl mx-auto mb-10 leading-relaxed">
-          Pulse is the AI-powered wellness companion extending trusted community conversations
+          BRO2BRO is the AI-powered wellness companion extending trusted community conversations
           into real care — connecting Black men to preventive health, mental wellness, and a
           community that has their back.
         </p>
@@ -273,11 +272,11 @@ function Hero() {
 
                   {/* Chat header */}
                   <div className="bg-black text-white px-4 pt-1 pb-3 flex items-center gap-2.5 shrink-0">
-                    <div className="w-8 h-8 rounded-full bg-amber-500 flex items-center justify-center shrink-0">
-                      <Heart className="h-4 w-4 text-black fill-black" />
+                    <div className="w-8 h-8 rounded-full overflow-hidden shrink-0 bg-white">
+                      <Image src={bro2broLogo} alt="Bro.AI" width={32} height={32} className="w-full h-full object-contain" />
                     </div>
                     <div className="flex-1">
-                      <div className="text-xs font-bold">Pulse AI</div>
+                      <div className="text-xs font-bold">Bro.AI</div>
                       <div className="flex items-center gap-1 text-xs text-green-400">
                         <span className="w-1.5 h-1.5 rounded-full bg-green-400 inline-block" />
                         Online · Private
@@ -289,7 +288,7 @@ function Hero() {
                   {/* Messages */}
                   <div className="flex-1 px-3 py-3 flex flex-col gap-2 overflow-hidden bg-[#f5f5f5]">
                     <div className="bg-white rounded-2xl rounded-tl-sm px-3 py-2.5 max-w-[88%] text-xs text-gray-800 leading-relaxed shadow-sm">
-                      Hey. I&apos;m Pulse. How have you been doing lately? No judgment here.
+                      Hey. I&apos;m Bro. How have you been doing lately? No judgment here.
                     </div>
                     <div className="bg-black text-white rounded-2xl rounded-tr-sm px-3 py-2.5 max-w-[80%] self-end text-xs">
                       Been stressed. Work&apos;s been a lot lately.
@@ -312,7 +311,7 @@ function Hero() {
                   {/* Input */}
                   <div className="px-3 py-2.5 border-t border-gray-100 bg-white shrink-0">
                     <div className="flex items-center gap-2 bg-gray-50 border border-gray-200 rounded-full px-3 py-2">
-                      <span className="text-xs text-gray-400 flex-1">Reply to Pulse…</span>
+                      <span className="text-xs text-gray-400 flex-1">Reply to Bro…</span>
                       <div className="h-5 w-5 bg-black rounded-full flex items-center justify-center shrink-0">
                         <ArrowRight className="h-3 w-3 text-white" />
                       </div>
@@ -461,7 +460,7 @@ function HowItWorks() {
     },
     {
       number: "02",
-      title: "Chat with Pulse AI",
+      title: "Chat with Bro.AI",
       body: "Talk to a judgment-free wellness companion using proven motivational interviewing techniques. It adapts to your age, your language, your situation.",
       icon: MessageCircle,
       color: "bg-black",
@@ -523,7 +522,7 @@ function UserTypes() {
   const types = [
     {
       icon: Heart,
-      title: "Men Seeking Help",
+      title: "Clients",
       desc: "Get free AI wellness support, find nearby clinics, book appointments, and join accountability crews. No clinical language. No judgment.",
       cta: "Get started free",
       color: "bg-black",
@@ -531,19 +530,11 @@ function UserTypes() {
     },
     {
       icon: Scissors,
-      title: "Barbers & Trustees",
-      desc: "Earn Community Health Worker certification. Get conversation prompts, referral tools, and a community dashboard. Unlock additional income.",
-      cta: "Join as a Trustee",
+      title: "Barbers & Mentors",
+      desc: "Barbers earn Community Health Worker certification and unlock referral tools. Mentors share their journey and connect with men who need real guidance — health scares, recovery, mental health, all of it.",
+      cta: "Join the network",
       color: "bg-amber-500",
-      tags: ["CHW Cert", "Referrals", "Dashboard", "+Income"],
-    },
-    {
-      icon: UserCheck,
-      title: "Mentors",
-      desc: "Share your journey. Connect with men who need guidance from someone who's been through it — health scares, recovery, mental health, all of it.",
-      cta: "Become a mentor",
-      color: "bg-teal-600",
-      tags: ["Peer Support", "Mentees", "Video Calls", "Community"],
+      tags: ["CHW Cert", "Referrals", "Peer Support", "+Income"],
     },
     {
       icon: Building2,
@@ -552,14 +543,6 @@ function UserTypes() {
       cta: "List your practice",
       color: "bg-gray-700",
       tags: ["Referrals", "Listings", "Analytics", "Subscription"],
-    },
-    {
-      icon: HeartHandshake,
-      title: "Families & Loved Ones",
-      desc: "Be a Trustee for the men in your life. Receive milestone updates they choose to share and send words of encouragement.",
-      cta: "Support someone",
-      color: "bg-purple-600",
-      tags: ["Check-ins", "Milestones", "Encouragement", "Privacy"],
     },
   ];
 
@@ -573,7 +556,7 @@ function UserTypes() {
             <span className="text-amber-500">community ecosystem</span>
           </h2>
           <p className="mt-4 text-lg text-gray-500 max-w-xl mx-auto">
-            Pulse works because health isn&apos;t individual — it&apos;s relational.
+            BRO2BRO works because health isn&apos;t individual — it&apos;s relational.
           </p>
         </div>
 
@@ -581,12 +564,10 @@ function UserTypes() {
           {types.map((t) => (
             <div
               key={t.title}
-              className="bg-white rounded-2xl p-6 border border-gray-100 shadow-card hover:shadow-card-hover transition-all duration-300 group flex flex-col"
+              className="bg-white rounded-2xl p-6 border-2 border-gray-200 group flex flex-col transition-all duration-300 hover:-translate-y-1"
+              style={{ boxShadow: "0 4px 24px -4px rgba(0,0,0,0.12), 0 1px 4px rgba(0,0,0,0.06)" }}
             >
-              <div className={cn("w-11 h-11 rounded-2xl flex items-center justify-center mb-5", t.color)}>
-                <t.icon className="w-5 h-5 text-white" />
-              </div>
-              <h3 className="text-lg font-bold text-gray-900 mb-2">{t.title}</h3>
+              <h3 className="text-2xl font-black text-gray-900 mb-3 text-center">{t.title}</h3>
               <p className="text-sm text-gray-500 leading-relaxed flex-1">{t.desc}</p>
               <div className="flex flex-wrap gap-1.5 mt-4 mb-5">
                 {t.tags.map((tag) => (
@@ -594,8 +575,8 @@ function UserTypes() {
                 ))}
               </div>
               <Link href="/signup">
-                <Button variant="outline" size="sm" className="w-full group-hover:bg-black group-hover:text-white group-hover:border-black transition-all">
-                  {t.cta} <ChevronRight className="ml-1 h-3.5 w-3.5" />
+                <Button variant="outline" size="md" className="w-full font-semibold group-hover:bg-black group-hover:text-white group-hover:border-black transition-all">
+                  {t.cta} <ChevronRight className="ml-1.5 h-4 w-4" />
                 </Button>
               </Link>
             </div>
@@ -612,7 +593,7 @@ function AIDemo() {
   const [messages, setMessages] = useState([
     {
       role: "ai",
-      text: "Hey. I'm Pulse — your wellness companion. How have you been doing lately? No judgment here. 🤝",
+      text: "Hey. I'm BRO2BRO — your wellness companion. How have you been doing lately? No judgment here. 🤝",
     },
   ]);
   const [typing, setTyping] = useState(false);
@@ -665,7 +646,7 @@ function AIDemo() {
               <span className="text-amber-400">the way you do.</span>
             </h2>
             <p className="text-gray-400 text-lg leading-relaxed mb-8">
-              Pulse uses proven motivational interviewing techniques — the same approach used by
+              BRO2BRO uses proven motivational interviewing techniques — the same approach used by
               UAMS Barbershop Talk. It meets you where you are, never lectures, and always points
               toward real professionals and real resources.
             </p>
@@ -697,11 +678,11 @@ function AIDemo() {
             <div className="bg-white rounded-[20px] overflow-hidden">
               {/* Header */}
               <div className="bg-black px-5 py-4 flex items-center gap-3">
-                <div className="w-9 h-9 rounded-full bg-amber-500 flex items-center justify-center">
-                  <Heart className="h-4 w-4 text-black fill-black" />
+                <div className="w-9 h-9 rounded-full overflow-hidden bg-white shrink-0">
+                  <Image src={bro2broLogo} alt="Bro.AI" width={36} height={36} className="w-full h-full object-contain" />
                 </div>
                 <div>
-                  <div className="text-sm font-bold text-white">Pulse AI</div>
+                  <div className="text-sm font-bold text-white">Bro.AI</div>
                   <div className="flex items-center gap-1.5 text-xs text-green-400">
                     <span className="w-1.5 h-1.5 rounded-full bg-green-400 inline-block" />
                     Private · End-to-end encrypted
@@ -831,19 +812,19 @@ function Features() {
 function Testimonials() {
   const testimonials = [
     {
-      quote: "My barber recommended Pulse after my BP reading came back high. Within a week I had an appointment booked at a clinic I didn't even know was free. That was six months ago. My numbers are finally where they should be.",
+      quote: "My barber recommended BRO2BRO after my BP reading came back high. Within a week I had an appointment booked at a clinic I didn't even know was free. That was six months ago. My numbers are finally where they should be.",
       name: "Marcus W.",
       role: "Pine Bluff, AR — 44 years old",
       stars: 5,
     },
     {
-      quote: "I've been cutting hair for 22 years. Pulse gave me the tools to actually help my clients after they sit in my chair. Two of my guys have their blood pressure under control now. That means more to me than anything.",
+      quote: "I've been cutting hair for 22 years. BRO2BRO gave me the tools to actually help my clients after they sit in my chair. Two of my guys have their blood pressure under control now. That means more to me than anything.",
       name: "Joe T.",
       role: "Barber, Little Rock — UAMS Barbershop Talk",
       stars: 5,
     },
     {
-      quote: "I was skeptical about talking to an AI about my health. But Pulse doesn't talk down to me — it talks like someone who knows what I'm dealing with. It connected me to a counselor within the same week.",
+      quote: "I was skeptical about talking to an AI about my health. But BRO2BRO doesn't talk down to me — it talks like someone who knows what I'm dealing with. It connected me to a counselor within the same week.",
       name: "DeShawn R.",
       role: "Little Rock, AR — 32 years old",
       stars: 5,
@@ -892,9 +873,9 @@ function FAQ() {
   const items = [
     {
       value: "free",
-      trigger: "Is Pulse free for users?",
+      trigger: "Is BRO2BRO free for users?",
       content:
-        "Yes — always. Pulse is completely free for Black men and their families. Healthcare providers, insurers, and employers pay for access because preventing one ER visit ($1,800+) pays for months of Pulse. Users pay nothing, ever.",
+        "Yes — always. BRO2BRO is completely free for Black men and their families. Healthcare providers, insurers, and employers pay for access because preventing one ER visit ($1,800+) pays for months of BRO2BRO. Users pay nothing, ever.",
     },
     {
       value: "privacy",
@@ -906,13 +887,13 @@ function FAQ() {
       value: "ai",
       trigger: "How does the AI companion work?",
       content:
-        "Pulse uses motivational interviewing (MI) techniques — the same evidence-based approach UAMS Barbershop Talk already uses. The AI adapts its language to your age, never makes medical diagnoses, always refers you to real professionals, and has a built-in crisis escalation protocol that surfaces 988 (Suicide & Crisis Lifeline) immediately if you mention self-harm.",
+        "BRO2BRO uses motivational interviewing (MI) techniques — the same evidence-based approach UAMS Barbershop Talk already uses. The AI adapts its language to your age, never makes medical diagnoses, always refers you to real professionals, and has a built-in crisis escalation protocol that surfaces 988 (Suicide & Crisis Lifeline) immediately if you mention self-harm.",
     },
     {
       value: "app",
       trigger: "Do I need a smartphone or internet?",
       content:
-        "No. Pulse is SMS-first — it works on any phone, even without internet. This is intentional: 29% of Black households lack broadband access nationally, and rural Arkansas has even lower connectivity. Just text the number. That's it.",
+        "No. BRO2BRO is SMS-first — it works on any phone, even without internet. This is intentional: 29% of Black households lack broadband access nationally, and rural Arkansas has even lower connectivity. Just text the number. That's it.",
     },
     {
       value: "barber",
@@ -924,7 +905,7 @@ function FAQ() {
       value: "providers",
       trigger: "How do healthcare providers get listed?",
       content:
-        "Providers sign up for a subscription plan (starting free for community orgs, $99/mo for clinics). Listings are verified, prioritized in search results, and connected to Pulse's referral workflow. HIPAA Business Associate Agreements are included in the Enterprise tier.",
+        "Providers sign up for a subscription plan (starting free for community orgs, $99/mo for clinics). Listings are verified, prioritized in search results, and connected to BRO2BRO's referral workflow. HIPAA Business Associate Agreements are included in the Enterprise tier.",
     },
   ];
 
@@ -949,15 +930,15 @@ function CTASection() {
   return (
     <section className="py-24 px-4 sm:px-6 lg:px-8 bg-black">
       <div className="max-w-4xl mx-auto text-center">
-        <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-amber-500 mb-8">
-          <Heart className="h-8 w-8 text-black fill-black" />
+        <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-white mb-8 overflow-hidden">
+          <Image src={bro2broLogo} alt="BRO2BRO" width={64} height={64} className="w-full h-full object-contain" />
         </div>
         <h2 className="text-4xl sm:text-5xl md:text-6xl font-black text-white leading-tight mb-6">
           The conversation<br />
           <span className="text-amber-400">doesn&apos;t end here.</span>
         </h2>
         <p className="text-lg text-gray-400 max-w-xl mx-auto mb-10">
-          The barbershop started it. Pulse keeps it going. Free for every man who needs it.
+          The barbershop started it. BRO2BRO keeps it going. Free for every man who needs it.
           No app. No insurance. No judgment.
         </p>
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -1061,11 +1042,9 @@ function Footer() {
         <div className="max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-5 gap-8">
           {/* Brand */}
           <div className="col-span-2 md:col-span-1">
-            <Link href="/" className="flex items-center gap-2.5 mb-4">
-              <div className="h-8 w-8 rounded-full bg-black flex items-center justify-center">
-                <Heart className="h-4 w-4 text-amber-400 fill-amber-400" />
-              </div>
-              <span className="text-lg font-black tracking-tight text-gray-900">Pulse</span>
+            <Link href="/" className="flex items-center gap-2 mb-4">
+              <Image src={bro2broLogo} alt="BRO2BRO" height={32} className="h-8 w-auto" />
+              <span className="text-base font-black tracking-widest text-gray-900 uppercase">BRO2BRO</span>
             </Link>
             <p className="text-sm text-gray-500 leading-relaxed mb-4">
               The barbershop got men talking. We built what comes next.
@@ -1102,7 +1081,7 @@ function Footer() {
       <div className="border-t border-gray-100 py-6 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
           <p className="text-xs text-gray-400">
-            © 2026 Pulse Health. Built with ❤️ for the community.
+            © 2026 BRO2BRO Health. Built with ❤️ for the community.
           </p>
           <div className="flex items-center gap-4">
             <span className="flex items-center gap-1.5 text-xs text-gray-400">
@@ -1127,9 +1106,9 @@ export default function LandingPage() {
       <Navbar />
       <Hero />
       <TrustBar />
-      <ImpactStats />
-      <HowItWorks />
       <UserTypes />
+      <HowItWorks />
+      <ImpactStats />
       <AIDemo />
       <Features />
       <Testimonials />

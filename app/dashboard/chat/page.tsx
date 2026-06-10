@@ -1,6 +1,8 @@
 "use client";
 import { useState, useRef, useEffect } from "react";
-import { ArrowRight, Heart, Shield, RefreshCw, Phone, MoreVertical, Sparkles } from "lucide-react";
+import { ArrowRight, Shield, RefreshCw, Phone, MoreVertical, Sparkles } from "lucide-react";
+import Image from "next/image";
+import bro2broLogo from "@/brand_assets/Bro2Bro logo.png";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
@@ -16,7 +18,7 @@ const INITIAL_MESSAGES: Message[] = [
   {
     id: "1",
     role: "ai",
-    text: "Hey. I'm Pulse — your personal wellness companion. I'm here to check in on how you're doing, help you find care, and keep you connected to the community. How are you feeling today?",
+    text: "Hey. I'm Bro — your personal wellness companion. I'm here to check in on how you're doing, help you find care, and keep you connected to the community. How are you feeling today?",
     timestamp: "Just now",
   },
 ];
@@ -131,12 +133,12 @@ export default function ChatPage() {
       <div className="bg-white rounded-2xl border border-gray-100 shadow-card flex flex-col h-full overflow-hidden">
         {/* Header */}
         <div className="px-5 py-4 border-b border-gray-100 flex items-center gap-3">
-          <div className="w-10 h-10 rounded-full bg-black flex items-center justify-center shrink-0">
-            <Heart className="h-5 w-5 text-amber-400 fill-amber-400" />
+          <div className="w-10 h-10 rounded-full overflow-hidden bg-white shrink-0 border border-gray-100">
+            <Image src={bro2broLogo} alt="Bro.AI" width={40} height={40} className="w-full h-full object-contain" />
           </div>
           <div className="flex-1">
             <div className="flex items-center gap-2">
-              <span className="text-sm font-bold text-gray-900">Pulse AI</span>
+              <span className="text-sm font-bold text-gray-900">Bro.AI</span>
               <Badge className="bg-green-50 text-green-700 border-green-100" size="sm">
                 <span className="w-1.5 h-1.5 rounded-full bg-green-500 mr-1 inline-block" />
                 Online
@@ -172,8 +174,8 @@ export default function ChatPage() {
               className={cn("flex gap-3 max-w-[88%]", m.role === "user" ? "flex-row-reverse ml-auto" : "flex-row")}
             >
               {m.role === "ai" && (
-                <div className="w-8 h-8 rounded-full bg-black flex items-center justify-center shrink-0 mt-0.5">
-                  <Heart className="h-4 w-4 text-amber-400 fill-amber-400" />
+                <div className="w-8 h-8 rounded-full overflow-hidden bg-white shrink-0 mt-0.5 border border-gray-100">
+                  <Image src={bro2broLogo} alt="Bro.AI" width={32} height={32} className="w-full h-full object-contain" />
                 </div>
               )}
               <div className="space-y-1">
@@ -196,8 +198,8 @@ export default function ChatPage() {
 
           {typing && (
             <div className="flex gap-3 max-w-[88%]">
-              <div className="w-8 h-8 rounded-full bg-black flex items-center justify-center shrink-0 mt-0.5">
-                <Heart className="h-4 w-4 text-amber-400 fill-amber-400" />
+              <div className="w-8 h-8 rounded-full overflow-hidden bg-white shrink-0 mt-0.5 border border-gray-100">
+                <Image src={bro2broLogo} alt="Bro.AI" width={32} height={32} className="w-full h-full object-contain" />
               </div>
               <div className="bg-gray-100 rounded-2xl rounded-tl-sm px-4 py-3.5 flex items-center gap-1.5 msg-in">
                 <span className="dot1 w-2 h-2 bg-gray-400 rounded-full inline-block" />
@@ -252,7 +254,7 @@ export default function ChatPage() {
             <a href="tel:988" className="text-black font-semibold underline">
               Text or call 988
             </a>{" "}
-            · Pulse AI is a wellness tool, not a substitute for emergency care.
+            · Bro.AI is a wellness tool, not a substitute for emergency care.
           </p>
         </div>
       </div>

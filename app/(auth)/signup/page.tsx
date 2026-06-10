@@ -2,9 +2,11 @@
 import { useState } from "react";
 import Link from "next/link";
 import {
-  Heart, ArrowRight, Eye, EyeOff,
+  ArrowRight, Eye, EyeOff,
   Scissors, UserCheck, Building2, HeartHandshake, User
 } from "lucide-react";
+import Image from "next/image";
+import bro2broLogo from "@/brand_assets/Bro2Bro logo.png";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
@@ -79,10 +81,8 @@ export default function SignupPage() {
       {/* Left panel */}
       <div className="hidden lg:flex flex-col justify-between w-5/12 bg-black text-white p-12">
         <Link href="/" className="flex items-center gap-2.5">
-          <div className="h-9 w-9 rounded-full bg-amber-500 flex items-center justify-center">
-            <Heart className="h-5 w-5 text-black fill-black" />
-          </div>
-          <span className="text-xl font-black tracking-tight">Pulse</span>
+          <Image src={bro2broLogo} alt="BRO2BRO" height={36} className="h-9 w-auto" />
+          <span className="text-xl font-black tracking-tight text-white">BRO2BRO</span>
         </Link>
 
         <div>
@@ -117,10 +117,8 @@ export default function SignupPage() {
         <div className="w-full max-w-lg">
           {/* Mobile logo */}
           <Link href="/" className="flex items-center gap-2 mb-8 lg:hidden">
-            <div className="h-8 w-8 rounded-full bg-black flex items-center justify-center">
-              <Heart className="h-4 w-4 text-amber-400 fill-amber-400" />
-            </div>
-            <span className="text-lg font-black">Pulse</span>
+            <Image src={bro2broLogo} alt="BRO2BRO" height={32} className="h-8 w-auto" />
+            <span className="text-lg font-black">BRO2BRO</span>
           </Link>
 
           {/* Step indicator */}
@@ -242,7 +240,7 @@ export default function SignupPage() {
                 <label className="flex items-start gap-2.5 cursor-pointer">
                   <input type="checkbox" required className="mt-0.5 rounded border-gray-300" />
                   <span className="text-sm text-gray-600">
-                    I agree to Pulse&apos;s{" "}
+                    I agree to BRO2BRO&apos;s{" "}
                     <Link href="#" className="text-black underline underline-offset-2">Terms</Link> and{" "}
                     <Link href="#" className="text-black underline underline-offset-2">Privacy Policy</Link>.
                     I understand my health data is private and encrypted.

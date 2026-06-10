@@ -28,7 +28,7 @@ const appointments = [
   },
   {
     title: "Mental Wellness Check-in",
-    provider: "Pulse AI",
+    provider: "Bro.AI",
     time: "Every Monday · 8:00 AM",
     type: "Automated",
     confirmed: true,
@@ -77,7 +77,7 @@ export default function DashboardOverview() {
         </div>
         <Link href="/dashboard/chat">
           <Button variant="gold" size="md" className="shrink-0">
-            Chat with Pulse <ArrowRight className="ml-1.5 h-4 w-4" />
+            Chat with BRO2BRO <ArrowRight className="ml-1.5 h-4 w-4" />
           </Button>
         </Link>
       </div>

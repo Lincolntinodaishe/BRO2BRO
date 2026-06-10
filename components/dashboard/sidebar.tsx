@@ -11,9 +11,10 @@ import {
   Settings,
   LogOut,
   Scissors,
-  Heart,
   X,
 } from "lucide-react";
+import Image from "next/image";
+import bro2broLogo from "@/brand_assets/Bro2Bro logo.png";
 import { cn } from "@/lib/utils";
 import { Avatar } from "@/components/ui/avatar";
 
@@ -61,10 +62,8 @@ export function Sidebar({ open, onClose, role = "Men's Health", userName = "Marc
         {/* Logo */}
         <div className="flex items-center justify-between px-6 py-5 border-b border-gray-100">
           <Link href="/" className="flex items-center gap-2.5">
-            <div className="h-8 w-8 rounded-full bg-black flex items-center justify-center">
-              <Heart className="h-4 w-4 text-amber-400 fill-amber-400" />
-            </div>
-            <span className="text-lg font-black tracking-tight">Pulse</span>
+            <Image src={bro2broLogo} alt="BRO2BRO" height={32} className="h-8 w-auto" />
+            <span className="text-base font-black tracking-widest text-gray-900 uppercase">BRO2BRO</span>
           </Link>
           {onClose && (
             <button onClick={onClose} className="lg:hidden p-1 rounded-lg hover:bg-gray-100">

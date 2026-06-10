@@ -2,12 +2,12 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Pulse — The Barbershop Got Men Talking. We Built What Comes Next.",
+  title: "BRO2BRO — The Barbershop Got Men Talking. We Built What Comes Next.",
   description:
-    "Pulse is the AI-powered wellness companion that extends trusted community conversations into real care — connecting Black men to preventive health, mental wellness, and community support.",
+    "BRO2BRO is the AI-powered wellness companion that extends trusted community conversations into real care — connecting Black men to preventive health, mental wellness, and community support.",
   keywords: ["Black men's health", "AI health", "barbershop", "Arkansas", "wellness", "UAMS"],
   openGraph: {
-    title: "Pulse — AI-Powered Black Men's Health",
+    title: "BRO2BRO — AI-Powered Black Men's Health",
     description: "The barbershop got men talking. We built what comes next.",
     type: "website",
   },

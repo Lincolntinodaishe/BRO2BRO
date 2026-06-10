@@ -46,7 +46,7 @@ const APPOINTMENTS: Appointment[] = [
   {
     id: "2",
     title: "Weekly Wellness Check-in",
-    provider: "Pulse AI",
+    provider: "Bro.AI",
     providerType: "ai",
     date: "Monday, Jun 16",
     time: "8:00 AM",
@@ -77,7 +77,7 @@ const APPOINTMENTS: Appointment[] = [
     location: "Telehealth — Zoom link sent to email",
     phone: "(501) 555-0199",
     status: "confirmed",
-    notes: "First session. Free through Pulse Community Partnership.",
+    notes: "First session. Free through BRO2BRO Community Partnership.",
     reminder: true,
   },
   {
@@ -219,7 +219,7 @@ function BookModal({ onClose }: { onClose: () => void }) {
     { id: "clinic",     label: "Clinic Visit",          icon: Building2, desc: "Primary care, screenings, follow-ups" },
     { id: "barbershop", label: "Barbershop Screening",   icon: Scissors,  desc: "BP check, glucose, weight at partner shops" },
     { id: "virtual",    label: "Virtual Counseling",     icon: Video,     desc: "Telehealth mental health or wellness" },
-    { id: "ai",         label: "AI Check-in",            icon: Heart,     desc: "Scheduled wellness conversation with Pulse AI" },
+    { id: "ai",         label: "AI Check-in",            icon: Heart,     desc: "Scheduled wellness conversation with Bro.AI" },
   ];
 
   const slots = ["9:00 AM", "10:00 AM", "11:30 AM", "2:00 PM", "3:30 PM", "4:30 PM", "6:00 PM"];
