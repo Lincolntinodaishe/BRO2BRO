@@ -149,96 +149,183 @@ function Hero() {
         {/* CTAs */}
         <div className="flex flex-col sm:flex-row gap-4 justify-center mb-16">
           <Link href="/signup">
-            <Button size="lg" className="w-full sm:w-auto shadow-lg hover:shadow-xl transition-shadow">
-              Get Started Free <ArrowRight className="ml-2 h-4 w-4" />
+            <Button size="xl" className="w-full sm:w-auto shadow-lg hover:shadow-xl transition-shadow py-5 text-base font-bold">
+              Get Started Free <ArrowRight className="ml-2 h-5 w-5" />
             </Button>
           </Link>
           <a href="#how-it-works">
-            <Button variant="outline" size="lg" className="w-full sm:w-auto gap-2">
-              <Play className="h-4 w-4" />
+            <Button variant="outline" size="xl" className="w-full sm:w-auto gap-2 py-5 text-base font-bold">
+              <Play className="h-5 w-5" />
               See How It Works
             </Button>
           </a>
         </div>
 
         {/* Phone mockup + floating cards */}
-        <div className="relative mx-auto w-[280px] float-phone">
-          {/* Floating cards — hidden on small screens */}
-          <div className="absolute -left-44 top-8 bg-white rounded-2xl shadow-float p-4 w-40 hidden xl:block animate-fade-in">
+        <div className="relative mx-auto w-[290px] float-phone">
+
+          {/* Ambient glow behind phone */}
+          <div className="absolute inset-[-60px] -z-10 blur-3xl pointer-events-none opacity-40"
+            style={{ background: "radial-gradient(ellipse at 50% 60%, rgba(245,158,11,0.35) 0%, rgba(13,148,136,0.25) 55%, transparent 75%)" }} />
+
+          {/* Floating card 1 — top left */}
+          <div className="absolute -left-44 top-8 bg-white rounded-2xl p-4 w-40 hidden xl:block float-card-1"
+            style={{ boxShadow: "0 8px 32px -4px rgba(245,158,11,0.2), 0 2px 8px rgba(0,0,0,0.07)" }}>
+            <div className="flex items-center gap-1.5 mb-2">
+              <div className="w-5 h-5 rounded-full bg-amber-100 flex items-center justify-center shrink-0">
+                <Activity className="h-3 w-3 text-amber-600" />
+              </div>
+              <span className="text-[10px] text-gray-400 font-medium">Men Screened</span>
+            </div>
             <div className="text-3xl font-black text-amber-500">600+</div>
-            <div className="text-xs text-gray-500 mt-0.5 font-medium">Men Screened</div>
-            <div className="text-xs text-gray-400">since Aug 2023</div>
+            <div className="text-xs text-gray-400 mt-0.5">since Aug 2023</div>
           </div>
 
-          <div className="absolute -right-48 top-20 bg-black text-white rounded-2xl shadow-float p-4 w-44 hidden xl:block animate-fade-in" style={{ animationDelay: "0.15s" }}>
+          {/* Floating card 2 — top right */}
+          <div className="absolute -right-48 top-20 bg-gray-900 text-white rounded-2xl p-4 w-44 hidden xl:block float-card-2"
+            style={{ boxShadow: "0 8px 32px -4px rgba(0,0,0,0.3), 0 2px 8px rgba(0,0,0,0.12)" }}>
+            <div className="flex items-center gap-1.5 mb-2">
+              <div className="w-5 h-5 rounded-full bg-amber-500/20 flex items-center justify-center shrink-0">
+                <TrendingUp className="h-3 w-3 text-amber-400" />
+              </div>
+              <span className="text-[10px] text-gray-400 font-medium">BP Control Rate</span>
+            </div>
             <div className="text-3xl font-black text-amber-400">63.6%</div>
-            <div className="text-xs text-gray-300 mt-0.5 font-medium">BP Control Rate</div>
-            <div className="text-xs text-gray-500">barbershop + AI follow-up</div>
+            <div className="text-xs text-gray-500 mt-0.5">barbershop + AI follow-up</div>
           </div>
 
-          <div className="absolute -left-48 bottom-24 bg-teal-50 rounded-2xl shadow-float p-4 w-44 hidden xl:block animate-fade-in" style={{ animationDelay: "0.3s" }}>
+          {/* Floating card 3 — bottom left */}
+          <div className="absolute -left-48 bottom-24 bg-teal-50 rounded-2xl p-4 w-44 hidden xl:block float-card-3"
+            style={{ boxShadow: "0 8px 32px -4px rgba(13,148,136,0.2), 0 2px 8px rgba(0,0,0,0.06)" }}>
+            <div className="flex items-center gap-1.5 mb-2">
+              <div className="w-5 h-5 rounded-full bg-teal-100 flex items-center justify-center shrink-0">
+                <Scissors className="h-3 w-3 text-teal-600" />
+              </div>
+              <span className="text-[10px] text-teal-500 font-medium">Partner Barbershops</span>
+            </div>
             <div className="text-3xl font-black text-teal-700">61</div>
-            <div className="text-xs text-teal-700 mt-0.5 font-medium">Partner Barbershops</div>
-            <div className="text-xs text-teal-500">across 15 AR counties</div>
+            <div className="text-xs text-teal-500 mt-0.5">across 15 AR counties</div>
           </div>
 
-          <div className="absolute -right-40 bottom-16 bg-green-50 rounded-2xl shadow-float p-4 w-36 hidden xl:block animate-fade-in" style={{ animationDelay: "0.45s" }}>
-            <div className="text-xl font-black text-green-700">Always Free</div>
-            <div className="text-xs text-green-600 mt-0.5">No app required</div>
-            <div className="text-xs text-green-500">Just text us</div>
+          {/* Floating card 4 — bottom right */}
+          <div className="absolute -right-40 bottom-16 bg-green-50 rounded-2xl p-4 w-36 hidden xl:block float-card-4"
+            style={{ boxShadow: "0 8px 32px -4px rgba(22,163,74,0.2), 0 2px 8px rgba(0,0,0,0.06)" }}>
+            <div className="flex items-center gap-1.5 mb-2">
+              <div className="w-5 h-5 rounded-full bg-green-100 flex items-center justify-center shrink-0">
+                <CheckCircle className="h-3 w-3 text-green-600" />
+              </div>
+              <span className="text-[10px] text-green-500 font-medium">Always Free</span>
+            </div>
+            <div className="text-xl font-black text-green-700">$0/mo</div>
+            <div className="text-xs text-green-500 mt-0.5">No app required</div>
           </div>
 
-          {/* Phone shell */}
-          <div className="w-[280px] h-[560px] bg-gray-900 rounded-[44px] shadow-float relative overflow-hidden border-4 border-gray-800">
-            {/* Notch */}
-            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-24 h-7 bg-gray-900 rounded-b-3xl z-10" />
-            {/* Screen */}
-            <div className="h-full flex flex-col bg-white">
-              {/* Chat header */}
-              <div className="bg-black text-white px-4 pt-9 pb-3 flex items-center gap-2.5">
-                <div className="w-8 h-8 rounded-full bg-amber-500 flex items-center justify-center shrink-0">
-                  <Heart className="h-4 w-4 text-black fill-black" />
-                </div>
-                <div>
-                  <div className="text-xs font-bold">Pulse AI</div>
-                  <div className="flex items-center gap-1 text-xs text-green-400">
-                    <span className="w-1.5 h-1.5 rounded-full bg-green-400 inline-block" />
-                    Online · Private
-                  </div>
-                </div>
-              </div>
+          {/* iPhone shell */}
+          <div className="relative w-[290px]">
+            {/* Side buttons */}
+            <div className="absolute -left-[5px] top-[96px] w-[5px] h-6 rounded-l-md" style={{ background: "linear-gradient(to right, #4a4a4a, #2e2e2e)" }} />
+            <div className="absolute -left-[5px] top-[136px] w-[5px] h-10 rounded-l-md" style={{ background: "linear-gradient(to right, #4a4a4a, #2e2e2e)" }} />
+            <div className="absolute -left-[5px] top-[184px] w-[5px] h-10 rounded-l-md" style={{ background: "linear-gradient(to right, #4a4a4a, #2e2e2e)" }} />
+            <div className="absolute -right-[5px] top-[148px] w-[5px] h-16 rounded-r-md" style={{ background: "linear-gradient(to left, #4a4a4a, #2e2e2e)" }} />
 
-              {/* Messages */}
-              <div className="flex-1 px-3 py-3 flex flex-col gap-2 overflow-hidden">
-                <div className="bg-gray-100 rounded-2xl rounded-tl-sm px-3 py-2.5 max-w-[88%] text-xs text-gray-800 leading-relaxed">
-                  Hey. I&apos;m Pulse. How have you been doing lately? No judgment here.
-                </div>
-                <div className="bg-black text-white rounded-2xl rounded-tr-sm px-3 py-2.5 max-w-[80%] self-end text-xs">
-                  Been stressed. Work&apos;s been a lot lately.
-                </div>
-                <div className="bg-gray-100 rounded-2xl rounded-tl-sm px-3 py-2.5 max-w-[90%] text-xs text-gray-800 leading-relaxed">
-                  I hear you. When&apos;s the last time you got your BP checked?
-                </div>
-                <div className="bg-black text-white rounded-2xl rounded-tr-sm px-3 py-2.5 max-w-[75%] self-end text-xs">
-                  Honestly... it&apos;s been a while.
-                </div>
-                <div className="bg-amber-50 border border-amber-100 rounded-2xl rounded-tl-sm px-3 py-2.5 max-w-[92%] text-xs text-gray-800 leading-relaxed">
-                  <div className="flex items-center gap-1.5 font-semibold text-amber-700 mb-1">
-                    <MapPin className="h-3 w-3" />
-                    Found 3 free BP checks near you
-                  </div>
-                  Two are at barbershops you probably know. Want directions?
-                </div>
-              </div>
+            {/* Titanium frame */}
+            <div className="w-[290px] h-[600px] rounded-[54px] p-[3px]"
+              style={{ background: "linear-gradient(145deg, #6b6b6b 0%, #3d3d3d 35%, #1c1c1c 65%, #303030 100%)", boxShadow: "0 32px 80px -12px rgba(0,0,0,0.55), 0 0 0 1px rgba(255,255,255,0.04), inset 0 1px 0 rgba(255,255,255,0.08)" }}>
 
-              {/* Input */}
-              <div className="px-3 py-3 border-t border-gray-100">
-                <div className="flex items-center gap-2 bg-gray-50 border border-gray-200 rounded-full px-3 py-2">
-                  <span className="text-xs text-gray-400 flex-1">Reply to Pulse…</span>
-                  <div className="h-5 w-5 bg-black rounded-full flex items-center justify-center shrink-0">
-                    <ArrowRight className="h-3 w-3 text-white" />
+              {/* Inner screen */}
+              <div className="w-full h-full rounded-[52px] overflow-hidden bg-black relative">
+
+                {/* Dynamic Island */}
+                <div className="absolute top-3 left-1/2 -translate-x-1/2 z-20 w-[112px] h-[34px] bg-black rounded-full flex items-center justify-center gap-3 border border-white/[0.06]">
+                  <div className="w-[9px] h-[9px] rounded-full bg-[#1c1c1c] border border-[#2a2a2a]" />
+                  <div className="w-[13px] h-[13px] rounded-full bg-[#0a0a0a] border border-[#252525] flex items-center justify-center">
+                    <div className="w-[6px] h-[6px] rounded-full bg-[#1a1a1a]" />
                   </div>
                 </div>
+
+                {/* Screen content */}
+                <div className="h-full flex flex-col bg-white">
+
+                  {/* Status bar */}
+                  <div className="bg-black text-white px-5 pt-12 pb-1 flex items-center justify-between shrink-0">
+                    <span className="text-[11px] font-bold tracking-tight">9:41</span>
+                    <div className="flex items-center gap-1.5">
+                      <div className="flex items-end gap-[2px]">
+                        {[3, 5, 7, 9].map((h, i) => (
+                          <div key={i} className={`w-[3px] rounded-[1px] ${i < 3 ? "bg-white" : "bg-white/30"}`} style={{ height: `${h}px` }} />
+                        ))}
+                      </div>
+                      <svg width="14" height="11" viewBox="0 0 14 11" fill="none">
+                        <path d="M7 9a1 1 0 100 2 1 1 0 000-2z" fill="white"/>
+                        <path d="M3.5 5.5C4.8 4.2 5.8 3.5 7 3.5s2.2.7 3.5 2" stroke="white" strokeWidth="1.4" strokeLinecap="round"/>
+                        <path d="M.5 2.5C2.5.5 4.6 0 7 0s4.5.5 6.5 2.5" stroke="white" strokeWidth="1.4" strokeLinecap="round"/>
+                      </svg>
+                      <div className="flex items-center">
+                        <div className="w-[20px] h-[11px] rounded-[3px] border-[1.5px] border-white/70 p-[1.5px]">
+                          <div className="h-full w-[72%] bg-white rounded-[1px]" />
+                        </div>
+                        <div className="w-[2px] h-[5px] bg-white/50 rounded-r-sm ml-[1px]" />
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Chat header */}
+                  <div className="bg-black text-white px-4 pt-1 pb-3 flex items-center gap-2.5 shrink-0">
+                    <div className="w-8 h-8 rounded-full bg-amber-500 flex items-center justify-center shrink-0">
+                      <Heart className="h-4 w-4 text-black fill-black" />
+                    </div>
+                    <div className="flex-1">
+                      <div className="text-xs font-bold">Pulse AI</div>
+                      <div className="flex items-center gap-1 text-xs text-green-400">
+                        <span className="w-1.5 h-1.5 rounded-full bg-green-400 inline-block" />
+                        Online · Private
+                      </div>
+                    </div>
+                    <Phone className="h-4 w-4 text-gray-500" />
+                  </div>
+
+                  {/* Messages */}
+                  <div className="flex-1 px-3 py-3 flex flex-col gap-2 overflow-hidden bg-[#f5f5f5]">
+                    <div className="bg-white rounded-2xl rounded-tl-sm px-3 py-2.5 max-w-[88%] text-xs text-gray-800 leading-relaxed shadow-sm">
+                      Hey. I&apos;m Pulse. How have you been doing lately? No judgment here.
+                    </div>
+                    <div className="bg-black text-white rounded-2xl rounded-tr-sm px-3 py-2.5 max-w-[80%] self-end text-xs">
+                      Been stressed. Work&apos;s been a lot lately.
+                    </div>
+                    <div className="bg-white rounded-2xl rounded-tl-sm px-3 py-2.5 max-w-[90%] text-xs text-gray-800 leading-relaxed shadow-sm">
+                      I hear you. When&apos;s the last time you got your BP checked?
+                    </div>
+                    <div className="bg-black text-white rounded-2xl rounded-tr-sm px-3 py-2.5 max-w-[75%] self-end text-xs">
+                      Honestly... it&apos;s been a while.
+                    </div>
+                    <div className="bg-amber-50 border border-amber-100 rounded-2xl rounded-tl-sm px-3 py-2.5 max-w-[92%] text-xs text-gray-800 leading-relaxed">
+                      <div className="flex items-center gap-1.5 font-semibold text-amber-700 mb-1">
+                        <MapPin className="h-3 w-3" />
+                        Found 3 free BP checks near you
+                      </div>
+                      Two are at barbershops you probably know. Want directions?
+                    </div>
+                  </div>
+
+                  {/* Input */}
+                  <div className="px-3 py-2.5 border-t border-gray-100 bg-white shrink-0">
+                    <div className="flex items-center gap-2 bg-gray-50 border border-gray-200 rounded-full px-3 py-2">
+                      <span className="text-xs text-gray-400 flex-1">Reply to Pulse…</span>
+                      <div className="h-5 w-5 bg-black rounded-full flex items-center justify-center shrink-0">
+                        <ArrowRight className="h-3 w-3 text-white" />
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Home indicator */}
+                  <div className="bg-white pb-2 pt-1 flex justify-center shrink-0">
+                    <div className="w-28 h-[5px] bg-black/20 rounded-full" />
+                  </div>
+                </div>
+
+                {/* Glass sheen overlay */}
+                <div className="absolute inset-0 pointer-events-none rounded-[52px]"
+                  style={{ background: "linear-gradient(135deg, rgba(255,255,255,0.07) 0%, rgba(255,255,255,0.02) 40%, transparent 60%)" }} />
               </div>
             </div>
           </div>
@@ -249,30 +336,42 @@ function Hero() {
 }
 
 /* ─── TRUST BAR ────────────────────────────────────────────── */
-function TrustBar() {
-  const partners = [
-    "UAMS Barbershop Talk",
-    "BCBS Arkansas",
-    "UAPB",
-    "Arkansas Dept. of Health",
-    "Jumpstart Nova",
-    "CHW Arkansas",
-  ];
+const partners = [
+  { name: "UAMS Barbershop Talk", abbr: "UAMS", color: "bg-blue-100 text-blue-700" },
+  { name: "BCBS Arkansas",        abbr: "BCBS", color: "bg-indigo-100 text-indigo-700" },
+  { name: "UAPB",                 abbr: "UAPB", color: "bg-amber-100 text-amber-700" },
+  { name: "Arkansas Dept. of Health", abbr: "ADH", color: "bg-red-100 text-red-700" },
+  { name: "Jumpstart Nova",       abbr: "JSN",  color: "bg-green-100 text-green-700" },
+  { name: "CHW Arkansas",         abbr: "CHW",  color: "bg-teal-100 text-teal-700" },
+  { name: "American Heart Assoc.", abbr: "AHA", color: "bg-rose-100 text-rose-700" },
+  { name: "Robert Wood Johnson",  abbr: "RWJ",  color: "bg-purple-100 text-purple-700" },
+];
+
+function PartnerLogo({ name, abbr, color }: { name: string; abbr: string; color: string }) {
   return (
-    <section className="py-10 border-y border-gray-100 bg-gray-50/50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <p className="text-center text-xs font-semibold text-gray-400 uppercase tracking-widest mb-6">
-          Backed by &amp; Built for the Community
-        </p>
-        <div className="flex flex-wrap justify-center items-center gap-x-10 gap-y-4">
-          {partners.map((p) => (
-            <span
-              key={p}
-              className="text-sm font-semibold text-gray-400 hover:text-gray-700 transition-colors cursor-default"
-            >
-              {p}
-            </span>
-          ))}
+    <div className="flex items-center gap-3 mx-10 shrink-0">
+      <div className={cn("w-10 h-10 rounded-xl flex items-center justify-center font-black text-xs shrink-0", color)}>
+        {abbr}
+      </div>
+      <span className="text-sm font-semibold text-gray-400 whitespace-nowrap">{name}</span>
+    </div>
+  );
+}
+
+function TrustBar() {
+  return (
+    <section className="py-10 border-y border-gray-100 bg-gray-50/50 overflow-hidden">
+      <p className="text-center text-xs font-semibold text-gray-400 uppercase tracking-widest mb-6">
+        Backed by &amp; Built for the Community
+      </p>
+      <div className="relative">
+        {/* Fade edges */}
+        <div className="absolute left-0 top-0 bottom-0 w-24 bg-gradient-to-r from-gray-50/80 to-transparent z-10 pointer-events-none" />
+        <div className="absolute right-0 top-0 bottom-0 w-24 bg-gradient-to-l from-gray-50/80 to-transparent z-10 pointer-events-none" />
+        {/* Marquee */}
+        <div className="marquee-track">
+          {partners.map((p) => <PartnerLogo key={p.name} {...p} />)}
+          {partners.map((p) => <PartnerLogo key={p.name + "-2"} {...p} />)}
         </div>
       </div>
     </section>

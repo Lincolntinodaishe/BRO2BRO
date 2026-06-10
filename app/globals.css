@@ -68,6 +68,42 @@ body {
     #ffffff;
 }
 
+/* Individual floating card animations */
+@keyframes floatCard1 {
+  0%, 100% { transform: translateY(0px) rotate(-1.5deg); }
+  50%       { transform: translateY(-8px) rotate(-0.3deg); }
+}
+@keyframes floatCard2 {
+  0%, 100% { transform: translateY(-4px) rotate(1.5deg); }
+  55%       { transform: translateY(5px) rotate(0.3deg); }
+}
+@keyframes floatCard3 {
+  0%, 100% { transform: translateY(0px) rotate(1deg); }
+  60%       { transform: translateY(-9px) rotate(-0.3deg); }
+}
+@keyframes floatCard4 {
+  0%, 100% { transform: translateY(-3px) rotate(-1deg); }
+  45%       { transform: translateY(6px) rotate(0.5deg); }
+}
+.float-card-1 { animation: floatCard1 3.8s cubic-bezier(0.45,0,0.55,1) infinite; }
+.float-card-2 { animation: floatCard2 4.5s cubic-bezier(0.45,0,0.55,1) infinite 0.7s; }
+.float-card-3 { animation: floatCard3 5.2s cubic-bezier(0.45,0,0.55,1) infinite 1.4s; }
+.float-card-4 { animation: floatCard4 3.5s cubic-bezier(0.45,0,0.55,1) infinite 0.3s; }
+
+/* Infinite marquee scroll */
+@keyframes marquee {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+.marquee-track {
+  display: flex;
+  width: max-content;
+  animation: marquee 28s linear infinite;
+}
+.marquee-track:hover {
+  animation-play-state: paused;
+}
+
 /* Shimmer for loading states */
 @keyframes shimmer {
   0%   { background-position: -200% 0; }
