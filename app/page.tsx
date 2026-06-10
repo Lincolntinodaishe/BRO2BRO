@@ -1,6 +1,8 @@
 "use client";
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import Image from "next/image";
+import uamsHealthLogo from "@/brand_assets/uams-logo_health_horizontal_dark.png";
 import {
   ArrowRight, Heart, Shield, Users, MessageCircle, MapPin,
   Calendar, Star, CheckCircle, Activity, Zap, Phone,
@@ -336,8 +338,8 @@ function Hero() {
 }
 
 /* ─── TRUST BAR ────────────────────────────────────────────── */
-const partners = [
-  { name: "UAMS Barbershop Talk", abbr: "UAMS", color: "bg-blue-100 text-blue-700" },
+const partners: { name: string; abbr?: string; color?: string; logo?: typeof uamsHealthLogo }[] = [
+  { name: "UAMS Barbershop Talk", logo: uamsHealthLogo },
   { name: "BCBS Arkansas",        abbr: "BCBS", color: "bg-indigo-100 text-indigo-700" },
   { name: "UAPB",                 abbr: "UAPB", color: "bg-amber-100 text-amber-700" },
   { name: "Arkansas Dept. of Health", abbr: "ADH", color: "bg-red-100 text-red-700" },
@@ -347,13 +349,19 @@ const partners = [
   { name: "Robert Wood Johnson",  abbr: "RWJ",  color: "bg-purple-100 text-purple-700" },
 ];
 
-function PartnerLogo({ name, abbr, color }: { name: string; abbr: string; color: string }) {
+function PartnerLogo({ name, abbr, color, logo }: { name: string; abbr?: string; color?: string; logo?: typeof uamsHealthLogo }) {
   return (
     <div className="flex items-center gap-3 mx-10 shrink-0">
-      <div className={cn("w-10 h-10 rounded-xl flex items-center justify-center font-black text-xs shrink-0", color)}>
-        {abbr}
-      </div>
-      <span className="text-sm font-semibold text-gray-400 whitespace-nowrap">{name}</span>
+      {logo ? (
+        <Image src={logo} alt={name} height={32} className="h-8 w-auto object-contain opacity-70 hover:opacity-100 transition-opacity" />
+      ) : (
+        <>
+          <div className={cn("w-10 h-10 rounded-xl flex items-center justify-center font-black text-xs shrink-0", color)}>
+            {abbr}
+          </div>
+          <span className="text-sm font-semibold text-gray-400 whitespace-nowrap">{name}</span>
+        </>
+      )}
     </div>
   );
 }
