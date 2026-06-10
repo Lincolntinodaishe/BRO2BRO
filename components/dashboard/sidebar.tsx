@@ -12,7 +12,7 @@ import { Avatar } from "@/components/ui/avatar";
 
 const navItems = [
   { label: "Overview",       href: "/dashboard",              icon: LayoutDashboard },
-  { label: "AI Chat",        href: "/dashboard/chat",         icon: MessageCircle },
+  { label: "Bro.AI",        href: "/dashboard/chat",         icon: MessageCircle },
   { label: "Find Resources", href: "/dashboard/resources",    icon: MapPin },
   { label: "Community",      href: "/dashboard/community",    icon: Users },
   { label: "Mentors",        href: "/dashboard/mentors",      icon: UserCheck },

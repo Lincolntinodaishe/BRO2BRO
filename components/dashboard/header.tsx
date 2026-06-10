@@ -26,14 +26,14 @@ const notifications = [
 /* ── Search palette ─────────────────────────────────────────── */
 const SEARCH_ITEMS = [
   { label: "Overview",       href: "/dashboard",              icon: LayoutDashboard, type: "Page" },
-  { label: "AI Chat",        href: "/dashboard/chat",         icon: MessageCircle,   type: "Page" },
+  { label: "Bro.AI",        href: "/dashboard/chat",         icon: MessageCircle,   type: "Page" },
   { label: "Find Resources", href: "/dashboard/resources",    icon: MapPin,          type: "Page" },
   { label: "Community",      href: "/dashboard/community",    icon: Users,           type: "Page" },
   { label: "Mentors",        href: "/dashboard/mentors",      icon: UserCheck,       type: "Page" },
   { label: "Appointments",   href: "/dashboard/appointments", icon: Calendar,        type: "Page" },
   { label: "Settings",       href: "/dashboard/settings",     icon: Settings,        type: "Page" },
   { label: "Book Appointment",        href: "/dashboard/appointments", icon: Calendar,    type: "Action" },
-  { label: "Chat with Bro AI",        href: "/dashboard/chat",         icon: MessageCircle, type: "Action" },
+  { label: "Chat with Bro.AI",        href: "/dashboard/chat",         icon: MessageCircle, type: "Action" },
   { label: "Find a clinic near me",   href: "/dashboard/resources",    icon: MapPin,        type: "Action" },
   { label: "Blood Pressure Check — Tomorrow 2pm", href: "/dashboard/appointments", icon: Calendar, type: "Appointment" },
   { label: "Mental Wellness Session — Jun 23",    href: "/dashboard/appointments", icon: Calendar, type: "Appointment" },

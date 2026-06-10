@@ -77,7 +77,7 @@ export default function DashboardOverview() {
         </div>
         <Link href="/dashboard/chat">
           <Button variant="gold" size="md" className="shrink-0">
-            Chat with BRO2BRO <ArrowRight className="ml-1.5 h-4 w-4" />
+            Chat with Bro.AI <ArrowRight className="ml-1.5 h-4 w-4" />
           </Button>
         </Link>
       </div>
