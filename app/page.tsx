@@ -29,7 +29,6 @@ function Navbar() {
     { label: "Features",     href: "#features" },
     { label: "Community",    href: "#community" },
     { label: "Providers",    href: "#providers" },
-    { label: "Pricing",      href: "#pricing" },
   ];
 
   return (
@@ -48,7 +47,7 @@ function Navbar() {
             <div className="h-8 w-8 rounded-full bg-black flex items-center justify-center shrink-0">
               <Heart className="h-4 w-4 text-amber-400 fill-amber-400" />
             </div>
-            <span className="text-lg font-black tracking-tight text-gray-900">Pulse</span>
+            <span className="text-2xl font-black tracking-tight text-gray-900">Pulse</span>
           </Link>
 
           {/* Desktop nav */}
@@ -66,6 +65,12 @@ function Navbar() {
 
           {/* Auth CTA */}
           <div className="hidden lg:flex items-center gap-3">
+            <Link href="/dashboard/chat">
+              <Button variant="outline" size="sm" className="gap-1.5 border-amber-300 text-amber-700 hover:bg-amber-50 hover:border-amber-400">
+                <MessageCircle className="h-3.5 w-3.5" />
+                Chat with AI
+              </Button>
+            </Link>
             <Link href="/login">
               <Button variant="ghost" size="sm">Log in</Button>
             </Link>
@@ -98,6 +103,12 @@ function Navbar() {
             </a>
           ))}
           <div className="pt-3 flex flex-col gap-2 border-t border-gray-100 mt-2">
+            <Link href="/dashboard/chat" onClick={() => setMobileOpen(false)}>
+              <Button variant="outline" className="w-full gap-1.5 border-amber-300 text-amber-700">
+                <MessageCircle className="h-3.5 w-3.5" />
+                Chat with AI
+              </Button>
+            </Link>
             <Link href="/login" onClick={() => setMobileOpen(false)}>
               <Button variant="outline" className="w-full">Log in</Button>
             </Link>
@@ -120,12 +131,6 @@ function Hero() {
       <div className="absolute bottom-1/3 right-1/4 w-80 h-80 bg-teal-300/10 rounded-full blur-3xl pointer-events-none" />
 
       <div className="relative z-10 text-center max-w-5xl mx-auto w-full">
-        {/* Hackathon tag */}
-        <div className="inline-flex items-center gap-2 bg-amber-50 border border-amber-200 text-amber-800 rounded-full px-4 py-1.5 text-xs font-semibold mb-8">
-          <span className="w-1.5 h-1.5 bg-amber-500 rounded-full animate-pulse" />
-          UA Little Rock AI Hackathon · Challenge 07 · HealthTech AI
-        </div>
-
         {/* Headline */}
         <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-black text-gray-900 leading-[0.92] tracking-tight mb-6">
           The Barbershop<br />
@@ -715,118 +720,6 @@ function Features() {
   );
 }
 
-/* ─── HEALTHCARE PROVIDERS / PRICING ───────────────────────── */
-function ProvidersSection() {
-  const tiers = [
-    {
-      name: "Community",
-      price: "Free",
-      period: "",
-      desc: "For community organizations, churches, and barbershops.",
-      features: [
-        "Basic listing in resource directory",
-        "QR code for barbershop check-ins",
-        "Community health metrics dashboard",
-        "Up to 20 referrals/month",
-      ],
-      cta: "Get listed",
-      highlight: false,
-    },
-    {
-      name: "Provider",
-      price: "$99",
-      period: "/month",
-      desc: "For clinics, counselors, and independent healthcare providers.",
-      features: [
-        "Priority listing in search results",
-        "Unlimited patient referrals",
-        "Appointment booking integration",
-        "Patient engagement analytics",
-        "SMS appointment reminders",
-        "Verified provider badge",
-      ],
-      cta: "Start free trial",
-      highlight: true,
-    },
-    {
-      name: "Enterprise",
-      price: "$299",
-      period: "/month",
-      desc: "For hospital systems, health plans, and large networks.",
-      features: [
-        "Everything in Provider",
-        "PMPM population health contract option",
-        "HIPAA BAA included",
-        "Custom analytics dashboard",
-        "CHW certification program integration",
-        "Dedicated account manager",
-        "API access for EHR integration",
-      ],
-      cta: "Contact sales",
-      highlight: false,
-    },
-  ];
-
-  return (
-    <section id="providers" className="py-24 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-7xl mx-auto">
-        <div className="text-center mb-16">
-          <Badge variant="gold" size="lg" className="mb-4">For Healthcare Providers</Badge>
-          <h2 className="text-4xl sm:text-5xl font-black text-gray-900">
-            The ROI is simple:<br />
-            <span className="text-amber-500">prevention beats treatment</span>
-          </h2>
-          <p className="mt-4 text-lg text-gray-500 max-w-2xl mx-auto">
-            One avoided ER visit saves $1,800. Preventing 100 visits among enrolled members = $180K saved.
-            We charge $15 PMPM. The math works.
-          </p>
-        </div>
-
-        <div id="pricing" className="grid grid-cols-1 md:grid-cols-3 gap-6 items-start">
-          {tiers.map((t) => (
-            <div
-              key={t.name}
-              className={cn(
-                "rounded-2xl p-8 border transition-all duration-300",
-                t.highlight
-                  ? "bg-black text-white border-black shadow-float scale-105"
-                  : "bg-white border-gray-100 shadow-card hover:shadow-card-hover"
-              )}
-            >
-              {t.highlight && (
-                <Badge className="bg-amber-500 text-black border-0 mb-4" size="sm">Most Popular</Badge>
-              )}
-              <div className={cn("text-sm font-semibold mb-1", t.highlight ? "text-gray-400" : "text-gray-500")}>{t.name}</div>
-              <div className="flex items-end gap-1 mb-2">
-                <span className={cn("text-5xl font-black", t.highlight ? "text-white" : "text-gray-900")}>{t.price}</span>
-                <span className={cn("text-lg mb-2", t.highlight ? "text-gray-400" : "text-gray-500")}>{t.period}</span>
-              </div>
-              <p className={cn("text-sm mb-6 leading-relaxed", t.highlight ? "text-gray-400" : "text-gray-500")}>{t.desc}</p>
-              <ul className="space-y-3 mb-8">
-                {t.features.map((f) => (
-                  <li key={f} className="flex items-start gap-2.5 text-sm">
-                    <CheckCircle className={cn("h-4 w-4 shrink-0 mt-0.5", t.highlight ? "text-amber-400" : "text-teal-600")} />
-                    <span className={t.highlight ? "text-gray-300" : "text-gray-600"}>{f}</span>
-                  </li>
-                ))}
-              </ul>
-              <Link href="/signup">
-                <Button
-                  variant={t.highlight ? "gold" : "outline"}
-                  className="w-full"
-                  size="md"
-                >
-                  {t.cta} <ArrowRight className="ml-1.5 h-3.5 w-3.5" />
-                </Button>
-              </Link>
-            </div>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
-
 /* ─── TESTIMONIALS ─────────────────────────────────────────── */
 function Testimonials() {
   const testimonials = [
@@ -1004,7 +897,6 @@ function Footer() {
       title: "For Providers",
       links: [
         { label: "Get Listed",        href: "/signup?role=provider" },
-        { label: "Pricing",           href: "#pricing" },
         { label: "Provider Dashboard",href: "/dashboard" },
         { label: "Partnership",       href: "#providers" },
         { label: "Contact Sales",     href: "mailto:hello@pulsehealth.app" },
@@ -1072,7 +964,7 @@ function Footer() {
               The barbershop got men talking. We built what comes next.
             </p>
             <p className="text-xs text-gray-400">
-              UA Little Rock AI Hackathon<br />Challenge 07 · June 2026
+              Little Rock, Arkansas
             </p>
           </div>
 
@@ -1133,7 +1025,6 @@ export default function LandingPage() {
       <UserTypes />
       <AIDemo />
       <Features />
-      <ProvidersSection />
       <Testimonials />
       <FAQ />
       <CTASection />
