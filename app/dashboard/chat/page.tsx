@@ -236,16 +236,23 @@ export default function ChatPage() {
   }
 
   return (
-    <div className="w-full max-w-3xl mx-auto flex flex-col flex-1 min-h-0 h-[calc(100dvh-5.5rem)] sm:h-[calc(100dvh-7rem)] lg:h-[calc(100dvh-8.5rem)]">
-      <div className="bg-white rounded-xl sm:rounded-2xl border border-gray-100 shadow-card flex flex-col h-full min-h-0 overflow-hidden">
+    <div className="space-y-4 sm:space-y-6 flex flex-col flex-1 min-h-0">
+      <div>
+        <h1 className="text-2xl font-black text-gray-900">AI Wellness Chat</h1>
+        <p className="text-gray-500 text-sm mt-1">
+          Talk with Bro AI — your private wellness companion for check-ins, care, and community support.
+        </p>
+      </div>
+
+      <div className="bg-white rounded-xl sm:rounded-2xl border border-gray-100 shadow-card flex flex-col flex-1 min-h-0 overflow-hidden">
         {/* Header */}
         <div className="px-3 sm:px-5 py-3 sm:py-4 border-b border-gray-100 flex items-start sm:items-center gap-2.5 sm:gap-3 shrink-0">
           <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full overflow-hidden bg-white shrink-0 border border-gray-100">
-            <Image src={bro2broLogo} alt="Bro.AI" width={40} height={40} className="w-full h-full object-contain" />
+            <Image src={bro2broLogo} alt="Bro AI" width={40} height={40} className="w-full h-full object-contain" />
           </div>
           <div className="flex-1 min-w-0">
             <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
-              <span className="text-sm font-bold text-gray-900">Bro.AI</span>
+              <span className="text-sm font-bold text-gray-900">Bro AI</span>
               <Badge className="bg-green-50 text-green-700 border-green-100 shrink-0" size="sm">
                 <span className="w-1.5 h-1.5 rounded-full bg-green-500 mr-1 inline-block" />
                 Online
@@ -286,7 +293,7 @@ export default function ChatPage() {
             >
               {m.role === "ai" && (
                 <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full overflow-hidden bg-white shrink-0 mt-0.5 border border-gray-100">
-                  <Image src={bro2broLogo} alt="Bro.AI" width={32} height={32} className="w-full h-full object-contain" />
+                  <Image src={bro2broLogo} alt="Bro AI" width={32} height={32} className="w-full h-full object-contain" />
                 </div>
               )}
               <div className="space-y-1 min-w-0 flex-1">
@@ -311,7 +318,7 @@ export default function ChatPage() {
           {typing && (
             <div className="flex gap-2 sm:gap-3 max-w-[95%] sm:max-w-[88%]">
               <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full overflow-hidden bg-white shrink-0 mt-0.5 border border-gray-100">
-                <Image src={bro2broLogo} alt="Bro.AI" width={32} height={32} className="w-full h-full object-contain" />
+                <Image src={bro2broLogo} alt="Bro AI" width={32} height={32} className="w-full h-full object-contain" />
               </div>
               <div className="bg-gray-100 rounded-2xl rounded-tl-sm px-4 py-3.5 flex items-center gap-1.5 msg-in">
                 <span className="dot1 w-2 h-2 bg-gray-400 rounded-full inline-block" />
@@ -366,7 +373,7 @@ export default function ChatPage() {
             <a href="tel:988" className="text-black font-semibold underline">
               Text or call 988
             </a>{" "}
-            · Bro.AI is a wellness tool, not a substitute for emergency care.
+            · Bro AI is a wellness tool, not a substitute for emergency care.
           </p>
         </div>
       </div>

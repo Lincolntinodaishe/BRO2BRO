@@ -33,7 +33,7 @@ const SEARCH_ITEMS = [
   { label: "Appointments",   href: "/dashboard/appointments", icon: Calendar,        type: "Page" },
   { label: "Settings",       href: "/dashboard/settings",     icon: Settings,        type: "Page" },
   { label: "Book Appointment",        href: "/dashboard/appointments", icon: Calendar,    type: "Action" },
-  { label: "Chat with Bro.AI",        href: "/dashboard/chat",         icon: MessageCircle, type: "Action" },
+  { label: "Chat with Bro AI",        href: "/dashboard/chat",         icon: MessageCircle, type: "Action" },
   { label: "Find a clinic near me",   href: "/dashboard/resources",    icon: MapPin,        type: "Action" },
   { label: "Blood Pressure Check — Tomorrow 2pm", href: "/dashboard/appointments", icon: Calendar, type: "Appointment" },
   { label: "Mental Wellness Session — Jun 23",    href: "/dashboard/appointments", icon: Calendar, type: "Appointment" },

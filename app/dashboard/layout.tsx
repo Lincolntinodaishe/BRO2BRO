@@ -41,15 +41,15 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           title={title}
           onMenuClick={() => setSidebarOpen(true)}
         />
-        <main
-          className={cn(
-            "flex-1 min-h-0",
-            pathname === "/dashboard/chat"
-              ? "p-2 sm:p-4 lg:p-6 flex flex-col"
-              : "p-4 sm:p-6 lg:p-8"
-          )}
-        >
-          {children}
+        <main className="flex-1 min-h-0 p-4 sm:p-6 lg:p-8 flex flex-col">
+          <div
+            className={cn(
+              "max-w-7xl mx-auto w-full",
+              pathname === "/dashboard/chat" ? "flex flex-col flex-1 min-h-0" : ""
+            )}
+          >
+            {children}
+          </div>
         </main>
       </div>
     </div>

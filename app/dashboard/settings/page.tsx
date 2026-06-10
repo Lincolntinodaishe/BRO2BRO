@@ -188,7 +188,7 @@ export default function SettingsPage() {
   }
 
   return (
-    <div className="max-w-3xl mx-auto space-y-6">
+    <div className="space-y-6">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
@@ -257,7 +257,7 @@ export default function SettingsPage() {
           </Section>
 
           {/* Health profile */}
-          <Section title="Health Profile" desc="Helps Bro.AI tailor conversations and resource suggestions.">
+          <Section title="Health Profile" desc="Helps Bro AI tailor conversations and resource suggestions.">
             <div>
               <label className="block text-xs font-semibold text-gray-700 mb-1.5">Age Range</label>
               <div className="flex flex-wrap gap-2">

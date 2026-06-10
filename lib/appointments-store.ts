@@ -33,7 +33,7 @@ export const DEFAULT_APPOINTMENTS: Appointment[] = [
   {
     id: "2",
     title: "Weekly Wellness Check-in",
-    provider: "Bro.AI",
+    provider: "Bro AI",
     providerType: "ai",
     date: "Monday, Jun 16",
     time: "8:00 AM",

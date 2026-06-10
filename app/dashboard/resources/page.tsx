@@ -164,7 +164,7 @@ export default function ResourcesPage() {
   }
 
   return (
-    <div className="max-w-7xl mx-auto space-y-6">
+    <div className="space-y-6">
       {/* Header */}
       <div>
         <h1 className="text-2xl font-black text-gray-900">Find Resources Near You</h1>

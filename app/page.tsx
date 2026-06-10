@@ -360,10 +360,10 @@ function Hero() {
                   {/* Chat header */}
                   <div className="bg-black text-white px-4 pt-1 pb-3 flex items-center gap-2.5 shrink-0">
                     <div className="w-8 h-8 rounded-full overflow-hidden shrink-0 bg-white">
-                      <Image src={bro2broLogo} alt="Bro.AI" width={32} height={32} className="w-full h-full object-contain" />
+                      <Image src={bro2broLogo} alt="Bro AI" width={32} height={32} className="w-full h-full object-contain" />
                     </div>
                     <div className="flex-1">
-                      <div className="text-xs font-bold">Bro.AI</div>
+                      <div className="text-xs font-bold">Bro AI</div>
                       <div className="flex items-center gap-1 text-xs text-green-400">
                         <span className="w-1.5 h-1.5 rounded-full bg-green-400 inline-block" />
                         Online · Private
@@ -547,7 +547,7 @@ function HowItWorks() {
     },
     {
       number: "02",
-      title: "Chat with Bro.AI",
+      title: "Chat with Bro AI",
       body: "Talk to a judgment-free wellness companion using proven motivational interviewing techniques. It adapts to your age, your language, your situation.",
       icon: MessageCircle,
       color: "bg-black",
@@ -766,10 +766,10 @@ function AIDemo() {
               {/* Header */}
               <div className="bg-black px-5 py-4 flex items-center gap-3">
                 <div className="w-9 h-9 rounded-full overflow-hidden bg-white shrink-0">
-                  <Image src={bro2broLogo} alt="Bro.AI" width={36} height={36} className="w-full h-full object-contain" />
+                  <Image src={bro2broLogo} alt="Bro AI" width={36} height={36} className="w-full h-full object-contain" />
                 </div>
                 <div>
-                  <div className="text-sm font-bold text-white">Bro.AI</div>
+                  <div className="text-sm font-bold text-white">Bro AI</div>
                   <div className="flex items-center gap-1.5 text-xs text-green-400">
                     <span className="w-1.5 h-1.5 rounded-full bg-green-400 inline-block" />
                     Private · End-to-end encrypted

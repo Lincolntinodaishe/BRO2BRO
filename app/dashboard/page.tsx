@@ -28,7 +28,7 @@ const appointments = [
   },
   {
     title: "Mental Wellness Check-in",
-    provider: "Bro.AI",
+    provider: "Bro AI",
     time: "Every Monday · 8:00 AM",
     type: "Automated",
     confirmed: true,
@@ -62,7 +62,7 @@ export default function DashboardOverview() {
   const completed = milestones.filter((m) => m.done).length;
 
   return (
-    <div className="max-w-7xl mx-auto space-y-8">
+    <div className="space-y-8">
       {/* Welcome banner */}
       <div className="bg-black rounded-2xl p-6 sm:p-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>

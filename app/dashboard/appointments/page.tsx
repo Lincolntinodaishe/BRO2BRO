@@ -133,7 +133,7 @@ const TYPE_PROVIDERS: Record<string, string> = {
   clinic: "UAMS Community Clinic",
   barbershop: "Partner Barbershop",
   virtual: "Telehealth Provider",
-  ai: "Bro.AI",
+  ai: "Bro AI",
 };
 
 const TYPE_LOCATIONS: Record<string, string> = {
@@ -153,7 +153,7 @@ function BookModal({ onClose, onBook }: { onClose: () => void; onBook: (appt: Ap
     { id: "clinic",     label: "Clinic Visit",          icon: Building2, desc: "Primary care, screenings, follow-ups" },
     { id: "barbershop", label: "Barbershop Screening",   icon: Scissors,  desc: "BP check, glucose, weight at partner shops" },
     { id: "virtual",    label: "Virtual Counseling",     icon: Video,     desc: "Telehealth mental health or wellness" },
-    { id: "ai",         label: "AI Check-in",            icon: Heart,     desc: "Scheduled wellness conversation with Bro.AI" },
+    { id: "ai",         label: "AI Check-in",            icon: Heart,     desc: "Scheduled wellness conversation with Bro AI" },
   ];
 
   const slots = ["9:00 AM", "10:00 AM", "11:30 AM", "2:00 PM", "3:30 PM", "4:30 PM", "6:00 PM"];
@@ -317,7 +317,7 @@ export default function AppointmentsPage() {
   const past = appointments.filter((a) => a.status === "completed" || a.status === "cancelled");
 
   return (
-    <div className="max-w-5xl mx-auto space-y-6">
+    <div className="space-y-6">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
