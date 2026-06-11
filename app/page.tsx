@@ -3,6 +3,10 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import uamsHealthLogo from "@/brand_assets/uams-logo_health_horizontal_dark.png";
+import uaLittleRockLogo from "@/brand_assets/ua-little-rock-light.png";
+import uaLittleRockLogoDark from "@/brand_assets/ua-little-rock-dark.png";
+import aiHackathonLogo from "@/brand_assets/ai-hackathon-healthtech-light.png";
+import aiHackathonLogoDark from "@/brand_assets/ai-hackathon-healthtech-dark.png";
 import bro2broLogo from "@/brand_assets/Bro2Bro logo.png";
 import {
   ArrowRight, Heart, Shield, Users, MessageCircle, MapPin,
@@ -424,8 +428,26 @@ function Hero() {
 }
 
 /* ─── TRUST BAR ────────────────────────────────────────────── */
-const partners: { name: string; abbr?: string; color?: string; logo?: typeof uamsHealthLogo }[] = [
-  { name: "UAMS Barbershop Talk", logo: uamsHealthLogo },
+type PartnerLogoSrc = typeof uamsHealthLogo;
+
+interface Partner {
+  name: string;
+  abbr?: string;
+  color?: string;
+  logo?: PartnerLogoSrc;
+  logoDark?: PartnerLogoSrc;
+  logoHeight?: number;
+}
+
+const partners: Partner[] = [
+  { name: "UAMS Barbershop Talk", logo: uamsHealthLogo, logoHeight: 32 },
+  { name: "UA Little Rock", logo: uaLittleRockLogo, logoDark: uaLittleRockLogoDark, logoHeight: 44 },
+  {
+    name: "AI Hackathon & HealthTech Startup Week",
+    logo: aiHackathonLogo,
+    logoDark: aiHackathonLogoDark,
+    logoHeight: 40,
+  },
   { name: "BCBS Arkansas",        abbr: "BCBS", color: "bg-indigo-100 text-indigo-700" },
   { name: "UAPB",                 abbr: "UAPB", color: "bg-amber-100 text-amber-700" },
   { name: "Arkansas Dept. of Health", abbr: "ADH", color: "bg-red-100 text-red-700" },
@@ -435,17 +457,37 @@ const partners: { name: string; abbr?: string; color?: string; logo?: typeof uam
   { name: "Robert Wood Johnson",  abbr: "RWJ",  color: "bg-purple-100 text-purple-700" },
 ];
 
-function PartnerLogo({ name, abbr, color, logo }: { name: string; abbr?: string; color?: string; logo?: typeof uamsHealthLogo }) {
+function PartnerLogo({
+  name,
+  abbr,
+  color,
+  logo,
+  logoDark,
+  logoHeight = 32,
+  dark = false,
+}: Partner & { dark?: boolean }) {
+  const src = dark && logoDark ? logoDark : logo;
+
   return (
-    <div className="flex items-center gap-3 mx-10 shrink-0">
-      {logo ? (
-        <Image src={logo} alt={name} height={32} className="h-8 w-auto object-contain opacity-70 hover:opacity-100 transition-opacity" />
+    <div className="flex items-center gap-3 mx-8 shrink-0" title={name}>
+      {src ? (
+        <Image
+          src={src}
+          alt={name}
+          height={logoHeight}
+          className={cn(
+            "w-auto object-contain rounded-xl opacity-80 hover:opacity-100 transition-opacity",
+            logoHeight >= 44 ? "h-11" : logoHeight >= 40 ? "h-10" : "h-8"
+          )}
+        />
       ) : (
         <>
           <div className={cn("w-10 h-10 rounded-xl flex items-center justify-center font-black text-xs shrink-0", color)}>
             {abbr}
           </div>
-          <span className="text-sm font-semibold text-gray-400 whitespace-nowrap">{name}</span>
+          <span className={cn("text-sm font-semibold whitespace-nowrap", dark ? "text-gray-400" : "text-gray-400")}>
+            {name}
+          </span>
         </>
       )}
     </div>
@@ -458,14 +500,14 @@ function TrustBar() {
       <p className="text-center text-xs font-semibold text-gray-400 uppercase tracking-widest mb-6">
         Backed by &amp; Built for the Community
       </p>
+
       <div className="relative">
-        {/* Fade edges */}
-        <div className="absolute left-0 top-0 bottom-0 w-24 bg-gradient-to-r from-gray-50/80 to-transparent z-10 pointer-events-none" />
-        <div className="absolute right-0 top-0 bottom-0 w-24 bg-gradient-to-l from-gray-50/80 to-transparent z-10 pointer-events-none" />
-        {/* Marquee */}
-        <div className="marquee-track">
-          {partners.map((p) => <PartnerLogo key={p.name} {...p} />)}
-          {partners.map((p) => <PartnerLogo key={p.name + "-2"} {...p} />)}
+        <div className="absolute left-0 top-0 bottom-0 w-24 bg-gradient-to-r from-gray-50 to-transparent z-10 pointer-events-none" />
+        <div className="absolute right-0 top-0 bottom-0 w-24 bg-gradient-to-l from-gray-50 to-transparent z-10 pointer-events-none" />
+        <div className="marquee-track items-center py-2">
+          {[...partners, ...partners].map((p, i) => (
+            <PartnerLogo key={`${p.name}-${i}`} {...p} />
+          ))}
         </div>
       </div>
     </section>
@@ -1099,26 +1141,27 @@ function Footer() {
     },
   ];
 
-  const sponsors = [
-    "UAMS Barbershop Talk",
-    "BCBS Arkansas",
-    "Robert Wood Johnson Foundation",
-    "Jumpstart Nova",
-    "American Heart Association",
-    "CDC Prevention Research Centers",
+  const sponsors: Partner[] = [
+    { name: "UAMS Barbershop Talk", logo: uamsHealthLogo, logoHeight: 28 },
+    { name: "UA Little Rock", logo: uaLittleRockLogoDark, logoHeight: 36 },
+    { name: "AI Hackathon & HealthTech Startup Week", logo: aiHackathonLogoDark, logoHeight: 32 },
+    { name: "BCBS Arkansas", abbr: "BCBS", color: "bg-indigo-900/40 text-indigo-200" },
+    { name: "Robert Wood Johnson Foundation", abbr: "RWJ", color: "bg-purple-900/40 text-purple-200" },
+    { name: "Jumpstart Nova", abbr: "JSN", color: "bg-green-900/40 text-green-200" },
+    { name: "American Heart Association", abbr: "AHA", color: "bg-rose-900/40 text-rose-200" },
   ];
 
   return (
     <footer className="bg-gray-50 border-t border-gray-100">
       {/* Sponsors */}
-      <div className="border-b border-gray-100 py-10 px-4 sm:px-6 lg:px-8">
+      <div className="border-b border-gray-800 py-10 px-4 sm:px-6 lg:px-8 bg-gray-900">
         <div className="max-w-7xl mx-auto">
-          <p className="text-center text-xs font-semibold text-gray-400 uppercase tracking-widest mb-6">
+          <p className="text-center text-xs font-semibold text-gray-500 uppercase tracking-widest mb-6">
             Community Sponsors &amp; Partners
           </p>
-          <div className="flex flex-wrap justify-center items-center gap-x-8 gap-y-4">
+          <div className="flex flex-wrap justify-center items-center gap-x-10 gap-y-6">
             {sponsors.map((s) => (
-              <span key={s} className="text-sm text-gray-400 font-medium">{s}</span>
+              <PartnerLogo key={s.name} {...s} dark />
             ))}
           </div>
         </div>
