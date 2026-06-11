@@ -1,5 +1,5 @@
 import { ref, get, set } from "firebase/database";
-import { db } from "@/lib/firebase";
+import { requireDb } from "@/lib/firebase";
 
 export type ApptStatus = "confirmed" | "pending" | "completed" | "cancelled";
 export type ApptType   = "clinic" | "barbershop" | "virtual" | "ai";
@@ -58,15 +58,15 @@ export const DEFAULT_APPOINTMENTS: Appointment[] = [
   },
   {
     id: "4",
-    title: "Mental Wellness Session",
-    provider: "Dr. Angela Moore, LCSW",
+    title: "Weekly BP & Wellness Check-in",
+    provider: "Raymond T. — Peer Mentor",
     providerType: "virtual",
-    date: "Mon, Jun 23",
+    date: "Tomorrow",
     time: "6:00 PM",
-    location: "Telehealth — Zoom link sent to email",
-    phone: "(501) 555-0199",
+    location: "Telehealth — BRO2BRO video room",
+    phone: "(501) 555-0177",
     status: "confirmed",
-    notes: "First session. Free through BRO2BRO Community Partnership.",
+    notes: "Matched after your screening at Joe's Classic Cuts. Same mentor as mentor@gmail.com demo.",
     reminder: true,
   },
   {
@@ -97,7 +97,7 @@ export const DEFAULT_APPOINTMENTS: Appointment[] = [
 
 /* ── Firebase path ───────────────────────────────────────────── */
 function apptRef(uid: string) {
-  return ref(db, `users/${uid}/appointments`);
+  return ref(requireDb(), `users/${uid}/appointments`);
 }
 
 /* ── Load appointments for a user from Firebase ─────────────── */
@@ -117,10 +117,8 @@ export async function saveUserAppointments(uid: string, appointments: Appointmen
   await set(apptRef(uid), obj);
 }
 
-/* ── Seed test account with mock data (only if empty) ────────── */
+/* ── Seed test account with mock data ────────────────────────── */
 export async function seedTestAccount(uid: string): Promise<void> {
-  const snap = await get(apptRef(uid));
-  if (!snap.exists() || Object.keys(snap.val() ?? {}).length === 0) {
-    await saveUserAppointments(uid, DEFAULT_APPOINTMENTS);
-  }
+  const { seedDemoAccount } = await import("@/lib/demo-seed");
+  await seedDemoAccount(uid);
 }

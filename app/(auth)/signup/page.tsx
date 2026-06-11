@@ -17,6 +17,11 @@ import {
   signInWithPopup,
 } from "firebase/auth";
 import { auth } from "@/lib/firebase";
+import { isMemberDemoAccount, isBarberDemoAccount, isMentorDemoAccount } from "@/lib/demo-account";
+import { getPostAuthPath } from "@/lib/auth-routes";
+import { saveUserProfile } from "@/lib/user-profile-store";
+import { emptyProfile } from "@/lib/demo-data";
+import type { UserRole } from "@/lib/demo-account";
 
 const roles = [
   { id: "member",   label: "Seeking Help",     icon: User,           color: "bg-black"      },
@@ -76,14 +81,31 @@ function SignupForm() {
 
   async function handleEmailSignUp(ev: React.FormEvent) {
     ev.preventDefault();
+    if (isMemberDemoAccount(form.email)) {
+      setError("The member demo uses Sign in — go to Login and use test@gmail.com / test123@.");
+      return;
+    }
+    if (isBarberDemoAccount(form.email)) {
+      setError("The barber demo uses Sign in — go to Login and use barber@gmail.com / barber123@.");
+      return;
+    }
+    if (isMentorDemoAccount(form.email)) {
+      setError("The mentor demo uses Sign in — go to Login and use mentor@gmail.com / mentor123@.");
+      return;
+    }
     const err = validate();
     if (err) { setError(err); return; }
     setError("");
+    if (!auth) { setError("Sign-up is unavailable. Check Firebase configuration."); return; }
     setLoading(true);
     try {
       const { user } = await createUserWithEmailAndPassword(auth, form.email, form.password);
       await updateProfile(user, { displayName: form.name.trim() });
-      router.push("/dashboard");
+      await saveUserProfile(
+        user.uid,
+        emptyProfile(form.email, form.name.trim(), selectedRole as UserRole)
+      );
+      router.push(await getPostAuthPath(user.uid, user.email));
     } catch (e: unknown) {
       setError(firebaseMsg((e as { code: string }).code));
     } finally {
@@ -93,10 +115,21 @@ function SignupForm() {
 
   async function handleGoogle() {
     setError("");
+    if (!auth) { setError("Sign-up is unavailable. Check Firebase configuration."); return; }
     setGoogleLoading(true);
     try {
-      await signInWithPopup(auth, new GoogleAuthProvider());
-      router.push("/dashboard");
+      const cred = await signInWithPopup(auth, new GoogleAuthProvider());
+      if (cred.user) {
+        await saveUserProfile(
+          cred.user.uid,
+          emptyProfile(
+            cred.user.email ?? "",
+            cred.user.displayName ?? "",
+            selectedRole as UserRole
+          )
+        );
+      }
+      router.push(await getPostAuthPath(cred.user.uid, cred.user.email));
     } catch (e: unknown) {
       setError(firebaseMsg((e as { code: string }).code));
     } finally {

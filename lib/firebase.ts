@@ -24,5 +24,15 @@ if (apiKey) {
   db   = getDatabase(app);
 }
 
+export function requireAuth(): Auth {
+  if (!auth) throw new Error("Firebase Auth is not configured");
+  return auth;
+}
+
+export function requireDb(): Database {
+  if (!db) throw new Error("Firebase Database is not configured");
+  return db;
+}
+
 export { auth, db };
 export default app;

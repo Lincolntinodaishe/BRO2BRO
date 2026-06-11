@@ -2,9 +2,21 @@
 import { createContext, useContext, useEffect, useState, ReactNode } from "react";
 import { User, onAuthStateChanged, signOut as firebaseSignOut } from "firebase/auth";
 import { auth } from "@/lib/firebase";
-import { seedTestAccount } from "@/lib/appointments-store";
+import {
+  isMemberDemoAccount,
+  isBarberDemoAccount,
+  isMentorDemoAccount,
+  DEMO_DISPLAY_NAME,
+  BARBER_DEMO_DISPLAY_NAME,
+  BARBER_DEMO_SHOP_NAME,
+  MENTOR_DEMO_DISPLAY_NAME,
+  type UserRole,
+} from "@/lib/demo-account";
+import { seedDemoAccount } from "@/lib/demo-seed";
+import { seedBarberDemoAccount } from "@/lib/demo-barber-seed";
+import { seedMentorDemoAccount } from "@/lib/demo-mentor-seed";
+import { loadUserProfile } from "@/lib/user-profile-store";
 
-const TEST_EMAIL     = "test@gmail.com";
 const SESSION_COOKIE = "has_session";
 
 function setCookie(name: string, value: string, maxAge: number) {
@@ -12,38 +24,70 @@ function setCookie(name: string, value: string, maxAge: number) {
 }
 
 interface AuthContextValue {
-  user:          User | null;
-  loading:       boolean;
-  displayName:   string;
-  isTestAccount: boolean;
-  signOut:       () => Promise<void>;
+  user:              User | null;
+  loading:           boolean;
+  displayName:       string;
+  shopName:          string;
+  userRole:          UserRole;
+  isTestAccount:     boolean;
+  isBarberDemo:      boolean;
+  isMentorDemo:      boolean;
+  signOut:           () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextValue>({
-  user:          null,
-  loading:       true,
-  displayName:   "",
-  isTestAccount: false,
-  signOut:       async () => {},
+  user:              null,
+  loading:           true,
+  displayName:       "",
+  shopName:          "",
+  userRole:          "member",
+  isTestAccount:     false,
+  isBarberDemo:      false,
+  isMentorDemo:      false,
+  signOut:           async () => {},
 });
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [user, setUser]       = useState<User | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [user, setUser]             = useState<User | null>(null);
+  const [loading, setLoading]       = useState(true);
+  const [userRole, setUserRole]     = useState<UserRole>("member");
+  const [shopName, setShopName]     = useState("");
 
   useEffect(() => {
     if (!auth) { setLoading(false); return; }
-    const unsub = onAuthStateChanged(auth, (fbUser) => {
+    const unsub = onAuthStateChanged(auth, async (fbUser) => {
       setUser(fbUser);
       setLoading(false);
 
       if (fbUser) {
         setCookie(SESSION_COOKIE, "1", 60 * 60 * 24 * 7);
-        if (fbUser.email === TEST_EMAIL) {
-          seedTestAccount(fbUser.uid).catch(console.error);
+
+        if (isBarberDemoAccount(fbUser.email)) {
+          seedBarberDemoAccount(fbUser.uid).catch(console.error);
+          setUserRole("barber");
+          setShopName(BARBER_DEMO_SHOP_NAME);
+        } else if (isMentorDemoAccount(fbUser.email)) {
+          seedMentorDemoAccount(fbUser.uid).catch(console.error);
+          setUserRole("mentor");
+          setShopName("");
+        } else if (isMemberDemoAccount(fbUser.email)) {
+          seedDemoAccount(fbUser.uid).catch(console.error);
+          setUserRole("member");
+          setShopName("");
+        } else {
+          try {
+            const profile = await loadUserProfile(fbUser.uid);
+            setUserRole(profile?.role ?? "member");
+            setShopName(profile?.shopName ?? "");
+          } catch {
+            setUserRole("member");
+            setShopName("");
+          }
         }
       } else {
         setCookie(SESSION_COOKIE, "", 0);
+        setUserRole("member");
+        setShopName("");
       }
     });
     return unsub;
@@ -54,14 +98,28 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setCookie(SESSION_COOKIE, "", 0);
   }
 
-  const displayName = user?.displayName ?? user?.email?.split("@")[0] ?? "User";
+  const memberDemo = isMemberDemoAccount(user?.email);
+  const barberDemo = isBarberDemoAccount(user?.email);
+  const mentorDemo = isMentorDemoAccount(user?.email);
+
+  const displayName = memberDemo
+    ? DEMO_DISPLAY_NAME
+    : barberDemo
+      ? BARBER_DEMO_DISPLAY_NAME
+      : mentorDemo
+        ? MENTOR_DEMO_DISPLAY_NAME
+        : (user?.displayName ?? user?.email?.split("@")[0] ?? "User");
 
   return (
     <AuthContext.Provider value={{
       user,
       loading,
       displayName,
-      isTestAccount: user?.email === TEST_EMAIL,
+      shopName,
+      userRole,
+      isTestAccount: memberDemo,
+      isBarberDemo: barberDemo,
+      isMentorDemo: mentorDemo,
       signOut,
     }}>
       {children}
