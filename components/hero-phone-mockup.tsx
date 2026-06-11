@@ -31,26 +31,17 @@ export function HeroPhoneMockup() {
           style={{ background: "linear-gradient(to left, #5a5a5a, #333)" }}
         />
 
-        {/* Samsung Galaxy bezel — flatter corners, dark glossy finish */}
+        {/* Samsung Galaxy bezel — thin, dark glossy finish */}
         <div
-          className="rounded-[2.1rem] sm:rounded-[2.25rem] p-[3px] sm:p-1"
+          className="rounded-[2rem] sm:rounded-[2.1rem] p-[2px]"
           style={{
             background: "linear-gradient(145deg, #6a6a6a 0%, #3a3a3a 25%, #141414 60%, #2e2e2e 100%)",
             boxShadow:
               "0 40px 80px -20px rgba(0,0,0,0.6), 0 16px 32px -8px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.1)",
           }}
         >
-          {/* Screen — Samsung uses slightly less rounding than iPhone */}
-          <div className="relative rounded-[1.9rem] sm:rounded-[2rem] overflow-hidden bg-black aspect-[9/16]">
-
-            {/* Samsung punch-hole camera — single centered dot */}
-            <div
-              className="absolute top-3 left-1/2 -translate-x-1/2 z-20 w-[11px] h-[11px] rounded-full pointer-events-none"
-              style={{
-                background: "radial-gradient(circle at 35% 35%, #2a2a2a, #000)",
-                boxShadow: "0 0 0 1.5px rgba(255,255,255,0.07)",
-              }}
-            />
+          {/* Screen */}
+          <div className="relative rounded-[1.85rem] sm:rounded-[1.95rem] overflow-hidden bg-black aspect-[9/16]">
 
             <HeroVideo />
 

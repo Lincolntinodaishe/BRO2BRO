@@ -50,7 +50,7 @@ export function HeroVideo() {
         preload="auto"
         disablePictureInPicture
         disableRemotePlayback
-        className="hero-video-crop absolute left-1/2 top-1/2 h-full w-full max-w-none object-contain"
+        className="hero-video-crop absolute left-1/2 top-1/2 h-full w-full max-w-none object-cover"
         style={{
           transform: `translate(-50%, -50%) scale(${VIDEO_CROP_SCALE_X}, ${VIDEO_CROP_SCALE_Y})`,
           transformOrigin: "center center",
