@@ -233,16 +233,37 @@ export default function CommunityPage() {
 
   /* Subscribe to Firebase; hardcoded posts are always shown regardless */
   useEffect(() => {
-    try {
-      const unsub = subscribeToPosts((firePosts) => {
-        setFirebasePosts(firePosts);
-        setLoading(false);
-      });
-      return unsub;
-    } catch {
+    function giveUp() {
       setFirebaseActive(false);
       setLoading(false);
     }
+
+    let unsub: (() => void) | undefined;
+
+    /* Safety net: if Firebase hasn't responded in 4s, stop waiting */
+    const timeout = setTimeout(giveUp, 4000);
+
+    try {
+      unsub = subscribeToPosts(
+        (firePosts) => {
+          clearTimeout(timeout);
+          setFirebasePosts(firePosts);
+          setLoading(false);
+        },
+        () => {
+          clearTimeout(timeout);
+          giveUp();
+        }
+      );
+    } catch {
+      clearTimeout(timeout);
+      giveUp();
+    }
+
+    return () => {
+      clearTimeout(timeout);
+      unsub?.();
+    };
   }, []);
 
   /* Merge: real Firebase posts on top, hardcoded demo posts below */

@@ -27,20 +27,25 @@ export function timeAgo(timestamp: number): string {
 }
 
 export function subscribeToPosts(
-  callback: (posts: FirebasePost[]) => void
+  callback: (posts: FirebasePost[]) => void,
+  onError?: () => void
 ): () => void {
   const postsRef = ref(requireDb(), "community/posts");
-  const unsub = onValue(postsRef, (snap) => {
-    if (!snap.exists()) {
-      callback([]);
-      return;
-    }
-    const raw = snap.val() as Record<string, Omit<FirebasePost, "id">>;
-    const posts = Object.entries(raw)
-      .map(([id, p]) => ({ id, ...p, likedBy: p.likedBy ?? {} }))
-      .sort((a, b) => b.timestamp - a.timestamp);
-    callback(posts);
-  });
+  const unsub = onValue(
+    postsRef,
+    (snap) => {
+      if (!snap.exists()) {
+        callback([]);
+        return;
+      }
+      const raw = snap.val() as Record<string, Omit<FirebasePost, "id">>;
+      const posts = Object.entries(raw)
+        .map(([id, p]) => ({ id, ...p, likedBy: p.likedBy ?? {} }))
+        .sort((a, b) => b.timestamp - a.timestamp);
+      callback(posts);
+    },
+    () => onError?.()
+  );
   return unsub;
 }
 
