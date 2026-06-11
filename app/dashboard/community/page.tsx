@@ -221,7 +221,8 @@ function NewPostModal({
 /* ── Page ────────────────────────────────────────────────────────────── */
 export default function CommunityPage() {
   const { user, displayName, userRole } = useAuth();
-  const [posts,          setPosts]          = useState<FirebasePost[]>([]);
+  /* firebasePosts: only posts from DB. Always merged with FALLBACK_POSTS for display. */
+  const [firebasePosts,  setFirebasePosts]  = useState<FirebasePost[]>([]);
   const [loading,        setLoading]        = useState(true);
   const [firebaseActive, setFirebaseActive] = useState(true);
   const [activeCategory, setActiveCategory] = useState("All");
@@ -230,20 +231,22 @@ export default function CommunityPage() {
   const [submitting,     setSubmitting]     = useState(false);
   const [likeLoading,    setLikeLoading]    = useState<string | null>(null);
 
-  /* Subscribe to Firebase posts (or fall back to hardcoded) */
+  /* Subscribe to Firebase; hardcoded posts are always shown regardless */
   useEffect(() => {
     try {
       const unsub = subscribeToPosts((firePosts) => {
-        setPosts(firePosts);
+        setFirebasePosts(firePosts);
         setLoading(false);
       });
       return unsub;
     } catch {
-      setPosts(FALLBACK_POSTS);
-      setLoading(false);
       setFirebaseActive(false);
+      setLoading(false);
     }
   }, []);
+
+  /* Merge: real Firebase posts on top, hardcoded demo posts below */
+  const posts = [...firebasePosts, ...FALLBACK_POSTS];
 
   /* Build the author role label */
   function authorRoleLabel(): string {
@@ -277,7 +280,7 @@ export default function CommunityPage() {
           likes:      0,
           likedBy:    {},
         };
-        setPosts((prev) => [newPost, ...prev]);
+        setFirebasePosts((prev) => [newPost, ...prev]);
       }
       setShowModal(false);
     } finally {
@@ -288,8 +291,8 @@ export default function CommunityPage() {
   async function handleLike(postId: string) {
     if (!user) return;
     if (!firebaseActive) {
-      /* Optimistic local toggle */
-      setPosts((prev) =>
+      /* Optimistic local toggle (only affects firebasePosts — FALLBACK_POSTS are read-only) */
+      setFirebasePosts((prev) =>
         prev.map((p) => {
           if (p.id !== postId) return p;
           const liked = !!p.likedBy?.[user.uid];
@@ -424,6 +427,9 @@ export default function CommunityPage() {
                   <h3 className="text-sm font-bold text-gray-900 mb-3">
                     {posts.length} {posts.length === 1 ? "Post" : "Posts"} in Community
                   </h3>
+                  {firebasePosts.length > 0 && (
+                    <p className="text-xs text-gray-400 mb-2">{firebasePosts.length} from members · {FALLBACK_POSTS.length} featured</p>
+                  )}
                   <p className="text-xs text-gray-400">Share your story and connect with brothers on the same journey.</p>
                 </CardContent>
               </Card>
