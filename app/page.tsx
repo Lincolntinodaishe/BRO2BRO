@@ -458,18 +458,11 @@ interface Partner {
 }
 
 const partners: Partner[] = [
-  { name: "UAMS Barbershop Talk",              logo: barbershopTalkLogo },
-  { name: "UAMS Health",                       logo: uams1Logo },
-  { name: "UAMS",                              logo: uamsHealthLogo },
+  { name: "UAMS Barbershop Talk",      logo: barbershopTalkLogo },
+  { name: "UAMS Health",               logo: uams1Logo },
+  { name: "UAMS",                      logo: uamsHealthLogo },
   { name: "UA Little Rock",            logo: uaLittleRockLogo },
   { name: "AI Hackathon & HealthTech", logo: aiHackathonLogo },
-  { name: "BCBS Arkansas",        abbr: "BCBS", color: "bg-indigo-100 text-indigo-700" },
-  { name: "UAPB",                 abbr: "UAPB", color: "bg-amber-100 text-amber-700" },
-  { name: "Arkansas Dept. of Health", abbr: "ADH", color: "bg-red-100 text-red-700" },
-  { name: "Jumpstart Nova",       abbr: "JSN",  color: "bg-green-100 text-green-700" },
-  { name: "CHW Arkansas",         abbr: "CHW",  color: "bg-teal-100 text-teal-700" },
-  { name: "American Heart Assoc.", abbr: "AHA", color: "bg-rose-100 text-rose-700" },
-  { name: "Robert Wood Johnson",  abbr: "RWJ",  color: "bg-purple-100 text-purple-700" },
 ];
 
 function PartnerLogo({
@@ -484,7 +477,7 @@ function PartnerLogo({
   const src = dark && logoDark ? logoDark : logo;
 
   return (
-    <div className="flex items-center gap-3 mx-10 shrink-0" title={name}>
+    <div className="flex items-center gap-3 mx-24 shrink-0" title={name}>
       {src ? (
         <Image src={src} alt={name} height={56} className="h-14 w-auto object-contain opacity-70 hover:opacity-100 transition-opacity" />
       ) : (

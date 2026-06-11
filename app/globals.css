@@ -107,7 +107,7 @@ body {
   display: flex;
   align-items: center;
   width: max-content;
-  animation: marquee 40s linear infinite;
+  animation: marquee 25s linear infinite;
   will-change: transform;
 }
 .marquee-track:hover {
