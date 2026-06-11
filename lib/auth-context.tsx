@@ -32,15 +32,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    if (!auth) { setLoading(false); return; }
     const unsub = onAuthStateChanged(auth, (fbUser) => {
       setUser(fbUser);
       setLoading(false);
 
       if (fbUser) {
-        // Set session cookie so middleware can protect /dashboard routes
         setCookie(SESSION_COOKIE, "1", 60 * 60 * 24 * 7);
-
-        // Seed mock data for the demo account (no-op if already seeded)
         if (fbUser.email === TEST_EMAIL) {
           seedTestAccount(fbUser.uid).catch(console.error);
         }
@@ -48,12 +46,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setCookie(SESSION_COOKIE, "", 0);
       }
     });
-
     return unsub;
   }, []);
 
   async function signOut() {
-    await firebaseSignOut(auth);
+    if (auth) await firebaseSignOut(auth);
     setCookie(SESSION_COOKIE, "", 0);
   }
 
