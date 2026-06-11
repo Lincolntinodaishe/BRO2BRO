@@ -7,7 +7,7 @@ import uaLittleRockLogo from "@/brand_assets/ua-little-rock-light.png";
 import uaLittleRockLogoDark from "@/brand_assets/ua-little-rock-dark.png";
 import aiHackathonLogo from "@/brand_assets/ai-hackathon-healthtech-light.png";
 import aiHackathonLogoDark from "@/brand_assets/ai-hackathon-healthtech-dark.png";
-import bro2broLogo from "@/brand_assets/Bro2Bro logo.png";
+import { BrandLogo } from "@/components/brand-logo";
 import {
   ArrowRight, Heart, Shield, Users, MessageCircle, MapPin,
   Calendar, Star, CheckCircle, Activity, Zap, Phone,
@@ -72,7 +72,7 @@ function Navbar() {
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2.5">
-            <Image src={bro2broLogo} alt="BRO2BRO" height={36} className="h-9 w-auto" />
+            <BrandLogo size="lg" />
             <span className="text-xl font-black tracking-widest text-gray-900 uppercase">BRO2BRO</span>
           </Link>
 
@@ -364,7 +364,7 @@ function Hero() {
                   {/* Chat header */}
                   <div className="bg-black text-white px-4 pt-1 pb-3 flex items-center gap-2.5 shrink-0">
                     <div className="w-8 h-8 rounded-full overflow-hidden shrink-0 bg-white">
-                      <Image src={bro2broLogo} alt="Bro AI" width={32} height={32} className="w-full h-full object-contain" />
+                      <BrandLogo alt="Bro AI" className="w-full h-full" />
                     </div>
                     <div className="flex-1">
                       <div className="text-xs font-bold">Bro AI</div>
@@ -808,7 +808,7 @@ function AIDemo() {
               {/* Header */}
               <div className="bg-black px-5 py-4 flex items-center gap-3">
                 <div className="w-9 h-9 rounded-full overflow-hidden bg-white shrink-0">
-                  <Image src={bro2broLogo} alt="Bro AI" width={36} height={36} className="w-full h-full object-contain" />
+                  <BrandLogo alt="Bro AI" className="w-full h-full" />
                 </div>
                 <div>
                   <div className="text-sm font-bold text-white">Bro AI</div>
@@ -1060,7 +1060,7 @@ function CTASection() {
     <section className="py-24 px-4 sm:px-6 lg:px-8 bg-black">
       <div className="max-w-4xl mx-auto text-center">
         <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-white mb-8 overflow-hidden">
-          <Image src={bro2broLogo} alt="BRO2BRO" width={64} height={64} className="w-full h-full object-contain" />
+          <BrandLogo size="xl" className="w-14 h-14" />
         </div>
         <h2 className="text-4xl sm:text-5xl md:text-6xl font-black text-white leading-tight mb-6">
           The conversation<br />
@@ -1141,39 +1141,15 @@ function Footer() {
     },
   ];
 
-  const sponsors: Partner[] = [
-    { name: "UAMS Barbershop Talk", logo: uamsHealthLogo, logoHeight: 28 },
-    { name: "UA Little Rock", logo: uaLittleRockLogoDark, logoHeight: 36 },
-    { name: "AI Hackathon & HealthTech Startup Week", logo: aiHackathonLogoDark, logoHeight: 32 },
-    { name: "BCBS Arkansas", abbr: "BCBS", color: "bg-indigo-900/40 text-indigo-200" },
-    { name: "Robert Wood Johnson Foundation", abbr: "RWJ", color: "bg-purple-900/40 text-purple-200" },
-    { name: "Jumpstart Nova", abbr: "JSN", color: "bg-green-900/40 text-green-200" },
-    { name: "American Heart Association", abbr: "AHA", color: "bg-rose-900/40 text-rose-200" },
-  ];
-
   return (
     <footer className="bg-gray-50 border-t border-gray-100">
-      {/* Sponsors */}
-      <div className="border-b border-gray-800 py-10 px-4 sm:px-6 lg:px-8 bg-gray-900">
-        <div className="max-w-7xl mx-auto">
-          <p className="text-center text-xs font-semibold text-gray-500 uppercase tracking-widest mb-6">
-            Community Sponsors &amp; Partners
-          </p>
-          <div className="flex flex-wrap justify-center items-center gap-x-10 gap-y-6">
-            {sponsors.map((s) => (
-              <PartnerLogo key={s.name} {...s} dark />
-            ))}
-          </div>
-        </div>
-      </div>
-
       {/* Links */}
       <div className="py-16 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-5 gap-8">
           {/* Brand */}
           <div className="col-span-2 md:col-span-1">
             <Link href="/" className="flex items-center gap-2 mb-4">
-              <Image src={bro2broLogo} alt="BRO2BRO" height={32} className="h-8 w-auto" />
+              <BrandLogo size="md" />
               <span className="text-base font-black tracking-widest text-gray-900 uppercase">BRO2BRO</span>
             </Link>
             <p className="text-sm text-gray-500 leading-relaxed mb-4">
