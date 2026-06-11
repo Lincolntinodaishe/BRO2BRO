@@ -24,7 +24,8 @@ const STATUS_MAP: Record<ClientStatus, { label: string; color: string }> = {
 
 export default function BarberOverview() {
   const { displayName, shopName, isBarberDemo } = useAuth();
-  const { stats, todayClients, overviewScreenings, modules, loading } = useBarberData();
+  const { stats, todayClients, overviewScreenings, modules, screenings, loading } = useBarberData();
+  const inProgressModule = modules.find((m) => m.status === "in-progress");
   const firstName = displayName.split(" ")[0];
   const completedModules = modules.filter((m) => m.status === "completed").length;
   const progressPct = modules.length ? (completedModules / modules.length) * 100 : 0;
@@ -58,13 +59,11 @@ export default function BarberOverview() {
             {isBarberDemo ? "Your shop is making a difference." : "Welcome to your barber portal."}
           </h1>
           <p className="text-gray-400 text-sm">
-            {isBarberDemo
-              ? `8 clients scheduled today · 3 screenings already done · ${shopName || "Your Shop"}`
-              : `Manage clients, screenings, and referrals at ${shopName || "your shop"}.`}
+            {todayClients.length} clients today · {screenings.length} screenings · {shopName || "Your Shop"}
           </p>
         </div>
         <div className="flex flex-col sm:flex-row gap-2.5 shrink-0 w-full sm:w-auto">
-          <Link href="/dashboard/barber/clients" className="w-full sm:w-auto">
+          <Link href="/dashboard/barber/clients?checkin=1" className="w-full sm:w-auto">
             <Button variant="gold" size="md" className="w-full sm:w-auto">
               <Plus className="h-4 w-4 mr-1.5" /> Check In Client
             </Button>
@@ -103,7 +102,7 @@ export default function BarberOverview() {
 
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
         {[
-          { label: "New Check-In", href: "/dashboard/barber/clients", icon: Users, color: "bg-black text-white" },
+          { label: "New Check-In", href: "/dashboard/barber/clients?checkin=1", icon: Users, color: "bg-black text-white" },
           { label: "Log Screening", href: "/dashboard/barber/screenings", icon: Activity, color: "bg-amber-50 text-amber-800" },
           { label: "Make Referral", href: "/dashboard/barber/referrals", icon: Share2, color: "bg-teal-50 text-teal-800" },
           { label: "Continue Training", href: "/dashboard/barber/training", icon: Award, color: "bg-purple-50 text-purple-800" },
@@ -246,9 +245,11 @@ export default function BarberOverview() {
               <div className="bg-purple-600 h-2 rounded-full transition-all" style={{ width: `${progressPct}%` }} />
             </div>
             <p className="text-xs text-gray-500">
-              {isBarberDemo
-                ? "Next: Module 4 — Diabetes Awareness · 60% complete"
-                : "Complete training modules to earn CHW certification."}
+              {inProgressModule
+                ? `Next: ${inProgressModule.title} · ${inProgressModule.progress}% complete`
+                : completedModules >= modules.length
+                  ? "All modules complete — download your certificate!"
+                  : "Complete training modules to earn CHW certification."}
             </p>
           </div>
           <Link href="/dashboard/barber/training">

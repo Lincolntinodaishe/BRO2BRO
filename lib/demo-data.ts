@@ -56,7 +56,7 @@ export const DEMO_PROFILE: UserProfileData = {
 
 export const BARBER_DEMO_PROFILE: UserProfileData = {
   name: "Joe T.",
-  email: "arber@gmail.com",
+  email: "barber@gmail.com",
   phone: "(501) 555-0199",
   city: "Little Rock, AR",
   age: "35–44",

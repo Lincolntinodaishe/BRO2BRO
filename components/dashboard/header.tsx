@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import {
   Bell, Menu, Search, Settings, LogOut, User,
   LayoutDashboard, MessageCircle, MapPin, Users,
-  UserCheck, Calendar, ChevronRight,
+  UserCheck, Calendar, ChevronRight, Scissors, Activity, Share2, Award,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Avatar } from "@/components/ui/avatar";
@@ -41,12 +41,28 @@ const DEMO_SEARCH_ITEMS = [
   { label: "Mental Wellness Session — Jun 23",    href: "/dashboard/appointments", icon: Calendar, type: "Appointment" },
 ];
 
-function SearchPalette({ onClose, isTestAccount }: { onClose: () => void; isTestAccount: boolean }) {
+const BARBER_SEARCH_ITEMS = [
+  { label: "Shop Overview",    href: "/dashboard/barber",             icon: LayoutDashboard, type: "Page" },
+  { label: "Clients",          href: "/dashboard/barber/clients",     icon: Users,           type: "Page" },
+  { label: "Health Screenings",href: "/dashboard/barber/screenings",  icon: Activity,        type: "Page" },
+  { label: "Referrals",        href: "/dashboard/barber/referrals",   icon: Share2,          type: "Page" },
+  { label: "CHW Training",     href: "/dashboard/barber/training",    icon: Award,           type: "Page" },
+  { label: "Barber Settings",  href: "/dashboard/barber/settings",    icon: Settings,        type: "Page" },
+  { label: "Check In Client",  href: "/dashboard/barber/clients?checkin=1", icon: Scissors,  type: "Action" },
+  { label: "Log Screening",    href: "/dashboard/barber/screenings",  icon: Activity,        type: "Action" },
+  { label: "New Referral",     href: "/dashboard/barber/referrals",   icon: Share2,          type: "Action" },
+];
+
+function SearchPalette({ onClose, isTestAccount, isBarberDemo }: { onClose: () => void; isTestAccount: boolean; isBarberDemo: boolean }) {
   const [query, setQuery] = useState("");
   const [focused, setFocused] = useState(0);
   const router = useRouter();
   const inputRef = useRef<HTMLInputElement>(null);
-  const SEARCH_ITEMS = isTestAccount ? [...BASE_SEARCH_ITEMS, ...DEMO_SEARCH_ITEMS] : BASE_SEARCH_ITEMS;
+  const SEARCH_ITEMS = isBarberDemo
+    ? BARBER_SEARCH_ITEMS
+    : isTestAccount
+      ? [...BASE_SEARCH_ITEMS, ...DEMO_SEARCH_ITEMS]
+      : BASE_SEARCH_ITEMS;
 
   useEffect(() => {
     inputRef.current?.focus();
@@ -143,7 +159,7 @@ function SearchPalette({ onClose, isTestAccount }: { onClose: () => void; isTest
 
 /* ── Header ─────────────────────────────────────────────────── */
 export function Header({ title = "Dashboard", onMenuClick, userName = "Marcus J.", onSignOut }: HeaderProps) {
-  const { isTestAccount } = useAuth();
+  const { isTestAccount, isBarberDemo } = useAuth();
   const [notifOpen, setNotifOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
@@ -308,7 +324,7 @@ export function Header({ title = "Dashboard", onMenuClick, userName = "Marcus J.
       </header>
 
       {/* Search palette */}
-      {searchOpen && <SearchPalette onClose={() => setSearchOpen(false)} isTestAccount={isTestAccount} />}
+      {searchOpen && <SearchPalette onClose={() => setSearchOpen(false)} isTestAccount={isTestAccount} isBarberDemo={isBarberDemo} />}
     </>
   );
 }

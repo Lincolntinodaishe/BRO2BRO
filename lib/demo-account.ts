@@ -2,7 +2,7 @@ export const DEMO_EMAIL = "test@gmail.com";
 export const DEMO_PASSWORD = "test123@";
 export const DEMO_DISPLAY_NAME = "Marcus J.";
 
-export const BARBER_DEMO_EMAIL = "arber@gmail.com";
+export const BARBER_DEMO_EMAIL = "barber@gmail.com";
 export const BARBER_DEMO_PASSWORD = "barber123@";
 export const BARBER_DEMO_DISPLAY_NAME = "Joe T.";
 export const BARBER_DEMO_SHOP_NAME = "Joe's Classic Cuts";

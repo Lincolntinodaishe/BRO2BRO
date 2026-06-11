@@ -6,6 +6,7 @@ import { Header } from "@/components/dashboard/header";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/lib/auth-context";
 import { canAccessBarberPortal } from "@/lib/auth-routes";
+import { BarberDataProvider } from "@/lib/barber-data-context";
 
 const pageTitles: Record<string, string> = {
   "/dashboard/barber":            "Shop Overview",
@@ -13,6 +14,7 @@ const pageTitles: Record<string, string> = {
   "/dashboard/barber/screenings": "Health Screenings",
   "/dashboard/barber/referrals":  "Referrals",
   "/dashboard/barber/training":   "Training & Certification",
+  "/dashboard/barber/events":     "Events",
   "/dashboard/barber/settings":   "Settings",
 };
 
@@ -21,7 +23,7 @@ export default function BarberLayout({ children }: { children: React.ReactNode }
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const pathname  = usePathname();
   const router    = useRouter();
-  const { user, loading, displayName, shopName, signOut, isBarberDemo, userRole } = useAuth();
+  const { user, loading, displayName, shopName, signOut, userRole } = useAuth();
 
   useEffect(() => {
     if (!loading && !user) {
@@ -73,7 +75,9 @@ export default function BarberLayout({ children }: { children: React.ReactNode }
         />
         <main className="flex-1 min-h-0 p-4 sm:p-6 lg:p-8 flex flex-col">
           <div className="max-w-7xl mx-auto w-full">
-            {children}
+            <BarberDataProvider>
+              {children}
+            </BarberDataProvider>
           </div>
         </main>
       </div>

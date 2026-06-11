@@ -4,6 +4,7 @@ import { usePathname } from "next/navigation";
 import {
   LayoutDashboard, Users, Activity, Share2,
   Award, Settings, LogOut, Scissors, X, ChevronLeft, ChevronRight,
+  CalendarDays,
 } from "lucide-react";
 import Image from "next/image";
 import bro2broLogo from "@/brand_assets/Bro2Bro logo.png";
@@ -11,11 +12,12 @@ import { cn } from "@/lib/utils";
 import { Avatar } from "@/components/ui/avatar";
 
 const navItems = [
-  { label: "Overview",    href: "/dashboard/barber",             icon: LayoutDashboard },
-  { label: "Clients",     href: "/dashboard/barber/clients",     icon: Users           },
-  { label: "Screenings",  href: "/dashboard/barber/screenings",  icon: Activity        },
-  { label: "Referrals",   href: "/dashboard/barber/referrals",   icon: Share2          },
-  { label: "Training",    href: "/dashboard/barber/training",    icon: Award           },
+  { label: "Overview",   href: "/dashboard/barber",             icon: LayoutDashboard },
+  { label: "Clients",    href: "/dashboard/barber/clients",     icon: Users           },
+  { label: "Screenings", href: "/dashboard/barber/screenings",  icon: Activity        },
+  { label: "Referrals",  href: "/dashboard/barber/referrals",   icon: Share2          },
+  { label: "Training",   href: "/dashboard/barber/training",    icon: Award           },
+  { label: "Events",     href: "/dashboard/barber/events",      icon: CalendarDays    },
 ];
 
 interface BarberSidebarProps {

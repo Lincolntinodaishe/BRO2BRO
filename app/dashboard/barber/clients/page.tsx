@@ -1,5 +1,7 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect, Suspense } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import Link from "next/link";
 import {
   Search, Plus, Clock, Heart, Activity,
   ChevronRight, X, CheckCircle, AlertCircle, Share2, User,
@@ -11,8 +13,6 @@ import { Badge } from "@/components/ui/badge";
 import { Avatar } from "@/components/ui/avatar";
 import { cn } from "@/lib/utils";
 import { useBarberData } from "@/lib/use-barber-data";
-import { useAuth } from "@/lib/auth-context";
-import { saveBarberClients } from "@/lib/barber-store";
 import type { BarberClient, ClientStatus } from "@/lib/demo-barber-data";
 
 const STATUS_CONFIG: Record<ClientStatus, { label: string; color: string }> = {
@@ -26,17 +26,40 @@ const STATUS_CONFIG: Record<ClientStatus, { label: string; color: string }> = {
 function CheckInModal({
   onClose,
   onSave,
+  onScreenAfter,
 }: {
   onClose: () => void;
-  onSave: (client: BarberClient) => void;
+  onSave: (client: BarberClient, screenAfter: boolean) => Promise<void>;
+  onScreenAfter: (name: string) => void;
 }) {
   const [step, setStep] = useState<1 | 2>(1);
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
+  const [screenAfter, setScreenAfter] = useState(false);
+  const [saving, setSaving] = useState(false);
+
+  async function finish() {
+    setSaving(true);
+    const client: BarberClient = {
+      id: Date.now().toString(),
+      name: name.trim(),
+      phone,
+      lastVisit: "Today",
+      time: new Date().toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" }),
+      bp: "–",
+      status: "new",
+      visits: 1,
+      notes: "",
+    };
+    await onSave(client, screenAfter);
+    setSaving(false);
+    onClose();
+    if (screenAfter) onScreenAfter(client.name);
+  }
 
   return (
-    <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
-      <div className="bg-white rounded-2xl w-full max-w-md shadow-xl animate-fade-in">
+    <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4" onClick={onClose}>
+      <div className="bg-white rounded-2xl w-full max-w-md shadow-xl animate-fade-in" onClick={(e) => e.stopPropagation()}>
         <div className="flex items-center justify-between px-6 py-5 border-b border-gray-100">
           <div>
             <h2 className="text-base font-bold text-gray-900">Check In Client</h2>
@@ -52,21 +75,37 @@ function CheckInModal({
               <Input label="Client name" placeholder="Full name" value={name} onChange={(e) => setName(e.target.value)} />
               <Input label="Phone number" type="tel" placeholder="(501) 555-0000" value={phone} onChange={(e) => setPhone(e.target.value)} />
               <p className="text-xs text-gray-400">
-                If the client has visited before, their profile will auto-populate.
+                Returning clients are matched by name and their profile auto-updates.
               </p>
             </>
           ) : (
             <div className="space-y-3">
-              <p className="text-sm text-gray-600">Would you like to run a health screening for <span className="font-semibold text-gray-900">{name}</span>?</p>
+              <p className="text-sm text-gray-600">
+                Run a health screening for <span className="font-semibold text-gray-900">{name}</span>?
+              </p>
               <div className="grid grid-cols-2 gap-3">
-                <div className="border rounded-xl p-3 flex flex-col items-center gap-1.5 cursor-pointer hover:border-black hover:bg-gray-50 transition-all">
+                <button
+                  type="button"
+                  onClick={() => setScreenAfter(true)}
+                  className={cn(
+                    "border rounded-xl p-3 flex flex-col items-center gap-1.5 transition-all",
+                    screenAfter ? "border-amber-500 bg-amber-50 ring-2 ring-amber-200" : "hover:border-black hover:bg-gray-50"
+                  )}
+                >
                   <Activity className="h-4 w-4 text-amber-600" />
                   <span className="text-xs font-medium text-gray-700">Yes, screen now</span>
-                </div>
-                <div className="border rounded-xl p-3 flex flex-col items-center gap-1.5 cursor-pointer hover:border-black hover:bg-gray-50 transition-all">
-                  <CheckCircle className="h-4 w-4 text-gray-400" />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setScreenAfter(false)}
+                  className={cn(
+                    "border rounded-xl p-3 flex flex-col items-center gap-1.5 transition-all",
+                    !screenAfter ? "border-black bg-gray-50 ring-2 ring-gray-200" : "hover:border-black hover:bg-gray-50"
+                  )}
+                >
+                  <CheckCircle className="h-4 w-4 text-gray-600" />
                   <span className="text-xs font-medium text-gray-600">Just check in</span>
-                </div>
+                </button>
               </div>
             </div>
           )}
@@ -78,23 +117,13 @@ function CheckInModal({
           <Button
             size="sm"
             className="flex-1"
+            disabled={(step === 1 && !name.trim()) || saving}
             onClick={() => {
               if (step === 1) { setStep(2); return; }
-              onSave({
-                id: Date.now().toString(),
-                name: name.trim(),
-                phone,
-                lastVisit: "Today",
-                bp: "–",
-                status: "new",
-                visits: 1,
-                notes: "",
-              });
-              onClose();
+              finish();
             }}
-            disabled={step === 1 && !name.trim()}
           >
-            {step === 1 ? "Next" : "Done"}
+            {saving ? "Saving…" : step === 1 ? "Next" : screenAfter ? "Check In & Screen" : "Complete Check-In"}
           </Button>
         </div>
       </div>
@@ -102,12 +131,20 @@ function CheckInModal({
   );
 }
 
-function ClientDrawer({ client, onClose }: { client: BarberClient; onClose: () => void }) {
+function ClientDrawer({
+  client,
+  onClose,
+}: {
+  client: BarberClient;
+  onClose: () => void;
+}) {
   const s = STATUS_CONFIG[client.status];
+  const encoded = encodeURIComponent(client.name);
+
   return (
-    <div className="fixed inset-0 bg-black/50 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4">
-      <div className="bg-white rounded-t-2xl sm:rounded-2xl w-full sm:max-w-md shadow-xl max-h-[90vh] overflow-y-auto animate-fade-in">
-        <div className="flex items-center justify-between px-6 py-5 border-b border-gray-100 sticky top-0 bg-white">
+    <div className="fixed inset-0 bg-black/50 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4" onClick={onClose}>
+      <div className="bg-white rounded-t-2xl sm:rounded-2xl w-full sm:max-w-md shadow-xl max-h-[90vh] overflow-y-auto animate-fade-in" onClick={(e) => e.stopPropagation()}>
+        <div className="flex items-center justify-between px-6 py-5 border-b border-gray-100 sticky top-0 bg-white z-10">
           <div className="flex items-center gap-3">
             <Avatar name={client.name} size="md" />
             <div>
@@ -124,9 +161,9 @@ function ClientDrawer({ client, onClose }: { client: BarberClient; onClose: () =
         <div className="p-6 space-y-5">
           <div className="grid grid-cols-3 gap-3">
             {[
-              { label: "Last Visit",  value: client.lastVisit },
-              { label: "BP",          value: client.bp !== "–" ? client.bp : "Not measured" },
-              { label: "Status",      value: <Badge className={s.color} size="sm">{s.label}</Badge> },
+              { label: "Last Visit", value: client.lastVisit ?? "—" },
+              { label: "BP", value: client.bp !== "–" ? client.bp : "Not measured" },
+              { label: "Status", value: <Badge className={s.color} size="sm">{s.label}</Badge> },
             ].map((item) => (
               <div key={item.label} className="bg-gray-50 rounded-xl p-3 flex flex-col gap-1">
                 <span className="text-[10px] text-gray-400 font-medium uppercase tracking-wide">{item.label}</span>
@@ -134,10 +171,12 @@ function ClientDrawer({ client, onClose }: { client: BarberClient; onClose: () =
               </div>
             ))}
           </div>
-          <div>
-            <p className="text-xs font-medium text-gray-500 mb-1.5">Phone</p>
-            <p className="text-sm text-gray-800">{client.phone}</p>
-          </div>
+          {client.phone && (
+            <div>
+              <p className="text-xs font-medium text-gray-500 mb-1.5">Phone</p>
+              <a href={`tel:${client.phone}`} className="text-sm text-blue-600 hover:underline">{client.phone}</a>
+            </div>
+          )}
           {client.notes && (
             <div>
               <p className="text-xs font-medium text-gray-500 mb-1.5">Notes</p>
@@ -145,12 +184,16 @@ function ClientDrawer({ client, onClose }: { client: BarberClient; onClose: () =
             </div>
           )}
           <div className="grid grid-cols-2 gap-2.5 pt-2">
-            <Button variant="outline" size="sm" className="gap-2">
-              <Activity className="h-3.5 w-3.5" /> Log Screening
-            </Button>
-            <Button size="sm" className="gap-2">
-              <Share2 className="h-3.5 w-3.5" /> Make Referral
-            </Button>
+            <Link href={`/dashboard/barber/screenings?client=${encoded}`} onClick={onClose}>
+              <Button variant="outline" size="sm" className="gap-2 w-full">
+                <Activity className="h-3.5 w-3.5" /> Log Screening
+              </Button>
+            </Link>
+            <Link href={`/dashboard/barber/referrals?client=${encoded}`} onClick={onClose}>
+              <Button size="sm" className="gap-2 w-full">
+                <Share2 className="h-3.5 w-3.5" /> Make Referral
+              </Button>
+            </Link>
           </div>
         </div>
       </div>
@@ -158,19 +201,25 @@ function ClientDrawer({ client, onClose }: { client: BarberClient; onClose: () =
   );
 }
 
-export default function ClientsPage() {
-  const { user } = useAuth();
-  const { clients, loading, isBarberDemo, setClients } = useBarberData();
-  const [search, setSearch]         = useState("");
-  const [filter, setFilter]         = useState<"all" | ClientStatus>("all");
+function ClientsContent() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const { clients, loading, addClient } = useBarberData();
+  const [search, setSearch] = useState("");
+  const [filter, setFilter] = useState<"all" | ClientStatus>("all");
   const [showCheckin, setShowCheckin] = useState(false);
-  const [selected, setSelected]     = useState<BarberClient | null>(null);
+  const [selected, setSelected] = useState<BarberClient | null>(null);
 
-  async function handleCheckIn(client: BarberClient) {
-    if (isBarberDemo || !user) return;
-    const next = [client, ...clients];
-    setClients(next);
-    await saveBarberClients(user.uid, next);
+  useEffect(() => {
+    if (searchParams.get("checkin") === "1") setShowCheckin(true);
+  }, [searchParams]);
+
+  async function handleCheckIn(client: BarberClient, _screenAfter: boolean) {
+    await addClient(client);
+  }
+
+  function goToScreening(name: string) {
+    router.push(`/dashboard/barber/screenings?client=${encodeURIComponent(name)}`);
   }
 
   const filtered = clients.filter((c) => {
@@ -189,13 +238,11 @@ export default function ClientsPage() {
 
   return (
     <div className="space-y-5">
-
-      {/* Header row */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
           <h1 className="text-xl font-black text-gray-900">Clients</h1>
           <p className="text-sm text-gray-400 mt-0.5">
-            {clients.length} total · {clients.filter(c => c.status === "referred").length} with open referrals
+            {clients.length} total · {clients.filter((c) => c.status === "referred").length} with open referrals
           </p>
         </div>
         <Button size="sm" onClick={() => setShowCheckin(true)} className="gap-2 shrink-0">
@@ -203,7 +250,6 @@ export default function ClientsPage() {
         </Button>
       </div>
 
-      {/* Search + filter */}
       <div className="flex flex-col sm:flex-row gap-3">
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
@@ -221,9 +267,7 @@ export default function ClientsPage() {
               onClick={() => setFilter(f)}
               className={cn(
                 "px-3 py-2 rounded-xl text-xs font-semibold border transition-all",
-                filter === f
-                  ? "bg-black text-white border-black"
-                  : "bg-white text-gray-600 border-gray-200 hover:border-gray-300"
+                filter === f ? "bg-black text-white border-black" : "bg-white text-gray-600 border-gray-200 hover:border-gray-300"
               )}
             >
               {f === "all" ? "All" : STATUS_CONFIG[f].label}
@@ -232,7 +276,6 @@ export default function ClientsPage() {
         </div>
       </div>
 
-      {/* Client list */}
       <Card>
         <CardContent className="p-0">
           {filtered.length === 0 ? (
@@ -259,6 +302,9 @@ export default function ClientsPage() {
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 flex-wrap">
                         <span className="text-sm font-semibold text-gray-900 truncate">{c.name}</span>
+                        {c.referred && (
+                          <span className="text-[10px] bg-blue-100 text-blue-700 px-1.5 py-0.5 rounded-md font-medium">Referred</span>
+                        )}
                         {c.age != null && <span className="text-xs text-gray-400">· Age {c.age}</span>}
                       </div>
                       <div className="flex items-center gap-3 mt-0.5 flex-wrap">
@@ -285,13 +331,12 @@ export default function ClientsPage() {
         </CardContent>
       </Card>
 
-      {/* Summary stats */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
         {[
-          { label: "Healthy",   count: clients.filter(c => c.status === "healthy").length,   icon: CheckCircle, color: "text-green-600 bg-green-50" },
-          { label: "Monitored", count: clients.filter(c => c.status === "monitored").length, icon: AlertCircle, color: "text-amber-600 bg-amber-50" },
-          { label: "Referred",  count: clients.filter(c => c.status === "referred").length,  icon: Share2,      color: "text-blue-600 bg-blue-50"   },
-          { label: "New",       count: clients.filter(c => c.status === "new").length,       icon: Plus,        color: "text-gray-500 bg-gray-100"  },
+          { label: "Healthy",   count: clients.filter((c) => c.status === "healthy").length,   icon: CheckCircle, color: "text-green-600 bg-green-50" },
+          { label: "Monitored", count: clients.filter((c) => c.status === "monitored").length, icon: AlertCircle, color: "text-amber-600 bg-amber-50" },
+          { label: "Referred",  count: clients.filter((c) => c.status === "referred").length,  icon: Share2,      color: "text-blue-600 bg-blue-50"   },
+          { label: "New",       count: clients.filter((c) => c.status === "new").length,       icon: Plus,        color: "text-gray-500 bg-gray-100"  },
         ].map((s) => (
           <div key={s.label} className="bg-white rounded-xl border border-gray-100 p-4 flex items-center gap-3">
             <div className={cn("w-8 h-8 rounded-lg flex items-center justify-center shrink-0", s.color)}>
@@ -305,8 +350,25 @@ export default function ClientsPage() {
         ))}
       </div>
 
-      {showCheckin && <CheckInModal onClose={() => setShowCheckin(false)} onSave={handleCheckIn} />}
+      {showCheckin && (
+        <CheckInModal
+          onClose={() => {
+            setShowCheckin(false);
+            router.replace("/dashboard/barber/clients", { scroll: false });
+          }}
+          onSave={handleCheckIn}
+          onScreenAfter={goToScreening}
+        />
+      )}
       {selected && <ClientDrawer client={selected} onClose={() => setSelected(null)} />}
     </div>
+  );
+}
+
+export default function ClientsPage() {
+  return (
+    <Suspense fallback={<div className="flex items-center justify-center py-20"><div className="h-8 w-8 border-2 border-gray-200 border-t-black rounded-full animate-spin" /></div>}>
+      <ClientsContent />
+    </Suspense>
   );
 }

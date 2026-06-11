@@ -86,7 +86,7 @@ function SignupForm() {
       return;
     }
     if (isBarberDemoAccount(form.email)) {
-      setError("The barber demo uses Sign in — go to Login and use arber@gmail.com / barber123@.");
+      setError("The barber demo uses Sign in — go to Login and use barber@gmail.com / barber123@.");
       return;
     }
     const err = validate();

@@ -4,11 +4,13 @@ import type {
   BarberClient,
   BarberScreening,
   BarberReferral,
+  BarberTrainingModule,
 } from "@/lib/demo-barber-data";
 import {
   DEMO_BARBER_CLIENTS,
   DEMO_BARBER_SCREENINGS,
   DEMO_BARBER_REFERRALS,
+  DEMO_BARBER_MODULES,
 } from "@/lib/demo-barber-data";
 
 function barberRef(uid: string, key: string) {
@@ -57,10 +59,25 @@ export async function saveBarberReferrals(uid: string, referrals: BarberReferral
   await set(barberRef(uid, "referrals"), obj);
 }
 
+export async function loadBarberModules(uid: string): Promise<BarberTrainingModule[]> {
+  const snap = await get(barberRef(uid, "modules"));
+  if (!snap.exists()) return [];
+  return Object.values(snap.val() as Record<string, BarberTrainingModule>);
+}
+
+export async function saveBarberModules(uid: string, modules: BarberTrainingModule[]): Promise<void> {
+  const obj = modules.reduce<Record<string, BarberTrainingModule>>(
+    (acc, m) => ({ ...acc, [m.id]: m }),
+    {}
+  );
+  await set(barberRef(uid, "modules"), obj);
+}
+
 export async function seedBarberDemoData(uid: string): Promise<void> {
   await Promise.all([
     saveBarberClients(uid, DEMO_BARBER_CLIENTS),
     saveBarberScreenings(uid, DEMO_BARBER_SCREENINGS),
     saveBarberReferrals(uid, DEMO_BARBER_REFERRALS),
+    saveBarberModules(uid, DEMO_BARBER_MODULES),
   ]);
 }

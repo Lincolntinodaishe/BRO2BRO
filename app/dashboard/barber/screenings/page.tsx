@@ -1,8 +1,9 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect, Suspense } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import {
   Activity, Plus, AlertCircle, CheckCircle,
-  X, ChevronDown, TrendingUp, TrendingDown, Minus,
+  X, ChevronDown, TrendingUp,
   Heart, Droplets, Scale,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -20,18 +21,75 @@ const BP_CONFIG = {
 };
 
 const GLUCOSE_CONFIG = {
-  normal:      { label: "Normal",      color: "text-green-700 bg-green-50" },
+  normal:      { label: "Normal",       color: "text-green-700 bg-green-50" },
   prediabetes: { label: "Pre-diabetes", color: "text-amber-700 bg-amber-50" },
-  high:        { label: "High",        color: "text-red-700 bg-red-50"    },
+  high:        { label: "High",         color: "text-red-700 bg-red-50"     },
 };
 
-function LogModal({ onClose }: { onClose: () => void }) {
-  const [form, setForm] = useState({
-    name: "", bp_sys: "", bp_dia: "", glucose: "", weight: "",
-  });
+function calcBpFlag(sys: number): "normal" | "elevated" | "high" {
+  if (sys >= 140) return "high";
+  if (sys >= 130) return "elevated";
+  return "normal";
+}
 
-  const bpNum = parseInt(form.bp_sys);
-  const bpFlag = bpNum >= 140 ? "high" : bpNum >= 130 ? "elevated" : "normal";
+function calcGlucoseFlag(g: number): "normal" | "prediabetes" | "high" {
+  if (g >= 126) return "high";
+  if (g >= 100) return "prediabetes";
+  return "normal";
+}
+
+function calcBmi(weight: number, heightIn = 70): string {
+  return ((weight / (heightIn * heightIn)) * 703).toFixed(1);
+}
+
+function LogModal({
+  onClose,
+  onSave,
+  defaultName = "",
+}: {
+  onClose: () => void;
+  onSave: (s: BarberScreening) => Promise<void>;
+  defaultName?: string;
+}) {
+  const [form, setForm] = useState({
+    name: defaultName, bp_sys: "", bp_dia: "", glucose: "", weight: "", notes: "",
+  });
+  const [saving, setSaving] = useState(false);
+
+  const bpNum    = parseInt(form.bp_sys) || 0;
+  const bpFlag   = calcBpFlag(bpNum);
+  const bpConfig = BP_CONFIG[bpFlag];
+
+  async function handleSave() {
+    setSaving(true);
+    const now = new Date();
+    const timeStr = now.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" });
+    const sys = parseInt(form.bp_sys);
+    const dia = parseInt(form.bp_dia);
+    const glu = parseInt(form.glucose) || 0;
+    const wgt = parseFloat(form.weight) || 0;
+
+    const screening: BarberScreening = {
+      id: Date.now().toString(),
+      name: form.name.trim(),
+      date: "Today",
+      time: timeStr,
+      bp: `${sys}/${dia}`,
+      bpFlag: calcBpFlag(sys),
+      glucose: String(glu || "—"),
+      glucoseFlag: glu ? calcGlucoseFlag(glu) : "normal",
+      weight: wgt ? `${wgt} lbs` : "—",
+      bmi: wgt ? calcBmi(wgt) : undefined,
+      referred: false,
+      notes: form.notes,
+      flag: calcBpFlag(sys) === "high" ? "high" : "normal",
+    };
+    await onSave(screening);
+    setSaving(false);
+    onClose();
+  }
+
+  const canSave = form.name.trim() && form.bp_sys && form.bp_dia;
 
   return (
     <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
@@ -45,6 +103,7 @@ function LogModal({ onClose }: { onClose: () => void }) {
             <X className="h-4 w-4 text-gray-500" />
           </button>
         </div>
+
         <div className="p-6 space-y-4">
           <div>
             <label className="block text-xs font-medium text-gray-700 mb-1.5">Client Name</label>
@@ -52,76 +111,78 @@ function LogModal({ onClose }: { onClose: () => void }) {
               className="w-full px-3.5 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-black"
               placeholder="Marcus Williams"
               value={form.name}
-              onChange={(e) => setForm((p) => ({ ...p, name: e.target.value }))}
+              onChange={(e) => setForm(p => ({ ...p, name: e.target.value }))}
             />
           </div>
+
           <div>
-            <label className="block text-xs font-medium text-gray-700 mb-1.5">
+            <label className="block text-xs font-medium text-gray-700 mb-1.5 flex items-center gap-2">
               Blood Pressure (mmHg)
               {form.bp_sys && (
-                <Badge className={cn("ml-2", BP_CONFIG[bpFlag].color)} size="sm">
-                  {BP_CONFIG[bpFlag].label}
-                </Badge>
+                <Badge className={cn(bpConfig.color)} size="sm">{bpConfig.label}</Badge>
               )}
             </label>
             <div className="flex gap-2 items-center">
               <input
                 className="flex-1 px-3.5 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-black"
-                placeholder="Systolic"
-                type="number"
+                placeholder="Systolic" type="number"
                 value={form.bp_sys}
-                onChange={(e) => setForm((p) => ({ ...p, bp_sys: e.target.value }))}
+                onChange={(e) => setForm(p => ({ ...p, bp_sys: e.target.value }))}
               />
               <span className="text-gray-400 font-bold">/</span>
               <input
                 className="flex-1 px-3.5 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-black"
-                placeholder="Diastolic"
-                type="number"
+                placeholder="Diastolic" type="number"
                 value={form.bp_dia}
-                onChange={(e) => setForm((p) => ({ ...p, bp_dia: e.target.value }))}
+                onChange={(e) => setForm(p => ({ ...p, bp_dia: e.target.value }))}
               />
             </div>
-            <p className="text-[11px] text-gray-400 mt-1.5">Normal &lt;120/80 · Elevated 120-129 · High ≥130/80</p>
+            <p className="text-[11px] text-gray-400 mt-1.5">Normal &lt;120/80 · Elevated 120–129 · High ≥130/80</p>
           </div>
+
           <div>
-            <label className="block text-xs font-medium text-gray-700 mb-1.5">Fasting Blood Glucose (mg/dL)</label>
+            <label className="block text-xs font-medium text-gray-700 mb-1.5">Fasting Blood Glucose (mg/dL) — optional</label>
             <input
               className="w-full px-3.5 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-black"
-              placeholder="e.g. 95"
-              type="number"
+              placeholder="e.g. 95" type="number"
               value={form.glucose}
-              onChange={(e) => setForm((p) => ({ ...p, glucose: e.target.value }))}
+              onChange={(e) => setForm(p => ({ ...p, glucose: e.target.value }))}
             />
-            <p className="text-[11px] text-gray-400 mt-1.5">Normal &lt;100 · Pre-diabetes 100-125 · High ≥126</p>
+            <p className="text-[11px] text-gray-400 mt-1.5">Normal &lt;100 · Pre-diabetes 100–125 · High ≥126</p>
           </div>
+
           <div>
-            <label className="block text-xs font-medium text-gray-700 mb-1.5">Weight (lbs)</label>
+            <label className="block text-xs font-medium text-gray-700 mb-1.5">Weight (lbs) — optional</label>
             <input
               className="w-full px-3.5 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-black"
-              placeholder="e.g. 185"
-              type="number"
+              placeholder="e.g. 185" type="number"
               value={form.weight}
-              onChange={(e) => setForm((p) => ({ ...p, weight: e.target.value }))}
+              onChange={(e) => setForm(p => ({ ...p, weight: e.target.value }))}
             />
           </div>
+
           <div>
             <label className="block text-xs font-medium text-gray-700 mb-1.5">Notes (optional)</label>
             <textarea
               className="w-full px-3.5 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-black resize-none"
               placeholder="Any observations or next steps…"
               rows={2}
+              value={form.notes}
+              onChange={(e) => setForm(p => ({ ...p, notes: e.target.value }))}
             />
           </div>
         </div>
+
         <div className="px-6 pb-6 flex gap-3">
           <Button variant="outline" size="sm" className="flex-1" onClick={onClose}>Cancel</Button>
           <Button
-            size="sm"
-            className="flex-1"
-            disabled={!form.name.trim() || !form.bp_sys || !form.bp_dia}
-            onClick={onClose}
+            size="sm" className="flex-1"
+            disabled={!canSave || saving}
+            onClick={handleSave}
           >
-            Save Screening
+            {saving
+              ? <span className="flex items-center gap-2"><span className="h-3.5 w-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin" /> Saving…</span>
+              : "Save Screening"}
           </Button>
         </div>
       </div>
@@ -129,13 +190,34 @@ function LogModal({ onClose }: { onClose: () => void }) {
   );
 }
 
-export default function ScreeningsPage() {
-  const { screenings, loading } = useBarberData();
-  const [showLog, setShowLog]     = useState(false);
-  const [expanded, setExpanded]   = useState<string | null>(null);
-  const [filter, setFilter]       = useState<"all" | "flagged" | "referred">("all");
+function ScreeningsContent() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const { screenings, loading, addScreening, updateScreening } = useBarberData();
+  const [showLog, setShowLog]   = useState(false);
+  const [prefillName, setPrefillName] = useState("");
+  const [expanded, setExpanded] = useState<string | null>(null);
+  const [filter, setFilter]     = useState<"all" | "flagged" | "referred">("all");
 
-  const filtered = screenings.filter((s) => {
+  useEffect(() => {
+    const client = searchParams.get("client");
+    if (client) {
+      setPrefillName(decodeURIComponent(client));
+      setShowLog(true);
+    }
+  }, [searchParams]);
+
+  async function handleSaveScreening(s: BarberScreening) {
+    await addScreening(s);
+    router.replace("/dashboard/barber/screenings", { scroll: false });
+  }
+
+  async function handleMakeReferral(screening: BarberScreening) {
+    await updateScreening(screening.id, { referred: true });
+    router.push(`/dashboard/barber/referrals?client=${encodeURIComponent(screening.name)}&reason=${encodeURIComponent(`BP ${screening.bp}`)}`);
+  }
+
+  const filtered = screenings.filter(s => {
     if (filter === "flagged")  return s.bpFlag !== "normal" || s.glucoseFlag !== "normal";
     if (filter === "referred") return s.referred;
     return true;
@@ -144,13 +226,11 @@ export default function ScreeningsPage() {
   const flagged  = screenings.filter(s => s.bpFlag !== "normal" || s.glucoseFlag !== "normal").length;
   const referred = screenings.filter(s => s.referred).length;
 
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center py-20">
-        <div className="h-8 w-8 border-2 border-gray-200 border-t-black rounded-full animate-spin" />
-      </div>
-    );
-  }
+  if (loading) return (
+    <div className="flex items-center justify-center py-20">
+      <div className="h-8 w-8 border-2 border-gray-200 border-t-black rounded-full animate-spin" />
+    </div>
+  );
 
   return (
     <div className="space-y-5">
@@ -169,10 +249,10 @@ export default function ScreeningsPage() {
       {/* Stats */}
       <div className="grid grid-cols-3 gap-3">
         {[
-          { label: "Total Screenings", value: screenings.length, icon: Activity, color: "bg-blue-50 text-blue-600"   },
-          { label: "Flagged",          value: flagged,                 icon: AlertCircle, color: "bg-red-50 text-red-600" },
-          { label: "Referred",         value: referred,                icon: TrendingUp, color: "bg-teal-50 text-teal-600" },
-        ].map((s) => (
+          { label: "Total Screenings", value: screenings.length, icon: Activity,     color: "bg-blue-50 text-blue-600"  },
+          { label: "Flagged",          value: flagged,           icon: AlertCircle,  color: "bg-red-50 text-red-600"    },
+          { label: "Referred",         value: referred,          icon: TrendingUp,   color: "bg-teal-50 text-teal-600"  },
+        ].map(s => (
           <Card key={s.label}>
             <CardContent className="p-4 flex items-center gap-3">
               <div className={cn("w-9 h-9 rounded-xl flex items-center justify-center shrink-0", s.color)}>
@@ -187,14 +267,14 @@ export default function ScreeningsPage() {
         ))}
       </div>
 
-      {/* Filter tabs */}
+      {/* Filter */}
       <div className="flex gap-2">
-        {(["all", "flagged", "referred"] as const).map((f) => (
+        {(["all", "flagged", "referred"] as const).map(f => (
           <button
             key={f}
             onClick={() => setFilter(f)}
             className={cn(
-              "px-3 py-2 rounded-xl text-xs font-semibold border transition-all capitalize",
+              "px-3 py-2 rounded-xl text-xs font-semibold border transition-all",
               filter === f ? "bg-black text-white border-black" : "bg-white text-gray-600 border-gray-200 hover:border-gray-300"
             )}
           >
@@ -206,95 +286,107 @@ export default function ScreeningsPage() {
       {/* Screening list */}
       <Card>
         <CardContent className="p-0">
-          <div className="divide-y divide-gray-50">
-            {filtered.map((s) => {
-              const bp  = BP_CONFIG[s.bpFlag];
-              const gl  = GLUCOSE_CONFIG[s.glucoseFlag];
-              const isOpen = expanded === s.id;
-              return (
-                <div key={s.id} className="transition-colors">
-                  <button
-                    onClick={() => setExpanded(isOpen ? null : s.id)}
-                    className="w-full flex items-center gap-3 px-5 py-4 hover:bg-gray-50 text-left group transition-colors"
-                  >
-                    <Avatar name={s.name} size="sm" />
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2 flex-wrap">
-                        <span className="text-sm font-semibold text-gray-900">{s.name}</span>
-                        {s.referred && (
-                          <span className="text-[10px] bg-blue-100 text-blue-700 px-1.5 py-0.5 rounded-md font-semibold">Referred</span>
+          {filtered.length === 0 ? (
+            <div className="flex flex-col items-center py-12 gap-3">
+              <Activity className="h-8 w-8 text-gray-300" />
+              <p className="text-sm text-gray-500">
+                {screenings.length === 0 ? "No screenings yet. Log your first one after a client checks in." : "No screenings match this filter."}
+              </p>
+              {screenings.length === 0 && (
+                <Button size="sm" onClick={() => setShowLog(true)}>Log Screening</Button>
+              )}
+            </div>
+          ) : (
+            <div className="divide-y divide-gray-50">
+              {filtered.map(s => {
+                const bp  = BP_CONFIG[s.bpFlag];
+                const gl  = GLUCOSE_CONFIG[s.glucoseFlag];
+                const isOpen = expanded === s.id;
+                return (
+                  <div key={s.id}>
+                    <button
+                      onClick={() => setExpanded(isOpen ? null : s.id)}
+                      className="w-full flex items-center gap-3 px-5 py-4 hover:bg-gray-50 text-left group transition-colors"
+                    >
+                      <Avatar name={s.name} size="sm" />
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <span className="text-sm font-semibold text-gray-900">{s.name}</span>
+                          {s.referred && (
+                            <span className="text-[10px] bg-blue-100 text-blue-700 px-1.5 py-0.5 rounded-md font-semibold">Referred</span>
+                          )}
+                        </div>
+                        <div className="flex items-center gap-3 mt-0.5 text-xs flex-wrap">
+                          <span className="text-gray-400">{s.date} · {s.time}</span>
+                          <span className={cn("font-medium flex items-center gap-1", s.bpFlag === "high" ? "text-red-600" : s.bpFlag === "elevated" ? "text-amber-600" : "text-gray-600")}>
+                            <Heart className="h-2.5 w-2.5" /> BP {s.bp}
+                          </span>
+                          {s.glucose !== "—" && (
+                            <span className={cn("font-medium", s.glucoseFlag !== "normal" ? "text-amber-600" : "text-gray-600")}>
+                              Glucose {s.glucose}
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-2 shrink-0">
+                        <Badge className={cn("hidden sm:flex", bp.color)} size="sm">{bp.label}</Badge>
+                        <ChevronDown className={cn("h-4 w-4 text-gray-300 transition-transform", isOpen && "rotate-180")} />
+                      </div>
+                    </button>
+
+                    {isOpen && (
+                      <div className="px-5 pb-4 bg-gray-50 space-y-3">
+                        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                          {[
+                            { label: "Blood Pressure", value: s.bp,               flag: bp.label, flagColor: bp.color,   icon: Heart    },
+                            { label: "Glucose",        value: `${s.glucose}${s.glucose !== "—" ? " mg/dL" : ""}`, flag: gl.label, flagColor: gl.color, icon: Droplets },
+                            { label: "Weight",         value: s.weight,            flag: "",       flagColor: "",          icon: Scale    },
+                            { label: "BMI",            value: s.bmi ?? "—",        flag: s.bmi ? (parseFloat(s.bmi) >= 30 ? "Obese" : parseFloat(s.bmi) >= 25 ? "Overweight" : "Normal") : "", flagColor: s.bmi && parseFloat(s.bmi) >= 25 ? "text-amber-700 bg-amber-50" : "text-green-700 bg-green-50", icon: Activity },
+                          ].map(m => (
+                            <div key={m.label} className="bg-white rounded-xl p-3 border border-gray-100">
+                              <div className="flex items-center gap-1.5 mb-1.5">
+                                <m.icon className="h-3 w-3 text-gray-400" />
+                                <span className="text-[10px] text-gray-400 font-medium uppercase tracking-wide">{m.label}</span>
+                              </div>
+                              <div className="text-sm font-bold text-gray-900">{m.value}</div>
+                              {m.flag && <Badge className={cn("mt-1", m.flagColor)} size="sm">{m.flag}</Badge>}
+                            </div>
+                          ))}
+                        </div>
+                        {s.notes && (
+                          <p className="text-xs text-gray-600 bg-white rounded-xl px-3 py-2.5 border border-gray-100">{s.notes}</p>
+                        )}
+                        {!s.referred && (s.bpFlag !== "normal" || s.glucoseFlag !== "normal") && (
+                          <div className="flex gap-2">
+                            <Button
+                              size="sm" className="gap-2 text-xs"
+                              onClick={() => handleMakeReferral(s)}
+                            >
+                              Make Referral
+                            </Button>
+                          </div>
                         )}
                       </div>
-                      <div className="flex items-center gap-3 mt-0.5 text-xs flex-wrap">
-                        <span className="text-gray-400">{s.date} · {s.time}</span>
-                        <span className={cn("font-medium flex items-center gap-1", s.bpFlag === "high" ? "text-red-600" : s.bpFlag === "elevated" ? "text-amber-600" : "text-gray-600")}>
-                          <Heart className="h-2.5 w-2.5" /> BP {s.bp}
-                        </span>
-                        <span className={cn("font-medium", s.glucoseFlag !== "normal" ? "text-amber-600" : "text-gray-600")}>
-                          Glucose {s.glucose}
-                        </span>
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-2 shrink-0">
-                      <Badge className={cn("hidden sm:flex", bp.color)} size="sm">{bp.label}</Badge>
-                      <ChevronDown className={cn("h-4 w-4 text-gray-300 transition-transform", isOpen && "rotate-180")} />
-                    </div>
-                  </button>
-
-                  {isOpen && (
-                    <div className="px-5 pb-4 bg-gray-50">
-                      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-3">
-                        {[
-                          { label: "Blood Pressure", value: s.bp, flag: bp.label, flagColor: bp.color, icon: Heart },
-                          { label: "Glucose",         value: `${s.glucose} mg/dL`, flag: gl.label, flagColor: gl.color, icon: Droplets },
-                          { label: "Weight",          value: s.weight, flag: "", flagColor: "", icon: Scale },
-                          { label: "BMI", value: s.bmi ?? "—", flag: s.bmi ? (parseFloat(s.bmi) >= 30 ? "Obese" : parseFloat(s.bmi) >= 25 ? "Overweight" : "Normal") : "", flagColor: s.bmi && parseFloat(s.bmi) >= 25 ? "text-amber-700 bg-amber-50" : "text-green-700 bg-green-50", icon: Activity },
-                        ].map((m) => (
-                          <div key={m.label} className="bg-white rounded-xl p-3 border border-gray-100">
-                            <div className="flex items-center gap-1.5 mb-1.5">
-                              <m.icon className="h-3 w-3 text-gray-400" />
-                              <span className="text-[10px] text-gray-400 font-medium uppercase tracking-wide">{m.label}</span>
-                            </div>
-                            <div className="text-sm font-bold text-gray-900">{m.value}</div>
-                            {m.flag && <Badge className={cn("mt-1", m.flagColor)} size="sm">{m.flag}</Badge>}
-                          </div>
-                        ))}
-                      </div>
-                      {s.notes && (
-                        <p className="text-xs text-gray-600 bg-white rounded-xl px-3 py-2.5 border border-gray-100">
-                          {s.notes}
-                        </p>
-                      )}
-                      {!s.referred && (s.bpFlag !== "normal" || s.glucoseFlag !== "normal") && (
-                        <div className="mt-2.5 flex gap-2">
-                          <Button size="sm" variant="outline" className="gap-2 text-xs">
-                            <AlertCircle className="h-3.5 w-3.5 text-amber-500" /> Flag for follow-up
-                          </Button>
-                          <Button size="sm" className="gap-2 text-xs">
-                            Make Referral
-                          </Button>
-                        </div>
-                      )}
-                    </div>
-                  )}
-                </div>
-              );
-            })}
-          </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          )}
         </CardContent>
       </Card>
 
-      {/* BP reference card */}
+      {/* BP reference */}
       <Card>
         <CardContent className="p-5">
           <h3 className="text-sm font-bold text-gray-900 mb-3">Blood Pressure Reference</h3>
           <div className="space-y-2">
             {[
-              { range: "Normal",       sys: "< 120",   dia: "< 80",  color: "bg-green-500" },
+              { range: "Normal",       sys: "< 120",   dia: "< 80",  color: "bg-green-500"  },
               { range: "Elevated",     sys: "120–129", dia: "< 80",  color: "bg-yellow-400" },
               { range: "High Stage 1", sys: "130–139", dia: "80–89", color: "bg-orange-400" },
-              { range: "High Stage 2", sys: "≥ 140",   dia: "≥ 90", color: "bg-red-500"    },
-            ].map((r) => (
+              { range: "High Stage 2", sys: "≥ 140",   dia: "≥ 90",  color: "bg-red-500"    },
+            ].map(r => (
               <div key={r.range} className="flex items-center gap-3">
                 <div className={cn("w-2.5 h-2.5 rounded-full shrink-0", r.color)} />
                 <span className="text-xs font-semibold text-gray-700 w-28">{r.range}</span>
@@ -305,7 +397,25 @@ export default function ScreeningsPage() {
         </CardContent>
       </Card>
 
-      {showLog && <LogModal onClose={() => setShowLog(false)} />}
+      {showLog && (
+        <LogModal
+          defaultName={prefillName}
+          onClose={() => {
+            setShowLog(false);
+            setPrefillName("");
+            router.replace("/dashboard/barber/screenings", { scroll: false });
+          }}
+          onSave={handleSaveScreening}
+        />
+      )}
     </div>
+  );
+}
+
+export default function ScreeningsPage() {
+  return (
+    <Suspense fallback={<div className="flex items-center justify-center py-20"><div className="h-8 w-8 border-2 border-gray-200 border-t-black rounded-full animate-spin" /></div>}>
+      <ScreeningsContent />
+    </Suspense>
   );
 }
