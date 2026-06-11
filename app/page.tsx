@@ -19,6 +19,8 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Accordion } from "@/components/ui/accordion";
 import { CountUp, useInView } from "@/components/count-up";
+import { HeroStatCard } from "@/components/hero-video";
+import { HeroPhoneMockup } from "@/components/hero-phone-mockup";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/lib/auth-context";
 
@@ -228,219 +230,144 @@ function Hero() {
   ]);
 
   return (
-    <section className="relative min-h-screen flex flex-col items-center justify-center pt-24 pb-16 px-4 gradient-mesh overflow-hidden">
-      {/* Decorative blobs */}
+    <section className="relative min-h-screen flex items-center pt-20 sm:pt-24 pb-12 sm:pb-16 px-4 sm:px-6 lg:px-8 gradient-mesh overflow-x-clip">
       <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-amber-300/10 rounded-full blur-3xl pointer-events-none" />
       <div className="absolute bottom-1/3 right-1/4 w-80 h-80 bg-teal-300/10 rounded-full blur-3xl pointer-events-none" />
 
-      <div className="relative z-10 text-center max-w-5xl mx-auto w-full">
-        {/* Headline */}
-        <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-black text-gray-900 leading-[0.92] tracking-tight mb-6">
-          The Barbershop<br />
-          <span className="text-amber-500">Got Men Talking.</span><br />
-          We Built<br />
-          What Comes Next.
-        </h1>
+      <div className="relative z-10 max-w-7xl mx-auto w-full">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-12 xl:gap-16 items-center">
 
-        {/* Typewriter rotating phrase */}
-        <div className="flex items-center justify-center gap-2 mb-5">
-          <span className="text-xs font-semibold text-gray-400 uppercase tracking-widest">Now powering</span>
-          <span className="text-sm font-bold text-gray-900 min-w-[180px] text-left">
-            {rotatingPhrase}
-            <span className="typewriter-cursor" />
-          </span>
-        </div>
+          {/* Copy */}
+          <div className="text-center lg:text-left order-1">
+            <h1 className="text-4xl sm:text-5xl md:text-6xl xl:text-7xl font-black text-gray-900 leading-[0.95] tracking-tight mb-5 sm:mb-6">
+              The Barbershop<br />
+              <span className="text-amber-500">Got Men Talking.</span><br />
+              We Built<br />
+              What Comes Next.
+            </h1>
 
-        {/* Sub */}
-        <p className="text-lg sm:text-xl text-gray-500 max-w-2xl mx-auto mb-10 leading-relaxed">
-          BRO2BRO is the AI-powered wellness companion extending trusted community conversations
-          into real care — connecting Black men to preventive health, mental wellness, and a
-          community that has their back.
-        </p>
-
-        {/* CTAs */}
-        <div className="flex flex-col sm:flex-row gap-4 justify-center mb-16">
-          <Link href="/signup">
-            <Button size="xl" className="w-full sm:w-auto shadow-lg hover:shadow-xl transition-shadow py-5 text-base font-bold">
-              Get Started Free <ArrowRight className="ml-2 h-5 w-5" />
-            </Button>
-          </Link>
-          <a href="#how-it-works">
-            <Button variant="outline" size="xl" className="w-full sm:w-auto gap-2 py-5 text-base font-bold">
-              <Play className="h-5 w-5" />
-              See How It Works
-            </Button>
-          </a>
-        </div>
-
-        {/* Phone mockup + floating cards */}
-        <div className="relative mx-auto w-[290px] float-phone">
-
-          {/* Ambient glow behind phone */}
-          <div className="absolute inset-[-60px] -z-10 blur-3xl pointer-events-none opacity-40"
-            style={{ background: "radial-gradient(ellipse at 50% 60%, rgba(245,158,11,0.35) 0%, rgba(13,148,136,0.25) 55%, transparent 75%)" }} />
-
-          {/* Floating card 1 — top left */}
-          <div className="absolute -left-44 top-8 bg-white rounded-2xl p-4 w-40 hidden xl:block float-card-1"
-            style={{ boxShadow: "0 8px 32px -4px rgba(245,158,11,0.2), 0 2px 8px rgba(0,0,0,0.07)" }}>
-            <div className="flex items-center gap-1.5 mb-2">
-              <div className="w-5 h-5 rounded-full bg-amber-100 flex items-center justify-center shrink-0">
-                <Activity className="h-3 w-3 text-amber-600" />
-              </div>
-              <span className="text-[10px] text-gray-400 font-medium">Men Screened</span>
+            <div className="flex items-center justify-center lg:justify-start gap-2 mb-4 sm:mb-5">
+              <span className="text-xs font-semibold text-gray-400 uppercase tracking-widest">Now powering</span>
+              <span className="text-sm font-bold text-gray-900 min-w-[180px] text-left">
+                {rotatingPhrase}
+                <span className="typewriter-cursor" />
+              </span>
             </div>
-            <div className="text-3xl font-black text-amber-500">600+</div>
-            <div className="text-xs text-gray-400 mt-0.5">since Aug 2023</div>
+
+            <p className="text-base sm:text-lg md:text-xl text-gray-500 max-w-xl mx-auto lg:mx-0 mb-8 sm:mb-10 leading-relaxed">
+              BRO2BRO is the AI-powered wellness companion extending trusted community conversations
+              into real care — connecting Black men to preventive health, mental wellness, and a
+              community that has their back.
+            </p>
+
+            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center lg:justify-start">
+              <Link href="/signup">
+                <Button size="xl" className="w-full sm:w-auto shadow-lg hover:shadow-xl transition-shadow py-5 text-base font-bold">
+                  Get Started Free <ArrowRight className="ml-2 h-5 w-5" />
+                </Button>
+              </Link>
+              <a href="#how-it-works">
+                <Button variant="outline" size="xl" className="w-full sm:w-auto gap-2 py-5 text-base font-bold">
+                  <Play className="h-5 w-5" />
+                  See How It Works
+                </Button>
+              </a>
+            </div>
           </div>
 
-          {/* Floating card 2 — top right */}
-          <div className="absolute -right-48 top-20 bg-gray-900 text-white rounded-2xl p-4 w-44 hidden xl:block float-card-2"
-            style={{ boxShadow: "0 8px 32px -4px rgba(0,0,0,0.3), 0 2px 8px rgba(0,0,0,0.12)" }}>
-            <div className="flex items-center gap-1.5 mb-2">
-              <div className="w-5 h-5 rounded-full bg-amber-500/20 flex items-center justify-center shrink-0">
-                <TrendingUp className="h-3 w-3 text-amber-400" />
-              </div>
-              <span className="text-[10px] text-gray-400 font-medium">BP Control Rate</span>
-            </div>
-            <div className="text-3xl font-black text-amber-400">63.6%</div>
-            <div className="text-xs text-gray-500 mt-0.5">barbershop + AI follow-up</div>
-          </div>
+          {/* Hero phone + stats — cards flanking the device, no overlap */}
+          <div className="relative order-2 w-full flex justify-center lg:justify-end overflow-visible">
+            <div className="relative w-full max-w-[560px]">
 
-          {/* Floating card 3 — bottom left */}
-          <div className="absolute -left-48 bottom-24 bg-teal-50 rounded-2xl p-4 w-44 hidden xl:block float-card-3"
-            style={{ boxShadow: "0 8px 32px -4px rgba(13,148,136,0.2), 0 2px 8px rgba(0,0,0,0.06)" }}>
-            <div className="flex items-center gap-1.5 mb-2">
-              <div className="w-5 h-5 rounded-full bg-teal-100 flex items-center justify-center shrink-0">
-                <Scissors className="h-3 w-3 text-teal-600" />
-              </div>
-              <span className="text-[10px] text-teal-500 font-medium">Partner Barbershops</span>
-            </div>
-            <div className="text-3xl font-black text-teal-700">61</div>
-            <div className="text-xs text-teal-500 mt-0.5">across 15 AR counties</div>
-          </div>
+              <div
+                className="absolute inset-[-40px] -z-10 blur-3xl pointer-events-none opacity-50"
+                style={{ background: "radial-gradient(ellipse at 50% 50%, rgba(245,158,11,0.25) 0%, rgba(13,148,136,0.15) 55%, transparent 75%)" }}
+              />
 
-          {/* Floating card 4 — bottom right */}
-          <div className="absolute -right-40 bottom-16 bg-green-50 rounded-2xl p-4 w-36 hidden xl:block float-card-4"
-            style={{ boxShadow: "0 8px 32px -4px rgba(22,163,74,0.2), 0 2px 8px rgba(0,0,0,0.06)" }}>
-            <div className="flex items-center gap-1.5 mb-2">
-              <div className="w-5 h-5 rounded-full bg-green-100 flex items-center justify-center shrink-0">
-                <CheckCircle className="h-3 w-3 text-green-600" />
-              </div>
-              <span className="text-[10px] text-green-500 font-medium">Always Free</span>
-            </div>
-            <div className="text-xl font-black text-green-700">$0/mo</div>
-            <div className="text-xs text-green-500 mt-0.5">No app required</div>
-          </div>
+              {/* Desktop: phone center, stats in left/right columns */}
+              <div className="hidden md:flex items-center justify-center gap-5 lg:gap-7 px-2">
+                <div className="flex flex-col justify-between gap-20 lg:gap-24 py-8 shrink-0 w-[128px] lg:w-[136px]">
+                  <HeroStatCard className="float-card-1 !bg-white">
+                    <div className="flex items-center gap-1.5 mb-1">
+                      <div className="w-5 h-5 rounded-full bg-amber-100 flex items-center justify-center shrink-0">
+                        <Activity className="h-3 w-3 text-amber-600" />
+                      </div>
+                      <span className="text-[10px] text-gray-400 font-medium leading-tight">Men Screened</span>
+                    </div>
+                    <div className="text-2xl font-black text-amber-500 leading-none">600+</div>
+                    <div className="text-[11px] text-gray-400 mt-1">since Aug 2023</div>
+                  </HeroStatCard>
 
-          {/* iPhone shell */}
-          <div className="relative w-[290px]">
-            {/* Side buttons */}
-            <div className="absolute -left-[5px] top-[96px] w-[5px] h-6 rounded-l-md" style={{ background: "linear-gradient(to right, #4a4a4a, #2e2e2e)" }} />
-            <div className="absolute -left-[5px] top-[136px] w-[5px] h-10 rounded-l-md" style={{ background: "linear-gradient(to right, #4a4a4a, #2e2e2e)" }} />
-            <div className="absolute -left-[5px] top-[184px] w-[5px] h-10 rounded-l-md" style={{ background: "linear-gradient(to right, #4a4a4a, #2e2e2e)" }} />
-            <div className="absolute -right-[5px] top-[148px] w-[5px] h-16 rounded-r-md" style={{ background: "linear-gradient(to left, #4a4a4a, #2e2e2e)" }} />
-
-            {/* Titanium frame */}
-            <div className="w-[290px] h-[600px] rounded-[54px] p-[3px]"
-              style={{ background: "linear-gradient(145deg, #6b6b6b 0%, #3d3d3d 35%, #1c1c1c 65%, #303030 100%)", boxShadow: "0 32px 80px -12px rgba(0,0,0,0.55), 0 0 0 1px rgba(255,255,255,0.04), inset 0 1px 0 rgba(255,255,255,0.08)" }}>
-
-              {/* Inner screen */}
-              <div className="w-full h-full rounded-[52px] overflow-hidden bg-black relative">
-
-                {/* Dynamic Island */}
-                <div className="absolute top-3 left-1/2 -translate-x-1/2 z-20 w-[112px] h-[34px] bg-black rounded-full flex items-center justify-center gap-3 border border-white/[0.06]">
-                  <div className="w-[9px] h-[9px] rounded-full bg-[#1c1c1c] border border-[#2a2a2a]" />
-                  <div className="w-[13px] h-[13px] rounded-full bg-[#0a0a0a] border border-[#252525] flex items-center justify-center">
-                    <div className="w-[6px] h-[6px] rounded-full bg-[#1a1a1a]" />
-                  </div>
+                  <HeroStatCard className="float-card-3 !bg-teal-50 !border-teal-100">
+                    <div className="flex items-center gap-1.5 mb-1">
+                      <div className="w-5 h-5 rounded-full bg-teal-100 flex items-center justify-center shrink-0">
+                        <Scissors className="h-3 w-3 text-teal-600" />
+                      </div>
+                      <span className="text-[10px] text-teal-600 font-medium leading-tight">Barbershops</span>
+                    </div>
+                    <div className="text-2xl font-black text-teal-700 leading-none">61</div>
+                    <div className="text-[11px] text-teal-600 mt-1 leading-snug">15 AR counties</div>
+                  </HeroStatCard>
                 </div>
 
-                {/* Screen content */}
-                <div className="h-full flex flex-col bg-white">
+                <HeroPhoneMockup />
 
-                  {/* Status bar */}
-                  <div className="bg-black text-white px-5 pt-12 pb-1 flex items-center justify-between shrink-0">
-                    <span className="text-[11px] font-bold tracking-tight">9:41</span>
-                    <div className="flex items-center gap-1.5">
-                      <div className="flex items-end gap-[2px]">
-                        {[3, 5, 7, 9].map((h, i) => (
-                          <div key={i} className={`w-[3px] rounded-[1px] ${i < 3 ? "bg-white" : "bg-white/30"}`} style={{ height: `${h}px` }} />
-                        ))}
+                <div className="flex flex-col justify-between gap-20 lg:gap-24 py-8 shrink-0 w-[128px] lg:w-[136px]">
+                  <HeroStatCard className="float-card-2 !bg-gray-900 !border-gray-800 text-white">
+                    <div className="flex items-center gap-1.5 mb-1">
+                      <div className="w-5 h-5 rounded-full bg-amber-500/20 flex items-center justify-center shrink-0">
+                        <TrendingUp className="h-3 w-3 text-amber-400" />
                       </div>
-                      <svg width="14" height="11" viewBox="0 0 14 11" fill="none">
-                        <path d="M7 9a1 1 0 100 2 1 1 0 000-2z" fill="white"/>
-                        <path d="M3.5 5.5C4.8 4.2 5.8 3.5 7 3.5s2.2.7 3.5 2" stroke="white" strokeWidth="1.4" strokeLinecap="round"/>
-                        <path d="M.5 2.5C2.5.5 4.6 0 7 0s4.5.5 6.5 2.5" stroke="white" strokeWidth="1.4" strokeLinecap="round"/>
-                      </svg>
-                      <div className="flex items-center">
-                        <div className="w-[20px] h-[11px] rounded-[3px] border-[1.5px] border-white/70 p-[1.5px]">
-                          <div className="h-full w-[72%] bg-white rounded-[1px]" />
-                        </div>
-                        <div className="w-[2px] h-[5px] bg-white/50 rounded-r-sm ml-[1px]" />
-                      </div>
+                      <span className="text-[10px] text-gray-400 font-medium leading-tight">BP Control</span>
                     </div>
-                  </div>
+                    <div className="text-2xl font-black text-amber-400 leading-none">63.6%</div>
+                    <div className="text-[11px] text-gray-500 mt-1 leading-snug">barbershop + AI</div>
+                  </HeroStatCard>
 
-                  {/* Chat header */}
-                  <div className="bg-black text-white px-4 pt-1 pb-3 flex items-center gap-2.5 shrink-0">
-                    <div className="w-8 h-8 rounded-full overflow-hidden shrink-0 bg-white">
-                      <Image src={bro2broLogo} alt="Bro AI" width={36} height={36} className="w-full h-full object-contain" />
-                    </div>
-                    <div className="flex-1">
-                      <div className="text-xs font-bold">Bro AI</div>
-                      <div className="flex items-center gap-1 text-xs text-green-400">
-                        <span className="w-1.5 h-1.5 rounded-full bg-green-400 inline-block" />
-                        Online · Private
+                  <HeroStatCard className="float-card-4 !bg-green-50 !border-green-100">
+                    <div className="flex items-center gap-1.5 mb-1">
+                      <div className="w-5 h-5 rounded-full bg-green-100 flex items-center justify-center shrink-0">
+                        <CheckCircle className="h-3 w-3 text-green-600" />
                       </div>
+                      <span className="text-[10px] text-green-600 font-medium">Always Free</span>
                     </div>
-                    <Phone className="h-4 w-4 text-gray-500" />
-                  </div>
-
-                  {/* Messages */}
-                  <div className="flex-1 px-3 py-3 flex flex-col gap-2 overflow-hidden bg-[#f5f5f5]">
-                    <div className="bg-white rounded-2xl rounded-tl-sm px-3 py-2.5 max-w-[88%] text-xs text-gray-800 leading-relaxed shadow-sm">
-                      Hey. I&apos;m Bro. How have you been doing lately? No judgment here.
-                    </div>
-                    <div className="bg-black text-white rounded-2xl rounded-tr-sm px-3 py-2.5 max-w-[80%] self-end text-xs">
-                      Been stressed. Work&apos;s been a lot lately.
-                    </div>
-                    <div className="bg-white rounded-2xl rounded-tl-sm px-3 py-2.5 max-w-[90%] text-xs text-gray-800 leading-relaxed shadow-sm">
-                      I hear you. When&apos;s the last time you got your BP checked?
-                    </div>
-                    <div className="bg-black text-white rounded-2xl rounded-tr-sm px-3 py-2.5 max-w-[75%] self-end text-xs">
-                      Honestly... it&apos;s been a while.
-                    </div>
-                    <div className="bg-amber-50 border border-amber-100 rounded-2xl rounded-tl-sm px-3 py-2.5 max-w-[92%] text-xs text-gray-800 leading-relaxed">
-                      <div className="flex items-center gap-1.5 font-semibold text-amber-700 mb-1">
-                        <MapPin className="h-3 w-3" />
-                        Found 3 free BP checks near you
-                      </div>
-                      Two are at barbershops you probably know. Want directions?
-                    </div>
-                  </div>
-
-                  {/* Input */}
-                  <div className="px-3 py-2.5 border-t border-gray-100 bg-white shrink-0">
-                    <div className="flex items-center gap-2 bg-gray-50 border border-gray-200 rounded-full px-3 py-2">
-                      <span className="text-xs text-gray-400 flex-1">Reply to Bro…</span>
-                      <div className="h-5 w-5 bg-black rounded-full flex items-center justify-center shrink-0">
-                        <ArrowRight className="h-3 w-3 text-white" />
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Home indicator */}
-                  <div className="bg-white pb-2 pt-1 flex justify-center shrink-0">
-                    <div className="w-28 h-[5px] bg-black/20 rounded-full" />
-                  </div>
+                    <div className="text-xl font-black text-green-700 leading-none">$0/mo</div>
+                    <div className="text-[11px] text-green-600 mt-1">No app required</div>
+                  </HeroStatCard>
                 </div>
+              </div>
 
-                {/* Glass sheen overlay */}
-                <div className="absolute inset-0 pointer-events-none rounded-[52px]"
-                  style={{ background: "linear-gradient(135deg, rgba(255,255,255,0.07) 0%, rgba(255,255,255,0.02) 40%, transparent 60%)" }} />
+              {/* Mobile: phone only, stats below */}
+              <div className="md:hidden flex flex-col items-center">
+                <HeroPhoneMockup />
+              </div>
+
+              <div className="grid grid-cols-2 gap-2.5 mt-5 md:hidden px-1">
+                {[
+                  { icon: Activity, color: "text-amber-600", bg: "bg-amber-50", label: "Men Screened", value: "600+", sub: "since Aug 2023" },
+                  { icon: TrendingUp, color: "text-amber-500", bg: "bg-gray-900", label: "BP Control", value: "63.6%", sub: "barbershop + AI", dark: true },
+                  { icon: Scissors, color: "text-teal-600", bg: "bg-teal-50", label: "Barbershops", value: "61", sub: "15 AR counties" },
+                  { icon: CheckCircle, color: "text-green-600", bg: "bg-green-50", label: "Always Free", value: "$0/mo", sub: "No app required" },
+                ].map(({ icon: Icon, color, bg, label, value, sub, dark }) => (
+                  <div
+                    key={label}
+                    className={cn(
+                      "rounded-xl p-3 border",
+                      dark ? "bg-gray-900 border-gray-800 text-white" : `${bg} border-white/80`
+                    )}
+                  >
+                    <div className="flex items-center gap-1.5 mb-1">
+                      <Icon className={cn("h-3.5 w-3.5 shrink-0", color)} />
+                      <span className={cn("text-[10px] font-medium", dark ? "text-gray-400" : "text-gray-500")}>{label}</span>
+                    </div>
+                    <div className={cn("text-lg font-black leading-none", dark ? "text-amber-400" : "text-gray-900")}>{value}</div>
+                    <div className={cn("text-[10px] mt-0.5", dark ? "text-gray-500" : "text-gray-400")}>{sub}</div>
+                  </div>
+                ))}
               </div>
             </div>
           </div>
+
         </div>
       </div>
     </section>
