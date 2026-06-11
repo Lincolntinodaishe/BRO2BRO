@@ -1,5 +1,5 @@
 import { ref, get, set } from "firebase/database";
-import { db } from "@/lib/firebase";
+import { requireDb } from "@/lib/firebase";
 
 export type ApptStatus = "confirmed" | "pending" | "completed" | "cancelled";
 export type ApptType   = "clinic" | "barbershop" | "virtual" | "ai";
@@ -97,7 +97,7 @@ export const DEFAULT_APPOINTMENTS: Appointment[] = [
 
 /* ── Firebase path ───────────────────────────────────────────── */
 function apptRef(uid: string) {
-  return ref(db, `users/${uid}/appointments`);
+  return ref(requireDb(), `users/${uid}/appointments`);
 }
 
 /* ── Load appointments for a user from Firebase ─────────────── */

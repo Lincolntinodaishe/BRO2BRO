@@ -84,6 +84,7 @@ function SignupForm() {
     const err = validate();
     if (err) { setError(err); return; }
     setError("");
+    if (!auth) { setError("Sign-up is unavailable. Check Firebase configuration."); return; }
     setLoading(true);
     try {
       const { user } = await createUserWithEmailAndPassword(auth, form.email, form.password);
@@ -98,6 +99,7 @@ function SignupForm() {
 
   async function handleGoogle() {
     setError("");
+    if (!auth) { setError("Sign-up is unavailable. Check Firebase configuration."); return; }
     setGoogleLoading(true);
     try {
       await signInWithPopup(auth, new GoogleAuthProvider());

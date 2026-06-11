@@ -1,9 +1,9 @@
 import { ref, get, set } from "firebase/database";
-import { db } from "@/lib/firebase";
+import { requireDb } from "@/lib/firebase";
 import type { UserProfileData } from "@/lib/demo-data";
 
 function profileRef(uid: string) {
-  return ref(db, `users/${uid}/profile`);
+  return ref(requireDb(), `users/${uid}/profile`);
 }
 
 export async function loadUserProfile(uid: string): Promise<UserProfileData | null> {

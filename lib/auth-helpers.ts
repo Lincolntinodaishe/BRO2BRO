@@ -3,7 +3,7 @@ import {
   createUserWithEmailAndPassword,
   updateProfile,
 } from "firebase/auth";
-import { auth } from "@/lib/firebase";
+import { requireAuth } from "@/lib/firebase";
 import { DEMO_EMAIL, DEMO_PASSWORD, DEMO_DISPLAY_NAME, isDemoAccount } from "@/lib/demo-account";
 import { seedDemoAccount } from "@/lib/demo-seed";
 
@@ -11,7 +11,7 @@ export async function signInWithEmail(email: string, password: string) {
   const normalized = email.trim().toLowerCase();
 
   try {
-    const cred = await signInWithEmailAndPassword(auth, normalized, password);
+    const cred = await signInWithEmailAndPassword(requireAuth(), normalized, password);
     if (isDemoAccount(cred.user.email)) {
       await seedDemoAccount(cred.user.uid);
     }
@@ -24,7 +24,7 @@ export async function signInWithEmail(email: string, password: string) {
       password === DEMO_PASSWORD &&
       (code === "auth/user-not-found" || code === "auth/invalid-credential")
     ) {
-      const cred = await createUserWithEmailAndPassword(auth, DEMO_EMAIL, DEMO_PASSWORD);
+      const cred = await createUserWithEmailAndPassword(requireAuth(), DEMO_EMAIL, DEMO_PASSWORD);
       await updateProfile(cred.user, { displayName: DEMO_DISPLAY_NAME });
       await seedDemoAccount(cred.user.uid);
       return cred;

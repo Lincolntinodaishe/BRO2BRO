@@ -58,6 +58,7 @@ export default function LoginPage() {
 
   async function handleGoogle() {
     setError("");
+    if (!auth) { setError("Sign-in is unavailable. Check Firebase configuration."); return; }
     try {
       await signInWithPopup(auth, new GoogleAuthProvider());
       router.push("/dashboard");
