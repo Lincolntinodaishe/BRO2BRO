@@ -42,6 +42,7 @@ export interface UserProfileData {
   focus: string[];
   role?: UserRole;
   shopName?: string;
+  photoURL?: string;
 }
 
 export const DEMO_PROFILE: UserProfileData = {

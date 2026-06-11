@@ -2,7 +2,7 @@
 import { useState } from "react";
 import {
   Star, MessageCircle, Calendar, CheckCircle,
-  Search, Filter, Video, MapPin, Heart, Award, ChevronRight
+  Search, Filter, MapPin, Heart, Award, ChevronRight
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -208,11 +208,6 @@ function MentorCard({ mentor, onConnect }: { mentor: Mentor; onConnect: (id: str
             <Calendar className="h-3.5 w-3.5" />
             Schedule
           </Button>
-          {mentor.format !== "in-person" && (
-            <Button variant="outline" size="icon-sm">
-              <Video className="h-3.5 w-3.5" />
-            </Button>
-          )}
         </div>
       </CardContent>
     </Card>

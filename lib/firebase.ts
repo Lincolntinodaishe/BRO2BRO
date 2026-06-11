@@ -1,12 +1,14 @@
 import { initializeApp, getApps, type FirebaseApp } from "firebase/app";
 import { getAuth, type Auth } from "firebase/auth";
 import { getDatabase, type Database } from "firebase/database";
+import { getStorage, type FirebaseStorage } from "firebase/storage";
 
 const apiKey = process.env.NEXT_PUBLIC_FIREBASE_API_KEY;
 
 let app: FirebaseApp | null = null;
 let auth: Auth | null = null;
 let db: Database | null = null;
+let storage: FirebaseStorage | null = null;
 
 if (apiKey) {
   const firebaseConfig = {
@@ -19,9 +21,10 @@ if (apiKey) {
     appId:             process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
     measurementId:     process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID,
   };
-  app  = getApps().length ? getApps()[0] : initializeApp(firebaseConfig);
-  auth = getAuth(app);
-  db   = getDatabase(app);
+  app     = getApps().length ? getApps()[0] : initializeApp(firebaseConfig);
+  auth    = getAuth(app);
+  db      = getDatabase(app);
+  storage = getStorage(app);
 }
 
 export function requireAuth(): Auth {
@@ -34,5 +37,10 @@ export function requireDb(): Database {
   return db;
 }
 
-export { auth, db };
+export function requireStorage(): FirebaseStorage {
+  if (!storage) throw new Error("Firebase Storage is not configured");
+  return storage;
+}
+
+export { auth, db, storage };
 export default app;

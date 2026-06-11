@@ -1,10 +1,11 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import {
   User, Bell, Shield, Palette, Camera, Save, Trash2,
   Download, AlertTriangle, Check, Mail, Phone, MapPin,
-  Scissors, MessageCircle, Calendar, Activity,
+  Scissors, MessageCircle, Calendar, Activity, Loader2,
 } from "lucide-react";
+import { ref as storageRef, uploadBytes, getDownloadURL, deleteObject } from "firebase/storage";
 import { Button } from "@/components/ui/button";
 import { Avatar } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -12,6 +13,7 @@ import { cn } from "@/lib/utils";
 import { useAuth } from "@/lib/auth-context";
 import { emptyProfile } from "@/lib/demo-data";
 import { loadUserProfile, saveUserProfile } from "@/lib/user-profile-store";
+import { requireStorage } from "@/lib/firebase";
 
 /* ── Toggle ──────────────────────────────────────────────────── */
 function Toggle({
@@ -148,14 +150,17 @@ export default function SettingsPage() {
   const [tab, setTab]         = useState<Tab>("profile");
   const [saved, setSaved]     = useState(false);
   const [profileLoading, setProfileLoading] = useState(true);
+  const [photoUploading, setPhotoUploading] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   /* Profile fields */
-  const [name,  setName]   = useState("");
-  const [email, setEmail]  = useState("");
-  const [phone, setPhone]  = useState("");
-  const [city,  setCity]   = useState("");
-  const [age,   setAge]    = useState("");
-  const [focus, setFocus]  = useState<string[]>([]);
+  const [name,     setName]     = useState("");
+  const [email,    setEmail]    = useState("");
+  const [phone,    setPhone]    = useState("");
+  const [city,     setCity]     = useState("");
+  const [age,      setAge]      = useState("");
+  const [focus,    setFocus]    = useState<string[]>([]);
+  const [photoURL, setPhotoURL] = useState<string>("");
 
   useEffect(() => {
     if (!user) return;
@@ -169,9 +174,52 @@ export default function SettingsPage() {
         setCity(base.city);
         setAge(base.age);
         setFocus(base.focus);
+        setPhotoURL(base.photoURL ?? "");
       })
       .finally(() => setProfileLoading(false));
   }, [user, displayName]);
+
+  async function handlePhotoChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file || !user) return;
+    if (file.size > 5 * 1024 * 1024) {
+      alert("Photo must be under 5MB.");
+      return;
+    }
+    setPhotoUploading(true);
+    try {
+      const storage = requireStorage();
+      const photoRef = storageRef(storage, `photos/${user.uid}/avatar`);
+      await uploadBytes(photoRef, file);
+      const url = await getDownloadURL(photoRef);
+      setPhotoURL(url);
+      await saveUserProfile(user.uid, { name, email, phone, city, age, focus, photoURL: url });
+      setSaved(true);
+      setTimeout(() => setSaved(false), 2200);
+    } catch (err) {
+      console.error("Photo upload failed:", err);
+      alert("Upload failed. Please try again.");
+    } finally {
+      setPhotoUploading(false);
+      if (fileInputRef.current) fileInputRef.current.value = "";
+    }
+  }
+
+  async function handleRemovePhoto() {
+    if (!user || !photoURL) return;
+    setPhotoUploading(true);
+    try {
+      const storage = requireStorage();
+      const photoRef = storageRef(storage, `photos/${user.uid}/avatar`);
+      await deleteObject(photoRef).catch(() => {});
+      setPhotoURL("");
+      await saveUserProfile(user.uid, { name, email, phone, city, age, focus, photoURL: "" });
+      setSaved(true);
+      setTimeout(() => setSaved(false), 2200);
+    } finally {
+      setPhotoUploading(false);
+    }
+  }
 
   /* Notification toggles */
   const [notifs, setNotifs] = useState({
@@ -205,7 +253,7 @@ export default function SettingsPage() {
 
   async function save() {
     if (!user) return;
-    await saveUserProfile(user.uid, { name, email, phone, city, age, focus });
+    await saveUserProfile(user.uid, { name, email, phone, city, age, focus, photoURL });
     setSaved(true);
     setTimeout(() => setSaved(false), 2200);
   }
@@ -264,19 +312,53 @@ export default function SettingsPage() {
         <div className="space-y-5">
           {/* Avatar */}
           <Section title="Profile Photo">
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/jpeg,image/png,image/webp"
+              className="hidden"
+              onChange={handlePhotoChange}
+            />
             <div className="flex items-center gap-5">
               <div className="relative shrink-0">
-                <Avatar name={name} size="lg" online />
-                <button className="absolute -bottom-1 -right-1 w-7 h-7 bg-black rounded-full flex items-center justify-center shadow-lg hover:bg-gray-800 transition-colors">
-                  <Camera className="h-3.5 w-3.5 text-white" />
+                <Avatar src={photoURL || null} name={name} size="lg" online />
+                <button
+                  onClick={() => fileInputRef.current?.click()}
+                  disabled={photoUploading}
+                  className="absolute -bottom-1 -right-1 w-7 h-7 bg-black rounded-full flex items-center justify-center shadow-lg hover:bg-gray-800 transition-colors disabled:opacity-50"
+                >
+                  {photoUploading ? (
+                    <Loader2 className="h-3.5 w-3.5 text-white animate-spin" />
+                  ) : (
+                    <Camera className="h-3.5 w-3.5 text-white" />
+                  )}
                 </button>
               </div>
               <div>
-                <p className="text-sm font-medium text-gray-900">Upload a photo</p>
+                <p className="text-sm font-medium text-gray-900">
+                  {photoURL ? "Photo uploaded" : "Upload a photo"}
+                </p>
                 <p className="text-xs text-gray-400 mt-0.5">JPG, PNG up to 5MB. Optional — your initials show by default.</p>
                 <div className="flex gap-2 mt-3">
-                  <Button variant="outline" size="xs">Upload Photo</Button>
-                  <Button variant="ghost" size="xs" className="text-red-500 hover:text-red-600 hover:bg-red-50">Remove</Button>
+                  <Button
+                    variant="outline"
+                    size="xs"
+                    disabled={photoUploading}
+                    onClick={() => fileInputRef.current?.click()}
+                  >
+                    {photoUploading ? "Uploading…" : "Upload Photo"}
+                  </Button>
+                  {photoURL && (
+                    <Button
+                      variant="ghost"
+                      size="xs"
+                      disabled={photoUploading}
+                      onClick={handleRemovePhoto}
+                      className="text-red-500 hover:text-red-600 hover:bg-red-50"
+                    >
+                      Remove
+                    </Button>
+                  )}
                 </div>
               </div>
             </div>

@@ -23,8 +23,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const router   = useRouter();
   const { user, loading, displayName, signOut, isBarberDemo, isMentorDemo, userRole } = useAuth();
 
-  const isBarberRoute = pathname.startsWith("/dashboard/barber");
-  const isMentorRoute = pathname.startsWith("/dashboard/mentor");
+  const isBarberRoute = pathname.startsWith("/dashboard/barber/") || pathname === "/dashboard/barber";
+  const isMentorRoute = pathname.startsWith("/dashboard/mentor/") || pathname === "/dashboard/mentor";
   const isPortalRoute = isBarberRoute || isMentorRoute;
 
   // Redirect to login if not authenticated (fallback after middleware)
