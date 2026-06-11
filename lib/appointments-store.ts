@@ -1,22 +1,24 @@
+import { ref, get, set } from "firebase/database";
+import { db } from "@/lib/firebase";
+
 export type ApptStatus = "confirmed" | "pending" | "completed" | "cancelled";
-export type ApptType = "clinic" | "barbershop" | "virtual" | "ai";
+export type ApptType   = "clinic" | "barbershop" | "virtual" | "ai";
 
 export interface Appointment {
-  id: string;
-  title: string;
-  provider: string;
+  id:           string;
+  title:        string;
+  provider:     string;
   providerType: ApptType;
-  date: string;
-  time: string;
-  location: string;
-  phone?: string;
-  status: ApptStatus;
-  notes?: string;
-  reminder: boolean;
+  date:         string;
+  time:         string;
+  location:     string;
+  phone?:       string;
+  status:       ApptStatus;
+  notes?:       string;
+  reminder:     boolean;
 }
 
-const STORAGE_KEY = "bro2bro_appointments";
-
+/* ── Mock data for the test account ──────────────────────────── */
 export const DEFAULT_APPOINTMENTS: Appointment[] = [
   {
     id: "1",
@@ -93,18 +95,32 @@ export const DEFAULT_APPOINTMENTS: Appointment[] = [
   },
 ];
 
-export function loadAppointments(): Appointment[] {
-  if (typeof window === "undefined") return DEFAULT_APPOINTMENTS;
-  try {
-    const stored = localStorage.getItem(STORAGE_KEY);
-    if (!stored) return DEFAULT_APPOINTMENTS;
-    return JSON.parse(stored);
-  } catch {
-    return DEFAULT_APPOINTMENTS;
-  }
+/* ── Firebase path ───────────────────────────────────────────── */
+function apptRef(uid: string) {
+  return ref(db, `users/${uid}/appointments`);
 }
 
-export function saveAppointments(appointments: Appointment[]): void {
-  if (typeof window === "undefined") return;
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(appointments));
+/* ── Load appointments for a user from Firebase ─────────────── */
+export async function loadUserAppointments(uid: string): Promise<Appointment[]> {
+  const snap = await get(apptRef(uid));
+  if (!snap.exists()) return [];
+  const val = snap.val() as Record<string, Appointment>;
+  return Object.values(val);
+}
+
+/* ── Save appointments for a user to Firebase ───────────────── */
+export async function saveUserAppointments(uid: string, appointments: Appointment[]): Promise<void> {
+  const obj = appointments.reduce<Record<string, Appointment>>(
+    (acc, a) => ({ ...acc, [a.id]: a }),
+    {}
+  );
+  await set(apptRef(uid), obj);
+}
+
+/* ── Seed test account with mock data (only if empty) ────────── */
+export async function seedTestAccount(uid: string): Promise<void> {
+  const snap = await get(apptRef(uid));
+  if (!snap.exists() || Object.keys(snap.val() ?? {}).length === 0) {
+    await saveUserAppointments(uid, DEFAULT_APPOINTMENTS);
+  }
 }

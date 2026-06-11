@@ -15,6 +15,7 @@ interface HeaderProps {
   title?: string;
   onMenuClick?: () => void;
   userName?: string;
+  onSignOut?: () => void;
 }
 
 const notifications = [
@@ -139,7 +140,7 @@ function SearchPalette({ onClose }: { onClose: () => void }) {
 }
 
 /* ── Header ─────────────────────────────────────────────────── */
-export function Header({ title = "Dashboard", onMenuClick, userName = "Marcus J." }: HeaderProps) {
+export function Header({ title = "Dashboard", onMenuClick, userName = "Marcus J.", onSignOut }: HeaderProps) {
   const [notifOpen, setNotifOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
@@ -282,7 +283,7 @@ export function Header({ title = "Dashboard", onMenuClick, userName = "Marcus J.
                 </div>
 
                 <div className="border-t border-gray-50 py-1.5">
-                  <button className="w-full flex items-center gap-2.5 px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 transition-colors">
+                  <button onClick={onSignOut} className="w-full flex items-center gap-2.5 px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 transition-colors">
                     <LogOut className="h-4 w-4" />
                     Sign Out
                   </button>

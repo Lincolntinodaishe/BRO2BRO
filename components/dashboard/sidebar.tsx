@@ -26,6 +26,7 @@ interface SidebarProps {
   onToggleCollapse?: () => void;
   role?: string;
   userName?: string;
+  onSignOut?: () => void;
 }
 
 function NavTooltip({ label, collapsed }: { label: string; collapsed: boolean }) {
@@ -45,6 +46,7 @@ export function Sidebar({
   onToggleCollapse,
   role = "Men's Health",
   userName = "Marcus J.",
+  onSignOut,
 }: SidebarProps) {
   const pathname = usePathname();
 
@@ -199,7 +201,7 @@ export function Sidebar({
                   <span className="truncate">{role}</span>
                 </div>
               </div>
-              <button className="shrink-0 p-1.5 rounded-lg hover:bg-gray-100 transition-colors group">
+              <button onClick={onSignOut} className="shrink-0 p-1.5 rounded-lg hover:bg-gray-100 transition-colors group" title="Sign out">
                 <LogOut className="h-4 w-4 text-gray-400 group-hover:text-red-500 transition-colors" />
               </button>
             </div>

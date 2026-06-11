@@ -15,9 +15,10 @@ import {
   Appointment,
   ApptStatus,
   ApptType,
-  loadAppointments,
-  saveAppointments,
+  loadUserAppointments,
+  saveUserAppointments,
 } from "@/lib/appointments-store";
+import { useAuth } from "@/lib/auth-context";
 
 const STATUS_CONFIG: Record<ApptStatus, { label: string; color: string; icon: typeof CheckCircle }> = {
   confirmed:  { label: "Confirmed",  color: "bg-green-50 text-green-700",  icon: CheckCircle  },
@@ -296,16 +297,26 @@ function BookModal({ onClose, onBook }: { onClose: () => void; onBook: (appt: Ap
 }
 
 export default function AppointmentsPage() {
-  const [appointments, setAppointments] = useState<Appointment[]>([]);
-  const [showModal, setShowModal] = useState(false);
+  const { user }                          = useAuth();
+  const [appointments, setAppointments]   = useState<Appointment[]>([]);
+  const [loaded, setLoaded]               = useState(false);
+  const [showModal, setShowModal]         = useState(false);
 
+  // Load from Firebase when user is known
   useEffect(() => {
-    setAppointments(loadAppointments());
-  }, []);
+    if (!user) return;
+    setLoaded(false);
+    loadUserAppointments(user.uid).then((data) => {
+      setAppointments(data);
+      setLoaded(true);
+    });
+  }, [user?.uid]);
 
+  // Save to Firebase whenever appointments change (after initial load)
   useEffect(() => {
-    if (appointments.length > 0) saveAppointments(appointments);
-  }, [appointments]);
+    if (!user || !loaded) return;
+    saveUserAppointments(user.uid, appointments).catch(console.error);
+  }, [appointments, loaded, user?.uid]);
 
   function cancelAppt(id: string) {
     setAppointments((prev: Appointment[]) =>
