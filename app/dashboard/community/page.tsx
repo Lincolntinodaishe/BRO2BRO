@@ -1,8 +1,8 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   MessageSquare, ThumbsUp, Bookmark, MoreHorizontal,
-  Plus, Flame, Clock, TrendingUp, Search, Pin
+  Plus, Flame, Clock, TrendingUp, Search, Pin, Loader2,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -11,89 +11,55 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Avatar } from "@/components/ui/avatar";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
+import { useAuth } from "@/lib/auth-context";
+import {
+  subscribeToPosts, createPost, toggleLike, timeAgo,
+  type FirebasePost,
+} from "@/lib/community-store";
 
-interface Post {
-  id: string;
-  author: string;
-  authorRole: string;
-  time: string;
-  category: string;
-  title: string;
-  body: string;
-  likes: number;
-  comments: number;
-  pinned?: boolean;
-  liked?: boolean;
-}
-
-const POSTS: Post[] = [
+/* ── Hardcoded fallback posts (shown when Firebase is not configured) ── */
+const FALLBACK_POSTS: FirebasePost[] = [
   {
-    id: "1",
-    author: "Marcus W.",
-    authorRole: "Member · Pine Bluff",
-    time: "2h ago",
-    category: "Blood Pressure",
+    id: "1", author: "Marcus W.", authorRole: "Member · Pine Bluff",
+    timestamp: Date.now() - 2 * 3600000, category: "Blood Pressure",
     title: "First time getting my BP checked in 3 years — here's what happened",
     body: "My barber Joe showed me the BRO2BRO QR code and I figured why not. My reading was 148/92 — not great, but I finally know where I stand. Booked an appointment at the UAMS clinic for next week. Just want to share in case someone else is putting it off like I was.",
-    likes: 47,
-    comments: 12,
-    pinned: true,
+    likes: 47, likedBy: {}, pinned: true,
   },
   {
-    id: "2",
-    author: "Dre M.",
-    authorRole: "Member · Little Rock",
-    time: "5h ago",
-    category: "Mental Health",
+    id: "2", author: "Dre M.", authorRole: "Member · Little Rock",
+    timestamp: Date.now() - 5 * 3600000, category: "Mental Health",
     title: "Finally talked to a therapist. Took me 2 years to make that call.",
-    body: "I kept telling myself I didn't need it. Work stress, relationship stuff, all of it building up. The counselor BRO2BRO connected me with works specifically with Black men — that made a difference. Not gonna pretend one session fixed everything, but I feel lighter.",
-    likes: 83,
-    comments: 21,
+    body: "I kept telling myself I didn't need it. Work stress, relationship stuff, all of it building up. The counselor BRO2BRO connected me with works specifically with Black men — that made a difference.",
+    likes: 83, likedBy: {},
   },
   {
-    id: "3",
-    author: "Coach Ray",
-    authorRole: "Mentor · Verified",
-    time: "1d ago",
-    category: "Fitness",
+    id: "3", author: "Coach Ray", authorRole: "Mentor · Verified",
+    timestamp: Date.now() - 24 * 3600000, category: "Fitness",
     title: "30 days of walking 30 minutes a day — my results",
-    body: "Started because my doctor said my A1C was creeping up. Nothing fancy — just walking after dinner every night. Down 8 lbs, sleeping better, and my mood is way up. Anyone else doing something simple that's working?",
-    likes: 112,
-    comments: 34,
+    body: "Started because my doctor said my A1C was creeping up. Nothing fancy — just walking after dinner every night. Down 8 lbs, sleeping better, and my mood is way up.",
+    likes: 112, likedBy: {},
   },
   {
-    id: "4",
-    author: "Trev J.",
-    authorRole: "Member · North Little Rock",
-    time: "1d ago",
-    category: "Nutrition",
+    id: "4", author: "Trev J.", authorRole: "Member · North Little Rock",
+    timestamp: Date.now() - 26 * 3600000, category: "Nutrition",
     title: "Trying to eat better without giving up all the food I grew up with",
-    body: "Been researching how to make traditional dishes healthier — less salt, different cooking oils, more vegetables without sacrificing taste. Found some good resources. Happy to share what I've learned if there's interest.",
-    likes: 56,
-    comments: 18,
+    body: "Been researching how to make traditional dishes healthier — less salt, different cooking oils, more vegetables without sacrificing taste.",
+    likes: 56, likedBy: {},
   },
   {
-    id: "5",
-    author: "Pastor James B.",
-    authorRole: "Trustee · Community Leader",
-    time: "2d ago",
-    category: "Community",
+    id: "5", author: "Pastor James B.", authorRole: "Trustee · Community Leader",
+    timestamp: Date.now() - 2 * 24 * 3600000, category: "Community",
     title: "Free health fair at Greater Christ Temple — this Saturday",
-    body: "We're partnering with UAMS and BRO2BRO to host a free health screening this Saturday, 9AM–2PM. Blood pressure, glucose, BMI — all free, no insurance needed. Bring your crew. 2108 S Chester St, Little Rock.",
-    likes: 91,
-    comments: 8,
-    pinned: true,
+    body: "We're partnering with UAMS and BRO2BRO to host a free health screening this Saturday, 9AM–2PM. Blood pressure, glucose, BMI — all free, no insurance needed.",
+    likes: 91, likedBy: {}, pinned: true,
   },
   {
-    id: "6",
-    author: "Carlos W.",
-    authorRole: "Member · Jonesboro",
-    time: "3d ago",
-    category: "Milestones",
+    id: "6", author: "Carlos W.", authorRole: "Member · Jonesboro",
+    timestamp: Date.now() - 3 * 24 * 3600000, category: "Milestones",
     title: "Hit my 30-day check-in streak today 🔥",
-    body: "I know it sounds small but this is the most consistent I've ever been with my health. Started because my daughter asked me to. If you're just starting out — the first week is the hardest. After that it gets easier.",
-    likes: 134,
-    comments: 27,
+    body: "I know it sounds small but this is the most consistent I've ever been with my health. Started because my daughter asked me to.",
+    likes: 134, likedBy: {},
   },
 ];
 
@@ -108,7 +74,17 @@ const CATEGORY_COLORS: Record<string, string> = {
   "Milestones":     "bg-teal-50 text-teal-700",
 };
 
-function PostCard({ post, onLike }: { post: Post; onLike: (id: string) => void }) {
+/* ── Post card ───────────────────────────────────────────────────────── */
+function PostCard({
+  post, uid, onLike, likeLoading,
+}: {
+  post: FirebasePost;
+  uid?: string;
+  onLike: (id: string) => void;
+  likeLoading: string | null;
+}) {
+  const liked = uid ? !!post.likedBy?.[uid] : false;
+
   return (
     <div className={cn("bg-white rounded-2xl border p-5 hover:shadow-card transition-all duration-200", post.pinned ? "border-amber-200" : "border-gray-100")}>
       {post.pinned && (
@@ -121,7 +97,7 @@ function PostCard({ post, onLike }: { post: Post; onLike: (id: string) => void }
           <Avatar name={post.author} size="sm" />
           <div>
             <div className="text-sm font-semibold text-gray-900">{post.author}</div>
-            <div className="text-xs text-gray-400">{post.authorRole} · {post.time}</div>
+            <div className="text-xs text-gray-400">{post.authorRole} · {timeAgo(post.timestamp)}</div>
           </div>
         </div>
         <div className="flex items-center gap-2 shrink-0">
@@ -140,17 +116,22 @@ function PostCard({ post, onLike }: { post: Post; onLike: (id: string) => void }
       <div className="flex items-center gap-4 mt-4 pt-3 border-t border-gray-50">
         <button
           onClick={() => onLike(post.id)}
+          disabled={likeLoading === post.id}
           className={cn(
             "flex items-center gap-1.5 text-sm transition-colors",
-            post.liked ? "text-amber-600 font-medium" : "text-gray-400 hover:text-gray-700"
+            liked ? "text-amber-600 font-medium" : "text-gray-400 hover:text-gray-700",
+            "disabled:opacity-50"
           )}
         >
-          <ThumbsUp className={cn("h-4 w-4", post.liked && "fill-amber-600")} />
-          {post.likes + (post.liked ? 1 : 0)}
+          {likeLoading === post.id
+            ? <Loader2 className="h-4 w-4 animate-spin" />
+            : <ThumbsUp className={cn("h-4 w-4", liked && "fill-amber-600")} />
+          }
+          {post.likes}
         </button>
         <button className="flex items-center gap-1.5 text-sm text-gray-400 hover:text-gray-700 transition-colors">
           <MessageSquare className="h-4 w-4" />
-          {post.comments}
+          0
         </button>
         <button className="ml-auto flex items-center gap-1.5 text-sm text-gray-400 hover:text-gray-700 transition-colors">
           <Bookmark className="h-4 w-4" />
@@ -161,17 +142,29 @@ function PostCard({ post, onLike }: { post: Post; onLike: (id: string) => void }
   );
 }
 
-function NewPostModal({ onClose }: { onClose: () => void }) {
-  const [title, setTitle] = useState("");
-  const [body, setBody] = useState("");
+/* ── New post modal ──────────────────────────────────────────────────── */
+function NewPostModal({
+  onClose, onSubmit, submitting,
+}: {
+  onClose: () => void;
+  onSubmit: (data: { title: string; body: string; category: string }) => Promise<void>;
+  submitting: boolean;
+}) {
+  const [title,    setTitle]    = useState("");
+  const [body,     setBody]     = useState("");
   const [category, setCategory] = useState("Community");
+
+  async function handlePost() {
+    if (!title.trim() || !body.trim()) return;
+    await onSubmit({ title: title.trim(), body: body.trim(), category });
+  }
 
   return (
     <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4 animate-fade-in">
       <div className="bg-white rounded-2xl w-full max-w-lg shadow-float">
         <div className="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
           <h2 className="text-base font-bold text-gray-900">New Post</h2>
-          <button onClick={onClose} className="text-gray-400 hover:text-gray-700 text-lg leading-none">×</button>
+          <button onClick={onClose} disabled={submitting} className="text-gray-400 hover:text-gray-700 text-lg leading-none">×</button>
         </div>
         <div className="p-6 space-y-4">
           <div>
@@ -212,22 +205,107 @@ function NewPostModal({ onClose }: { onClose: () => void }) {
           </p>
         </div>
         <div className="px-6 pb-6 flex gap-3 justify-end">
-          <Button variant="outline" onClick={onClose}>Cancel</Button>
-          <Button disabled={!title.trim() || !body.trim()} onClick={onClose}>Post to Community</Button>
+          <Button variant="outline" onClick={onClose} disabled={submitting}>Cancel</Button>
+          <Button
+            disabled={!title.trim() || !body.trim() || submitting}
+            onClick={handlePost}
+          >
+            {submitting ? <><Loader2 className="h-4 w-4 mr-1.5 animate-spin" />Posting…</> : "Post to Community"}
+          </Button>
         </div>
       </div>
     </div>
   );
 }
 
+/* ── Page ────────────────────────────────────────────────────────────── */
 export default function CommunityPage() {
-  const [posts, setPosts] = useState(POSTS);
+  const { user, displayName, userRole } = useAuth();
+  const [posts,          setPosts]          = useState<FirebasePost[]>([]);
+  const [loading,        setLoading]        = useState(true);
+  const [firebaseActive, setFirebaseActive] = useState(true);
   const [activeCategory, setActiveCategory] = useState("All");
-  const [search, setSearch] = useState("");
-  const [showModal, setShowModal] = useState(false);
+  const [search,         setSearch]         = useState("");
+  const [showModal,      setShowModal]      = useState(false);
+  const [submitting,     setSubmitting]     = useState(false);
+  const [likeLoading,    setLikeLoading]    = useState<string | null>(null);
 
-  function toggleLike(id: string) {
-    setPosts((prev) => prev.map((p) => p.id === id ? { ...p, liked: !p.liked } : p));
+  /* Subscribe to Firebase posts (or fall back to hardcoded) */
+  useEffect(() => {
+    try {
+      const unsub = subscribeToPosts((firePosts) => {
+        setPosts(firePosts);
+        setLoading(false);
+      });
+      return unsub;
+    } catch {
+      setPosts(FALLBACK_POSTS);
+      setLoading(false);
+      setFirebaseActive(false);
+    }
+  }, []);
+
+  /* Build the author role label */
+  function authorRoleLabel(): string {
+    if (userRole === "mentor") return "Mentor · Verified";
+    if (userRole === "barber") return "Barber · Verified";
+    return "Member";
+  }
+
+  async function handleNewPost(data: { title: string; body: string; category: string }) {
+    if (!user) return;
+    setSubmitting(true);
+    try {
+      if (firebaseActive) {
+        await createPost({
+          author:     displayName || user.email || "Anonymous",
+          authorRole: authorRoleLabel(),
+          category:   data.category,
+          title:      data.title,
+          body:       data.body,
+        });
+      } else {
+        /* Optimistic local insert when Firebase is unavailable */
+        const newPost: FirebasePost = {
+          id:         String(Date.now()),
+          author:     displayName || "You",
+          authorRole: authorRoleLabel(),
+          timestamp:  Date.now(),
+          category:   data.category,
+          title:      data.title,
+          body:       data.body,
+          likes:      0,
+          likedBy:    {},
+        };
+        setPosts((prev) => [newPost, ...prev]);
+      }
+      setShowModal(false);
+    } finally {
+      setSubmitting(false);
+    }
+  }
+
+  async function handleLike(postId: string) {
+    if (!user) return;
+    if (!firebaseActive) {
+      /* Optimistic local toggle */
+      setPosts((prev) =>
+        prev.map((p) => {
+          if (p.id !== postId) return p;
+          const liked = !!p.likedBy?.[user.uid];
+          const likedBy = { ...p.likedBy };
+          if (liked) delete likedBy[user.uid]; else likedBy[user.uid] = true;
+          return { ...p, likes: Object.keys(likedBy).length, likedBy };
+        })
+      );
+      return;
+    }
+    setLikeLoading(postId);
+    try {
+      await toggleLike(postId, user.uid);
+    } finally {
+      setLikeLoading(null);
+    }
   }
 
   const filtered = posts.filter((p) => {
@@ -235,6 +313,36 @@ export default function CommunityPage() {
     if (search && !p.title.toLowerCase().includes(search.toLowerCase()) && !p.body.toLowerCase().includes(search.toLowerCase())) return false;
     return true;
   });
+
+  const byTrending = [...filtered].sort((a, b) => (b.likes * 2 + b.timestamp / 1e9) - (a.likes * 2 + a.timestamp / 1e9));
+  const byRecent   = [...filtered].sort((a, b) => b.timestamp - a.timestamp);
+  const byTop      = [...filtered].sort((a, b) => b.likes - a.likes);
+
+  function PostList({ items }: { items: FirebasePost[] }) {
+    if (loading) {
+      return (
+        <div className="flex items-center justify-center py-16">
+          <Loader2 className="h-6 w-6 animate-spin text-gray-400" />
+        </div>
+      );
+    }
+    if (items.length === 0) {
+      return (
+        <div className="bg-white rounded-2xl border border-gray-100 p-12 text-center">
+          <MessageSquare className="h-10 w-10 text-gray-200 mx-auto mb-4" />
+          <p className="text-gray-500 text-sm font-medium">No posts yet.</p>
+          <p className="text-gray-400 text-xs mt-1">Be the first to share something.</p>
+        </div>
+      );
+    }
+    return (
+      <div className="space-y-4">
+        {items.map((p) => (
+          <PostCard key={p.id} post={p} uid={user?.uid} onLike={handleLike} likeLoading={likeLoading} />
+        ))}
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
@@ -285,14 +393,8 @@ export default function CommunityPage() {
 
         <TabsContent value="trending">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-2">
-            <div className="lg:col-span-2 space-y-4">
-              {filtered.length === 0 && (
-                <div className="bg-white rounded-2xl border border-gray-100 p-12 text-center">
-                  <MessageSquare className="h-10 w-10 text-gray-200 mx-auto mb-4" />
-                  <p className="text-gray-500 text-sm">No posts match your search.</p>
-                </div>
-              )}
-              {filtered.map((p) => <PostCard key={p.id} post={p} onLike={toggleLike} />)}
+            <div className="lg:col-span-2">
+              <PostList items={byTrending} />
             </div>
 
             {/* Sidebar */}
@@ -319,16 +421,10 @@ export default function CommunityPage() {
 
               <Card>
                 <CardContent className="p-5">
-                  <h3 className="text-sm font-bold text-gray-900 mb-3">Active This Week</h3>
-                  <div className="space-y-3">
-                    {["Marcus W.", "Coach Ray", "Dre M.", "Carlos W.", "Trev J."].map((name, i) => (
-                      <div key={name} className="flex items-center gap-2.5">
-                        <Avatar name={name} size="xs" online={i < 2} />
-                        <span className="text-xs text-gray-700 flex-1">{name}</span>
-                        <span className="text-xs text-gray-400">{[12, 8, 6, 5, 4][i]} posts</span>
-                      </div>
-                    ))}
-                  </div>
+                  <h3 className="text-sm font-bold text-gray-900 mb-3">
+                    {posts.length} {posts.length === 1 ? "Post" : "Posts"} in Community
+                  </h3>
+                  <p className="text-xs text-gray-400">Share your story and connect with brothers on the same journey.</p>
                 </CardContent>
               </Card>
             </div>
@@ -336,19 +432,21 @@ export default function CommunityPage() {
         </TabsContent>
 
         <TabsContent value="recent">
-          <div className="space-y-4 mt-2">
-            {[...filtered].reverse().map((p) => <PostCard key={p.id} post={p} onLike={toggleLike} />)}
-          </div>
+          <div className="mt-2"><PostList items={byRecent} /></div>
         </TabsContent>
 
         <TabsContent value="top">
-          <div className="space-y-4 mt-2">
-            {[...filtered].sort((a, b) => b.likes - a.likes).map((p) => <PostCard key={p.id} post={p} onLike={toggleLike} />)}
-          </div>
+          <div className="mt-2"><PostList items={byTop} /></div>
         </TabsContent>
       </Tabs>
 
-      {showModal && <NewPostModal onClose={() => setShowModal(false)} />}
+      {showModal && (
+        <NewPostModal
+          onClose={() => setShowModal(false)}
+          onSubmit={handleNewPost}
+          submitting={submitting}
+        />
+      )}
     </div>
   );
 }
