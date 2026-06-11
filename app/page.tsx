@@ -70,7 +70,7 @@ function Navbar() {
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2.5">
-            <Image src={bro2broLogo} alt="BRO2BRO" height={36} className="h-9 w-auto" />
+            <Image src={bro2broLogo} alt="BRO2BRO" height={32} className="h-8 w-auto" />
             <span className="text-xl font-black tracking-widest text-gray-900 uppercase">BRO2BRO</span>
           </Link>
 
@@ -362,7 +362,7 @@ function Hero() {
                   {/* Chat header */}
                   <div className="bg-black text-white px-4 pt-1 pb-3 flex items-center gap-2.5 shrink-0">
                     <div className="w-8 h-8 rounded-full overflow-hidden shrink-0 bg-white">
-                      <Image src={bro2broLogo} alt="Bro AI" width={32} height={32} className="w-full h-full object-contain" />
+                      <Image src={bro2broLogo} alt="Bro AI" width={36} height={36} className="w-full h-full object-contain" />
                     </div>
                     <div className="flex-1">
                       <div className="text-xs font-bold">Bro AI</div>
@@ -426,10 +426,21 @@ function Hero() {
 }
 
 /* ─── TRUST BAR ────────────────────────────────────────────── */
-const partners: { name: string; abbr?: string; color?: string; logo?: typeof uamsHealthLogo }[] = [
-  { name: "UAMS Barbershop Talk", logo: barbershopTalkLogo },
-  { name: "UAMS Health",          logo: uams1Logo },
-  { name: "UAMS",                 logo: uamsHealthLogo },
+interface Partner {
+  name: string;
+  abbr?: string;
+  color?: string;
+  logo?: typeof uamsHealthLogo;
+  logoDark?: typeof uamsHealthLogo;
+  logoHeight?: number;
+}
+
+const partners: Partner[] = [
+  { name: "UAMS Barbershop Talk",              logo: barbershopTalkLogo },
+  { name: "UAMS Health",                       logo: uams1Logo },
+  { name: "UAMS",                              logo: uamsHealthLogo },
+  { name: "UA Little Rock",                    abbr: "UALR", color: "bg-red-100 text-red-700" },
+  { name: "AI Hackathon & HealthTech",         abbr: "HT",   color: "bg-sky-100 text-sky-700" },
   { name: "BCBS Arkansas",        abbr: "BCBS", color: "bg-indigo-100 text-indigo-700" },
   { name: "UAPB",                 abbr: "UAPB", color: "bg-amber-100 text-amber-700" },
   { name: "Arkansas Dept. of Health", abbr: "ADH", color: "bg-red-100 text-red-700" },
@@ -439,17 +450,29 @@ const partners: { name: string; abbr?: string; color?: string; logo?: typeof uam
   { name: "Robert Wood Johnson",  abbr: "RWJ",  color: "bg-purple-100 text-purple-700" },
 ];
 
-function PartnerLogo({ name, abbr, color, logo }: { name: string; abbr?: string; color?: string; logo?: typeof uamsHealthLogo }) {
+function PartnerLogo({
+  name,
+  abbr,
+  color,
+  logo,
+  logoDark,
+  logoHeight = 32,
+  dark = false,
+}: Partner & { dark?: boolean }) {
+  const src = dark && logoDark ? logoDark : logo;
+
   return (
-    <div className="flex items-center gap-3 mx-10 shrink-0">
-      {logo ? (
-        <Image src={logo} alt={name} height={56} className="h-14 w-auto object-contain opacity-70 hover:opacity-100 transition-opacity" />
+    <div className="flex items-center gap-3 mx-10 shrink-0" title={name}>
+      {src ? (
+        <Image src={src} alt={name} height={56} className="h-14 w-auto object-contain opacity-70 hover:opacity-100 transition-opacity" />
       ) : (
         <>
           <div className={cn("w-10 h-10 rounded-xl flex items-center justify-center font-black text-xs shrink-0", color)}>
             {abbr}
           </div>
-          <span className="text-sm font-semibold text-gray-400 whitespace-nowrap">{name}</span>
+          <span className={cn("text-sm font-semibold whitespace-nowrap", dark ? "text-gray-400" : "text-gray-400")}>
+            {name}
+          </span>
         </>
       )}
     </div>
@@ -462,14 +485,14 @@ function TrustBar() {
       <p className="text-center text-xs font-semibold text-gray-400 uppercase tracking-widest mb-6">
         Backed by &amp; Built for the Community
       </p>
+
       <div className="relative">
-        {/* Fade edges */}
-        <div className="absolute left-0 top-0 bottom-0 w-24 bg-gradient-to-r from-gray-50/80 to-transparent z-10 pointer-events-none" />
-        <div className="absolute right-0 top-0 bottom-0 w-24 bg-gradient-to-l from-gray-50/80 to-transparent z-10 pointer-events-none" />
-        {/* Marquee */}
-        <div className="marquee-track">
-          {partners.map((p) => <PartnerLogo key={p.name} {...p} />)}
-          {partners.map((p) => <PartnerLogo key={p.name + "-2"} {...p} />)}
+        <div className="absolute left-0 top-0 bottom-0 w-24 bg-gradient-to-r from-gray-50 to-transparent z-10 pointer-events-none" />
+        <div className="absolute right-0 top-0 bottom-0 w-24 bg-gradient-to-l from-gray-50 to-transparent z-10 pointer-events-none" />
+        <div className="marquee-track items-center py-2">
+          {[...partners, ...partners].map((p, i) => (
+            <PartnerLogo key={`${p.name}-${i}`} {...p} />
+          ))}
         </div>
       </div>
     </section>
@@ -1022,7 +1045,7 @@ function CTASection() {
     <section className="py-24 px-4 sm:px-6 lg:px-8 bg-black">
       <div className="max-w-4xl mx-auto text-center">
         <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-white mb-8 overflow-hidden">
-          <Image src={bro2broLogo} alt="BRO2BRO" width={64} height={64} className="w-full h-full object-contain" />
+          <Image src={bro2broLogo} alt="BRO2BRO" width={56} height={56} className="w-14 h-14 object-contain" />
         </div>
         <h2 className="text-4xl sm:text-5xl md:text-6xl font-black text-white leading-tight mb-6">
           The conversation<br />
@@ -1103,31 +1126,8 @@ function Footer() {
     },
   ];
 
-  const sponsors = [
-    "UAMS Barbershop Talk",
-    "BCBS Arkansas",
-    "Robert Wood Johnson Foundation",
-    "Jumpstart Nova",
-    "American Heart Association",
-    "CDC Prevention Research Centers",
-  ];
-
   return (
     <footer className="bg-gray-50 border-t border-gray-100">
-      {/* Sponsors */}
-      <div className="border-b border-gray-100 py-10 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-7xl mx-auto">
-          <p className="text-center text-xs font-semibold text-gray-400 uppercase tracking-widest mb-6">
-            Community Sponsors &amp; Partners
-          </p>
-          <div className="flex flex-wrap justify-center items-center gap-x-8 gap-y-4">
-            {sponsors.map((s) => (
-              <span key={s} className="text-sm text-gray-400 font-medium">{s}</span>
-            ))}
-          </div>
-        </div>
-      </div>
-
       {/* Links */}
       <div className="py-16 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-5 gap-8">
