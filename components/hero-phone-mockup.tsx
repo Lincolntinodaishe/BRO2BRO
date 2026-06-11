@@ -1,7 +1,7 @@
 "use client";
 import { HeroVideo } from "@/components/hero-video";
 
-/** Angled iPhone-style frame with hero video in the screen */
+/** Angled Samsung Galaxy-style frame with hero video in the screen */
 export function HeroPhoneMockup() {
   return (
     <div className="hero-phone-scene float-phone relative flex justify-center py-4">
@@ -15,39 +15,42 @@ export function HeroPhoneMockup() {
         className="hero-phone-tilt relative w-[220px] sm:w-[250px] lg:w-[260px]"
         style={{ transform: "rotateY(-14deg) rotateX(5deg)" }}
       >
-        {/* Side buttons */}
+        {/* Volume buttons — left side (Samsung: two separate buttons) */}
         <div
-          className="absolute -left-[4px] top-[18%] w-[4px] h-7 rounded-l-md pointer-events-none"
+          className="absolute -left-[4px] top-[22%] w-[4px] h-8 rounded-l-md pointer-events-none"
           style={{ background: "linear-gradient(to right, #5a5a5a, #333)" }}
         />
         <div
-          className="absolute -left-[4px] top-[28%] w-[4px] h-11 rounded-l-md pointer-events-none"
+          className="absolute -left-[4px] top-[34%] w-[4px] h-8 rounded-l-md pointer-events-none"
           style={{ background: "linear-gradient(to right, #5a5a5a, #333)" }}
         />
+
+        {/* Power button — right side (Samsung: shorter, positioned mid-right) */}
         <div
-          className="absolute -left-[4px] top-[42%] w-[4px] h-11 rounded-l-md pointer-events-none"
-          style={{ background: "linear-gradient(to right, #5a5a5a, #333)" }}
-        />
-        <div
-          className="absolute -right-[4px] top-[32%] w-[4px] h-14 rounded-r-md pointer-events-none"
+          className="absolute -right-[4px] top-[28%] w-[4px] h-10 rounded-r-md pointer-events-none"
           style={{ background: "linear-gradient(to left, #5a5a5a, #333)" }}
         />
 
-        {/* Titanium bezel */}
+        {/* Samsung Galaxy bezel — flatter corners, dark glossy finish */}
         <div
-          className="rounded-[2.75rem] sm:rounded-[3rem] p-[3px] sm:p-1"
+          className="rounded-[2.1rem] sm:rounded-[2.25rem] p-[3px] sm:p-1"
           style={{
-            background: "linear-gradient(145deg, #7a7a7a 0%, #454545 28%, #1a1a1a 62%, #3a3a3a 100%)",
+            background: "linear-gradient(145deg, #6a6a6a 0%, #3a3a3a 25%, #141414 60%, #2e2e2e 100%)",
             boxShadow:
-              "0 40px 80px -20px rgba(0,0,0,0.55), 0 16px 32px -8px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.12)",
+              "0 40px 80px -20px rgba(0,0,0,0.6), 0 16px 32px -8px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.1)",
           }}
         >
-          <div className="relative rounded-[2.6rem] sm:rounded-[2.85rem] overflow-hidden bg-black aspect-[9/16]">
-            {/* Dynamic Island */}
-            <div className="absolute top-2.5 sm:top-3 left-1/2 -translate-x-1/2 z-20 w-[28%] min-w-[72px] max-w-[100px] h-[22px] sm:h-[26px] bg-black rounded-full border border-white/[0.08] flex items-center justify-center gap-2 pointer-events-none">
-              <div className="w-[7px] h-[7px] rounded-full bg-[#1c1c1c] border border-[#2a2a2a]" />
-              <div className="w-[10px] h-[10px] rounded-full bg-[#0a0a0a] border border-[#252525]" />
-            </div>
+          {/* Screen — Samsung uses slightly less rounding than iPhone */}
+          <div className="relative rounded-[1.9rem] sm:rounded-[2rem] overflow-hidden bg-black aspect-[9/16]">
+
+            {/* Samsung punch-hole camera — single centered dot */}
+            <div
+              className="absolute top-3 left-1/2 -translate-x-1/2 z-20 w-[11px] h-[11px] rounded-full pointer-events-none"
+              style={{
+                background: "radial-gradient(circle at 35% 35%, #2a2a2a, #000)",
+                boxShadow: "0 0 0 1.5px rgba(255,255,255,0.07)",
+              }}
+            />
 
             <HeroVideo />
 
@@ -56,7 +59,7 @@ export function HeroPhoneMockup() {
               className="absolute inset-0 pointer-events-none z-10"
               style={{
                 background:
-                  "linear-gradient(125deg, rgba(255,255,255,0.12) 0%, rgba(255,255,255,0.03) 35%, transparent 55%, rgba(0,0,0,0.06) 100%)",
+                  "linear-gradient(125deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.02) 35%, transparent 55%, rgba(0,0,0,0.06) 100%)",
               }}
             />
           </div>
