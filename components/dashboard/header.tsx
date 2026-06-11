@@ -10,6 +10,8 @@ import {
 import { cn } from "@/lib/utils";
 import { Avatar } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
+import { useAuth } from "@/lib/auth-context";
+import { DEMO_NOTIFICATIONS } from "@/lib/demo-data";
 
 interface HeaderProps {
   title?: string;
@@ -18,14 +20,10 @@ interface HeaderProps {
   onSignOut?: () => void;
 }
 
-const notifications = [
-  { id: 1, text: "Your appointment tomorrow at 2pm is confirmed", time: "5m ago", unread: true },
-  { id: 2, text: "Marcus from your crew completed his check-in 🎉", time: "1h ago", unread: true },
-  { id: 3, text: "New resource added near 72201 — Community Health Clinic", time: "3h ago", unread: false },
-];
+const notifications: typeof DEMO_NOTIFICATIONS = [];
 
 /* ── Search palette ─────────────────────────────────────────── */
-const SEARCH_ITEMS = [
+const BASE_SEARCH_ITEMS = [
   { label: "Overview",       href: "/dashboard",              icon: LayoutDashboard, type: "Page" },
   { label: "Chat with Bro.AI",        href: "/dashboard/chat",         icon: MessageCircle,   type: "Page" },
   { label: "Find Resources", href: "/dashboard/resources",    icon: MapPin,          type: "Page" },
@@ -36,15 +34,19 @@ const SEARCH_ITEMS = [
   { label: "Book Appointment",        href: "/dashboard/appointments", icon: Calendar,    type: "Action" },
   { label: "Chat with Bro.AI",        href: "/dashboard/chat",         icon: MessageCircle, type: "Action" },
   { label: "Find a clinic near me",   href: "/dashboard/resources",    icon: MapPin,        type: "Action" },
+];
+
+const DEMO_SEARCH_ITEMS = [
   { label: "Blood Pressure Check — Tomorrow 2pm", href: "/dashboard/appointments", icon: Calendar, type: "Appointment" },
   { label: "Mental Wellness Session — Jun 23",    href: "/dashboard/appointments", icon: Calendar, type: "Appointment" },
 ];
 
-function SearchPalette({ onClose }: { onClose: () => void }) {
+function SearchPalette({ onClose, isTestAccount }: { onClose: () => void; isTestAccount: boolean }) {
   const [query, setQuery] = useState("");
   const [focused, setFocused] = useState(0);
   const router = useRouter();
   const inputRef = useRef<HTMLInputElement>(null);
+  const SEARCH_ITEMS = isTestAccount ? [...BASE_SEARCH_ITEMS, ...DEMO_SEARCH_ITEMS] : BASE_SEARCH_ITEMS;
 
   useEffect(() => {
     inputRef.current?.focus();
@@ -141,11 +143,16 @@ function SearchPalette({ onClose }: { onClose: () => void }) {
 
 /* ── Header ─────────────────────────────────────────────────── */
 export function Header({ title = "Dashboard", onMenuClick, userName = "Marcus J.", onSignOut }: HeaderProps) {
+  const { isTestAccount } = useAuth();
   const [notifOpen, setNotifOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
-  const [notifications_, setNotifications] = useState(notifications);
+  const [notifications_, setNotifications] = useState(isTestAccount ? DEMO_NOTIFICATIONS : notifications);
   const unreadCount = notifications_.filter((n) => n.unread).length;
+
+  useEffect(() => {
+    setNotifications(isTestAccount ? DEMO_NOTIFICATIONS : []);
+  }, [isTestAccount]);
 
   // Cmd+K opens search
   useEffect(() => {
@@ -217,7 +224,10 @@ export function Header({ title = "Dashboard", onMenuClick, userName = "Marcus J.
                   {unreadCount > 0 && <Badge variant="gold" size="sm">{unreadCount} new</Badge>}
                 </div>
                 <div className="divide-y divide-gray-50 max-h-72 overflow-y-auto">
-                  {notifications_.map((n) => (
+                  {notifications_.length === 0 ? (
+                    <p className="px-4 py-8 text-xs text-gray-400 text-center">No notifications yet.</p>
+                  ) : (
+                    notifications_.map((n) => (
                     <div
                       key={n.id}
                       className={cn("px-4 py-3 flex gap-3 hover:bg-gray-50 transition-colors cursor-pointer", n.unread && "bg-amber-50/40")}
@@ -228,8 +238,10 @@ export function Header({ title = "Dashboard", onMenuClick, userName = "Marcus J.
                         <p className="text-xs text-gray-400 mt-0.5">{n.time}</p>
                       </div>
                     </div>
-                  ))}
+                  ))
+                  )}
                 </div>
+                {notifications_.length > 0 && (
                 <div className="px-4 py-3 border-t border-gray-50">
                   <button
                     onClick={() => setNotifications((p) => p.map((n) => ({ ...n, unread: false })))}
@@ -238,6 +250,7 @@ export function Header({ title = "Dashboard", onMenuClick, userName = "Marcus J.
                     Mark all as read
                   </button>
                 </div>
+                )}
               </div>
             )}
           </div>
@@ -295,7 +308,7 @@ export function Header({ title = "Dashboard", onMenuClick, userName = "Marcus J.
       </header>
 
       {/* Search palette */}
-      {searchOpen && <SearchPalette onClose={() => setSearchOpen(false)} />}
+      {searchOpen && <SearchPalette onClose={() => setSearchOpen(false)} isTestAccount={isTestAccount} />}
     </>
   );
 }

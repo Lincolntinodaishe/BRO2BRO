@@ -17,6 +17,7 @@ import {
   signInWithPopup,
 } from "firebase/auth";
 import { auth } from "@/lib/firebase";
+import { isDemoAccount } from "@/lib/demo-account";
 
 const roles = [
   { id: "member",   label: "Seeking Help",     icon: User,           color: "bg-black"      },
@@ -76,6 +77,10 @@ function SignupForm() {
 
   async function handleEmailSignUp(ev: React.FormEvent) {
     ev.preventDefault();
+    if (isDemoAccount(form.email)) {
+      setError("The demo account uses Sign in — go to Login and use test@gmail.com / test123@.");
+      return;
+    }
     const err = validate();
     if (err) { setError(err); return; }
     setError("");

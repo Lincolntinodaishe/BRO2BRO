@@ -2,9 +2,9 @@
 import { createContext, useContext, useEffect, useState, ReactNode } from "react";
 import { User, onAuthStateChanged, signOut as firebaseSignOut } from "firebase/auth";
 import { auth } from "@/lib/firebase";
-import { seedTestAccount } from "@/lib/appointments-store";
+import { isDemoAccount, DEMO_DISPLAY_NAME } from "@/lib/demo-account";
+import { seedDemoAccount } from "@/lib/demo-seed";
 
-const TEST_EMAIL     = "test@gmail.com";
 const SESSION_COOKIE = "has_session";
 
 function setCookie(name: string, value: string, maxAge: number) {
@@ -39,8 +39,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
       if (fbUser) {
         setCookie(SESSION_COOKIE, "1", 60 * 60 * 24 * 7);
-        if (fbUser.email === TEST_EMAIL) {
-          seedTestAccount(fbUser.uid).catch(console.error);
+        if (isDemoAccount(fbUser.email)) {
+          seedDemoAccount(fbUser.uid).catch(console.error);
         }
       } else {
         setCookie(SESSION_COOKIE, "", 0);
@@ -54,14 +54,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setCookie(SESSION_COOKIE, "", 0);
   }
 
-  const displayName = user?.displayName ?? user?.email?.split("@")[0] ?? "User";
+  const demo = isDemoAccount(user?.email);
+  const displayName = demo
+    ? DEMO_DISPLAY_NAME
+    : (user?.displayName ?? user?.email?.split("@")[0] ?? "User");
 
   return (
     <AuthContext.Provider value={{
       user,
       loading,
       displayName,
-      isTestAccount: user?.email === TEST_EMAIL,
+      isTestAccount: demo,
       signOut,
     }}>
       {children}

@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   User, Bell, Shield, Palette, Camera, Save, Trash2,
   Download, AlertTriangle, Check, Mail, Phone, MapPin,
@@ -9,6 +9,9 @@ import { Button } from "@/components/ui/button";
 import { Avatar } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
+import { useAuth } from "@/lib/auth-context";
+import { emptyProfile } from "@/lib/demo-data";
+import { loadUserProfile, saveUserProfile } from "@/lib/user-profile-store";
 
 /* ── Toggle ──────────────────────────────────────────────────── */
 function Toggle({
@@ -141,16 +144,34 @@ type Tab = (typeof TABS)[number]["id"];
 
 /* ── Page ────────────────────────────────────────────────────── */
 export default function SettingsPage() {
+  const { user, displayName, isTestAccount } = useAuth();
   const [tab, setTab]         = useState<Tab>("profile");
   const [saved, setSaved]     = useState(false);
+  const [profileLoading, setProfileLoading] = useState(true);
 
   /* Profile fields */
-  const [name,  setName]   = useState("Marcus J.");
-  const [email, setEmail]  = useState("marcus@example.com");
-  const [phone, setPhone]  = useState("(501) 555-0142");
-  const [city,  setCity]   = useState("Little Rock, AR");
-  const [age,   setAge]    = useState("35–44");
-  const [focus, setFocus]  = useState<string[]>(["Blood Pressure", "Mental Wellness"]);
+  const [name,  setName]   = useState("");
+  const [email, setEmail]  = useState("");
+  const [phone, setPhone]  = useState("");
+  const [city,  setCity]   = useState("");
+  const [age,   setAge]    = useState("");
+  const [focus, setFocus]  = useState<string[]>([]);
+
+  useEffect(() => {
+    if (!user) return;
+    setProfileLoading(true);
+    loadUserProfile(user.uid)
+      .then((data) => {
+        const base = data ?? emptyProfile(user.email ?? "", displayName);
+        setName(base.name);
+        setEmail(base.email || user.email || "");
+        setPhone(base.phone);
+        setCity(base.city);
+        setAge(base.age);
+        setFocus(base.focus);
+      })
+      .finally(() => setProfileLoading(false));
+  }, [user, displayName]);
 
   /* Notification toggles */
   const [notifs, setNotifs] = useState({
@@ -182,9 +203,19 @@ export default function SettingsPage() {
     setFocus((p) => p.includes(item) ? p.filter((f) => f !== item) : [...p, item]);
   }
 
-  function save() {
+  async function save() {
+    if (!user) return;
+    await saveUserProfile(user.uid, { name, email, phone, city, age, focus });
     setSaved(true);
     setTimeout(() => setSaved(false), 2200);
+  }
+
+  if (profileLoading) {
+    return (
+      <div className="flex items-center justify-center py-20">
+        <div className="h-8 w-8 border-2 border-gray-200 border-t-black rounded-full animate-spin" />
+      </div>
+    );
   }
 
   return (
@@ -192,7 +223,12 @@ export default function SettingsPage() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-black text-gray-900">Settings</h1>
+          <div className="flex items-center gap-2 flex-wrap">
+            <h1 className="text-2xl font-black text-gray-900">Settings</h1>
+            {isTestAccount && (
+              <Badge className="bg-amber-100 text-amber-800 border-amber-200" size="sm">Demo profile</Badge>
+            )}
+          </div>
           <p className="text-gray-500 text-sm mt-1">Manage your profile, preferences, and privacy.</p>
         </div>
         <Button onClick={save} className="gap-2 self-start sm:self-auto">

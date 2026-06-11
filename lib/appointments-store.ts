@@ -117,10 +117,8 @@ export async function saveUserAppointments(uid: string, appointments: Appointmen
   await set(apptRef(uid), obj);
 }
 
-/* ── Seed test account with mock data (only if empty) ────────── */
+/* ── Seed test account with mock data ────────────────────────── */
 export async function seedTestAccount(uid: string): Promise<void> {
-  const snap = await get(apptRef(uid));
-  if (!snap.exists() || Object.keys(snap.val() ?? {}).length === 0) {
-    await saveUserAppointments(uid, DEFAULT_APPOINTMENTS);
-  }
+  const { seedDemoAccount } = await import("@/lib/demo-seed");
+  await seedDemoAccount(uid);
 }

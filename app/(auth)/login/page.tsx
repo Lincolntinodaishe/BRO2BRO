@@ -6,12 +6,9 @@ import { ArrowRight, Eye, EyeOff } from "lucide-react";
 import { BrandLogo } from "@/components/brand-logo";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import {
-  signInWithEmailAndPassword,
-  GoogleAuthProvider,
-  signInWithPopup,
-} from "firebase/auth";
+import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { auth } from "@/lib/firebase";
+import { signInWithEmail } from "@/lib/auth-helpers";
 
 function firebaseMsg(code: string): string {
   switch (code) {
@@ -50,7 +47,7 @@ export default function LoginPage() {
     if (!email || !password) { setError("Please fill in all fields."); return; }
     setLoading(true);
     try {
-      await signInWithEmailAndPassword(auth, email, password);
+      await signInWithEmail(email, password);
       router.push("/dashboard");
     } catch (err: unknown) {
       setError(firebaseMsg((err as { code: string }).code));
