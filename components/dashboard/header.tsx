@@ -4,7 +4,10 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
   Bell, Menu, Search, Settings, LogOut, User, ChevronRight, X,
+  Phone, MessageSquare,
 } from "lucide-react";
+
+const BRO_PHONE = "+18703958999";
 import { cn } from "@/lib/utils";
 import { Avatar } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -223,6 +226,26 @@ export function Header({ title = "Dashboard", onMenuClick, userName = "Marcus J.
         </h1>
 
         <div className="flex items-center gap-0.5 sm:gap-1.5 shrink-0">
+          {/* Call BRO2BRO */}
+          <a
+            href={`tel:${BRO_PHONE}`}
+            className="p-2 rounded-xl hover:bg-green-50 text-gray-500 hover:text-green-600 transition-colors"
+            aria-label="Call BRO2BRO"
+            title="Call BRO2BRO"
+          >
+            <Phone className="h-5 w-5" />
+          </a>
+
+          {/* Text BRO2BRO (Bro AI via SMS) */}
+          <a
+            href={`sms:${BRO_PHONE}`}
+            className="p-2 rounded-xl hover:bg-amber-50 text-gray-500 hover:text-amber-600 transition-colors"
+            aria-label="Text Bro AI"
+            title="Text Bro AI"
+          >
+            <MessageSquare className="h-5 w-5" />
+          </a>
+
           {/* Mobile: icon only */}
           <button
             type="button"

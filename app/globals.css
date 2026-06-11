@@ -61,7 +61,22 @@ body {
 .dot2 { animation: blink 1.4s infinite 0.2s; }
 .dot3 { animation: blink 1.4s infinite 0.4s; }
 
-/* Float animation for hero phone */
+/* Hero phone 3D perspective */
+.hero-phone-scene {
+  perspective: 1400px;
+  perspective-origin: 50% 40%;
+}
+.hero-phone-tilt {
+  transform-style: preserve-3d;
+  will-change: transform;
+  backface-visibility: hidden;
+}
+.hero-video-crop {
+  will-change: transform;
+  backface-visibility: hidden;
+}
+
+/* Float animation for hero media */
 @keyframes floatPhone {
   0%, 100% { transform: translateY(0px); }
   50%       { transform: translateY(-8px); }
