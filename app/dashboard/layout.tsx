@@ -21,7 +21,9 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const pathname = usePathname();
   const router   = useRouter();
-  const { user, loading, displayName, signOut } = useAuth();
+  const { user, loading, displayName, signOut, isBarberDemo, userRole } = useAuth();
+
+  const isBarberRoute = pathname.startsWith("/dashboard/barber");
 
   // Redirect to login if not authenticated (fallback after middleware)
   useEffect(() => {
@@ -29,6 +31,18 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       router.replace("/login");
     }
   }, [user, loading, router]);
+
+  // Keep barber demo / barber-role users out of member dashboard
+  useEffect(() => {
+    if (!loading && user && !isBarberRoute && (isBarberDemo || userRole === "barber")) {
+      router.replace("/dashboard/barber");
+    }
+  }, [user, loading, isBarberDemo, userRole, isBarberRoute, router]);
+
+  // Barber routes use their own layout shell
+  if (isBarberRoute) {
+    return <>{children}</>;
+  }
 
   const title = pageTitles[pathname] ?? "Dashboard";
 

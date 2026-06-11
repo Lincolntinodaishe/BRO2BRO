@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input";
 import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { auth } from "@/lib/firebase";
 import { signInWithEmail } from "@/lib/auth-helpers";
+import { getPostAuthPath } from "@/lib/auth-routes";
 
 function firebaseMsg(code: string): string {
   switch (code) {
@@ -47,8 +48,8 @@ export default function LoginPage() {
     if (!email || !password) { setError("Please fill in all fields."); return; }
     setLoading(true);
     try {
-      await signInWithEmail(email, password);
-      router.push("/dashboard");
+      const cred = await signInWithEmail(email, password);
+      router.push(await getPostAuthPath(cred.user.uid, cred.user.email));
     } catch (err: unknown) {
       setError(firebaseMsg((err as { code: string }).code));
     } finally {
@@ -60,8 +61,8 @@ export default function LoginPage() {
     setError("");
     if (!auth) { setError("Sign-in is unavailable. Check Firebase configuration."); return; }
     try {
-      await signInWithPopup(auth, new GoogleAuthProvider());
-      router.push("/dashboard");
+      const cred = await signInWithPopup(auth, new GoogleAuthProvider());
+      router.push(await getPostAuthPath(cred.user.uid, cred.user.email));
     } catch (err: unknown) {
       setError(firebaseMsg((err as { code: string }).code));
     }

@@ -17,7 +17,11 @@ import {
   signInWithPopup,
 } from "firebase/auth";
 import { auth } from "@/lib/firebase";
-import { isDemoAccount } from "@/lib/demo-account";
+import { isMemberDemoAccount, isBarberDemoAccount } from "@/lib/demo-account";
+import { getPostAuthPath } from "@/lib/auth-routes";
+import { saveUserProfile } from "@/lib/user-profile-store";
+import { emptyProfile } from "@/lib/demo-data";
+import type { UserRole } from "@/lib/demo-account";
 
 const roles = [
   { id: "member",   label: "Seeking Help",     icon: User,           color: "bg-black"      },
@@ -77,8 +81,12 @@ function SignupForm() {
 
   async function handleEmailSignUp(ev: React.FormEvent) {
     ev.preventDefault();
-    if (isDemoAccount(form.email)) {
-      setError("The demo account uses Sign in — go to Login and use test@gmail.com / test123@.");
+    if (isMemberDemoAccount(form.email)) {
+      setError("The member demo uses Sign in — go to Login and use test@gmail.com / test123@.");
+      return;
+    }
+    if (isBarberDemoAccount(form.email)) {
+      setError("The barber demo uses Sign in — go to Login and use arber@gmail.com / barber123@.");
       return;
     }
     const err = validate();
@@ -89,7 +97,11 @@ function SignupForm() {
     try {
       const { user } = await createUserWithEmailAndPassword(auth, form.email, form.password);
       await updateProfile(user, { displayName: form.name.trim() });
-      router.push("/dashboard");
+      await saveUserProfile(
+        user.uid,
+        emptyProfile(form.email, form.name.trim(), selectedRole as UserRole)
+      );
+      router.push(await getPostAuthPath(user.uid, user.email));
     } catch (e: unknown) {
       setError(firebaseMsg((e as { code: string }).code));
     } finally {
@@ -102,8 +114,18 @@ function SignupForm() {
     if (!auth) { setError("Sign-up is unavailable. Check Firebase configuration."); return; }
     setGoogleLoading(true);
     try {
-      await signInWithPopup(auth, new GoogleAuthProvider());
-      router.push("/dashboard");
+      const cred = await signInWithPopup(auth, new GoogleAuthProvider());
+      if (cred.user) {
+        await saveUserProfile(
+          cred.user.uid,
+          emptyProfile(
+            cred.user.email ?? "",
+            cred.user.displayName ?? "",
+            selectedRole as UserRole
+          )
+        );
+      }
+      router.push(await getPostAuthPath(cred.user.uid, cred.user.email));
     } catch (e: unknown) {
       setError(firebaseMsg((e as { code: string }).code));
     } finally {

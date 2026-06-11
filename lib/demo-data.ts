@@ -1,4 +1,4 @@
-import { DEMO_EMAIL } from "@/lib/demo-account";
+import { DEMO_EMAIL, type UserRole } from "@/lib/demo-account";
 
 export interface DemoStat {
   label: string;
@@ -40,6 +40,8 @@ export interface UserProfileData {
   city: string;
   age: string;
   focus: string[];
+  role?: UserRole;
+  shopName?: string;
 }
 
 export const DEMO_PROFILE: UserProfileData = {
@@ -49,6 +51,18 @@ export const DEMO_PROFILE: UserProfileData = {
   city: "Little Rock, AR",
   age: "35–44",
   focus: ["Blood Pressure", "Mental Wellness"],
+  role: "member",
+};
+
+export const BARBER_DEMO_PROFILE: UserProfileData = {
+  name: "Joe T.",
+  email: "arber@gmail.com",
+  phone: "(501) 555-0199",
+  city: "Little Rock, AR",
+  age: "35–44",
+  focus: [],
+  role: "barber",
+  shopName: "Joe's Classic Cuts",
 };
 
 export const DEMO_QUICK_STATS: DemoStat[] = [
@@ -120,7 +134,12 @@ export const EMPTY_MILESTONES: DemoMilestone[] = [
   { label: "Connect w/ Mentor", done: false },
 ];
 
-export function emptyProfile(email: string, displayName: string): UserProfileData {
+export function emptyProfile(
+  email: string,
+  displayName: string,
+  role: UserRole = "member",
+  shopName = ""
+): UserProfileData {
   return {
     name: displayName || "",
     email,
@@ -128,5 +147,7 @@ export function emptyProfile(email: string, displayName: string): UserProfileDat
     city: "",
     age: "",
     focus: [],
+    role,
+    shopName: role === "barber" ? shopName : undefined,
   };
 }
