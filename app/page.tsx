@@ -3,13 +3,15 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import uamsHealthLogo from "@/brand_assets/uams-logo_health_horizontal_dark.png";
+import uams1Logo from "@/brand_assets/UAMS 1.png";
+import barbershopTalkLogo from "@/brand_assets/Barbershop-Talk logo.png";
 import bro2broLogo from "@/brand_assets/Bro2Bro logo.png";
 import {
   ArrowRight, Heart, Shield, Users, MessageCircle, MapPin,
   Calendar, Star, CheckCircle, Activity, Zap, Phone,
   Brain, ChevronRight, Play, Quote, Scissors, UserCheck,
   Building2, Menu, X, Mail, Globe, Award, TrendingUp,
-  Lock, Sparkles,
+  Lock, Sparkles, Twitter, Facebook, Instagram, Linkedin,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -425,7 +427,9 @@ function Hero() {
 
 /* ─── TRUST BAR ────────────────────────────────────────────── */
 const partners: { name: string; abbr?: string; color?: string; logo?: typeof uamsHealthLogo }[] = [
-  { name: "UAMS Barbershop Talk", logo: uamsHealthLogo },
+  { name: "UAMS Barbershop Talk", logo: barbershopTalkLogo },
+  { name: "UAMS Health",          logo: uams1Logo },
+  { name: "UAMS",                 logo: uamsHealthLogo },
   { name: "BCBS Arkansas",        abbr: "BCBS", color: "bg-indigo-100 text-indigo-700" },
   { name: "UAPB",                 abbr: "UAPB", color: "bg-amber-100 text-amber-700" },
   { name: "Arkansas Dept. of Health", abbr: "ADH", color: "bg-red-100 text-red-700" },
@@ -439,7 +443,7 @@ function PartnerLogo({ name, abbr, color, logo }: { name: string; abbr?: string;
   return (
     <div className="flex items-center gap-3 mx-10 shrink-0">
       {logo ? (
-        <Image src={logo} alt={name} height={32} className="h-8 w-auto object-contain opacity-70 hover:opacity-100 transition-opacity" />
+        <Image src={logo} alt={name} height={56} className="h-14 w-auto object-contain opacity-70 hover:opacity-100 transition-opacity" />
       ) : (
         <>
           <div className={cn("w-10 h-10 rounded-xl flex items-center justify-center font-black text-xs shrink-0", color)}>
@@ -1136,9 +1140,40 @@ function Footer() {
             <p className="text-sm text-gray-500 leading-relaxed mb-4">
               The barbershop got men talking. We built what comes next.
             </p>
-            <p className="text-xs text-gray-400">
+            <p className="text-xs text-gray-400 mb-6">
               Little Rock, Arkansas
             </p>
+
+            {/* Connect with us */}
+            <h4 className="text-xs font-bold text-gray-900 uppercase tracking-widest mb-3">
+              Connect with Us
+            </h4>
+            <a
+              href="mailto:hello@bro2bro.app"
+              className="flex items-center gap-2 text-sm text-gray-500 hover:text-gray-900 transition-colors mb-3"
+            >
+              <Mail className="h-3.5 w-3.5 shrink-0" />
+              hello@bro2bro.app
+            </a>
+            <div className="flex items-center gap-2">
+              {[
+                { href: "https://instagram.com/bro2bro", icon: Instagram, label: "Instagram" },
+                { href: "https://x.com/bro2bro",        icon: Twitter,   label: "X / Twitter" },
+                { href: "https://facebook.com/bro2bro", icon: Facebook,  label: "Facebook" },
+                { href: "https://linkedin.com/company/bro2bro", icon: Linkedin, label: "LinkedIn" },
+              ].map(({ href, icon: Icon, label }) => (
+                <a
+                  key={label}
+                  href={href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={label}
+                  className="w-8 h-8 rounded-lg bg-gray-100 flex items-center justify-center text-gray-500 hover:bg-gray-900 hover:text-white transition-all"
+                >
+                  <Icon className="h-3.5 w-3.5" />
+                </a>
+              ))}
+            </div>
           </div>
 
           {/* Nav columns */}
