@@ -5,17 +5,17 @@ import {
   CheckCircle, XCircle, Calendar, Clock, Plus,
   MoreVertical, Pencil, Trash2,
 } from "lucide-react";
-import Image from "next/image";
-import bro2broLogo from "@/brand_assets/Bro2Bro logo.png";
+import { BrandLogo } from "@/components/brand-logo";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { MessageContent } from "@/components/chat/message-content";
 import {
-  loadAppointments,
-  saveAppointments,
+  loadUserAppointments,
+  saveUserAppointments,
   Appointment,
   ApptType,
 } from "@/lib/appointments-store";
+import { useAuth } from "@/lib/auth-context";
 
 /* ── Types ──────────────────────────────────────────────────────────── */
 interface ActionResult {
@@ -288,19 +288,35 @@ function HistoryPanel({ onNewChat }: { onNewChat: () => void }) {
 
 /* ── Main page ───────────────────────────────────────────────────────── */
 export default function ChatPage() {
-  const [messages, setMessages]     = useState<Message[]>(INITIAL_MESSAGES);
-  const [input, setInput]           = useState("");
-  const [typing, setTyping]         = useState(false);
+  const { user }                        = useAuth();
+  const [messages, setMessages]         = useState<Message[]>(INITIAL_MESSAGES);
+  const [input, setInput]               = useState("");
+  const [typing, setTyping]             = useState(false);
   const [appointments, setAppointments] = useState<Appointment[]>([]);
-  const bottomRef = useRef<HTMLDivElement>(null);
+  const [apptLoaded, setApptLoaded]     = useState(false);
+  const bottomRef   = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
-  useEffect(() => { setAppointments(loadAppointments()); }, []);
+  // Load appointments from Firebase when user is known
+  useEffect(() => {
+    if (!user) return;
+    setApptLoaded(false);
+    loadUserAppointments(user.uid).then((data) => {
+      setAppointments(data);
+      setApptLoaded(true);
+    });
+  }, [user?.uid]);
+
+  // Save appointments to Firebase after any change (post-load only)
+  useEffect(() => {
+    if (!user || !apptLoaded) return;
+    saveUserAppointments(user.uid, appointments).catch(console.error);
+  }, [appointments, apptLoaded, user?.uid]);
+
   useEffect(() => { bottomRef.current?.scrollIntoView({ behavior: "smooth" }); }, [messages, typing]);
 
   function applyAction(action: ActionResult) {
     setAppointments((prev) => {
-      let updated: Appointment[];
       if (action.type === "create_appointment") {
         const d = action.data;
         const newAppt: Appointment = {
@@ -315,22 +331,21 @@ export default function ChatPage() {
           status: "confirmed",
           reminder: true,
         };
-        updated = [...prev, newAppt];
-      } else if (action.type === "cancel_appointment") {
-        updated = prev.map((a) =>
+        return [...prev, newAppt];
+      }
+      if (action.type === "cancel_appointment") {
+        return prev.map((a) =>
           a.id === action.data.appointment_id ? { ...a, status: "cancelled" as const } : a
         );
-      } else if (action.type === "reschedule_appointment") {
-        updated = prev.map((a) =>
+      }
+      if (action.type === "reschedule_appointment") {
+        return prev.map((a) =>
           a.id === action.data.appointment_id
             ? { ...a, date: action.data.new_date, time: action.data.new_time }
             : a
         );
-      } else {
-        updated = prev;
       }
-      saveAppointments(updated);
-      return updated;
+      return prev;
     });
   }
 
@@ -389,7 +404,7 @@ export default function ChatPage() {
           {/* Header */}
           <div className="flex items-center gap-3 px-5 py-3.5 border-b border-gray-100 shrink-0">
             <div className="w-9 h-9 rounded-full overflow-hidden bg-white shrink-0 border border-gray-100">
-              <Image src={bro2broLogo} alt="Bro AI" width={36} height={36} className="w-full h-full object-contain" />
+              <BrandLogo alt="Bro AI" className="w-full h-full" />
             </div>
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2 flex-wrap">
@@ -424,7 +439,7 @@ export default function ChatPage() {
               <div key={m.id} className={cn("flex gap-3", m.role === "user" ? "flex-row-reverse" : "flex-row")}>
                 {m.role === "ai" && (
                   <div className="w-8 h-8 rounded-full overflow-hidden bg-white shrink-0 mt-0.5 border border-gray-100">
-                    <Image src={bro2broLogo} alt="Bro" width={32} height={32} className="w-full h-full object-contain" />
+                    <BrandLogo alt="Bro" className="w-full h-full" />
                   </div>
                 )}
                 {/* ← NO flex-1 here — width is content-driven up to max-w */}
@@ -448,7 +463,7 @@ export default function ChatPage() {
             {typing && (
               <div className="flex gap-3">
                 <div className="w-8 h-8 rounded-full overflow-hidden bg-white shrink-0 mt-0.5 border border-gray-100">
-                  <Image src={bro2broLogo} alt="Bro" width={32} height={32} className="w-full h-full object-contain" />
+                  <BrandLogo alt="Bro" className="w-full h-full" />
                 </div>
                 <div className="bg-gray-100 rounded-2xl rounded-tl-sm px-4 py-3 flex items-center gap-1.5">
                   <span className="dot1 w-1.5 h-1.5 bg-gray-400 rounded-full" />

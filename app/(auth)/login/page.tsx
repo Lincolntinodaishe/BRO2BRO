@@ -3,8 +3,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ArrowRight, Eye, EyeOff } from "lucide-react";
-import Image from "next/image";
-import bro2broLogo from "@/brand_assets/Bro2Bro logo.png";
+import { BrandLogo } from "@/components/brand-logo";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -87,7 +86,7 @@ export default function LoginPage() {
 
         <div className="relative z-10 h-full flex flex-col justify-between p-10">
           <Link href="/" className="flex items-center gap-2.5">
-            <Image src={bro2broLogo} alt="BRO2BRO" height={34} className="h-8 w-auto rounded-full" />
+            <BrandLogo size="md" />
             <span className="text-lg font-black tracking-tight text-white">BRO2BRO</span>
           </Link>
 
@@ -105,7 +104,7 @@ export default function LoginPage() {
         <div className="w-full max-w-md">
 
           <Link href="/" className="flex items-center gap-2 mb-10 lg:hidden">
-            <Image src={bro2broLogo} alt="BRO2BRO" height={30} className="h-8 w-auto rounded-full" />
+            <BrandLogo size="md" />
             <span className="text-lg font-black">BRO2BRO</span>
           </Link>
 

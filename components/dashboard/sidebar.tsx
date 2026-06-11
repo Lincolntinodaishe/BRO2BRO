@@ -5,8 +5,7 @@ import {
   LayoutDashboard, MessageCircle, MapPin, Users, UserCheck,
   Calendar, Settings, LogOut, Scissors, X, ChevronLeft, ChevronRight,
 } from "lucide-react";
-import Image from "next/image";
-import bro2broLogo from "@/brand_assets/Bro2Bro logo.png";
+import { BrandLogo } from "@/components/brand-logo";
 import { cn } from "@/lib/utils";
 import { Avatar } from "@/components/ui/avatar";
 
@@ -26,6 +25,7 @@ interface SidebarProps {
   onToggleCollapse?: () => void;
   role?: string;
   userName?: string;
+  onSignOut?: () => void;
 }
 
 function NavTooltip({ label, collapsed }: { label: string; collapsed: boolean }) {
@@ -45,6 +45,7 @@ export function Sidebar({
   onToggleCollapse,
   role = "Men's Health",
   userName = "Marcus J.",
+  onSignOut,
 }: SidebarProps) {
   const pathname = usePathname();
 
@@ -74,7 +75,7 @@ export function Sidebar({
         {/* ── Logo / Header ───────────────────────────────────── */}
         <div className="h-16 border-b border-gray-100 flex items-center shrink-0 px-3 gap-2">
           <Link href="/" className={cn("flex items-center gap-2.5 flex-1 min-w-0", collapsed && "justify-center")}>
-            <Image src={bro2broLogo} alt="BRO2BRO" height={28} className="h-7 w-auto shrink-0" />
+            <BrandLogo size="sm" />
             <span
               className={cn(
                 "text-sm font-black tracking-widest text-gray-900 uppercase truncate transition-all duration-200 overflow-hidden",
@@ -199,7 +200,7 @@ export function Sidebar({
                   <span className="truncate">{role}</span>
                 </div>
               </div>
-              <button className="shrink-0 p-1.5 rounded-lg hover:bg-gray-100 transition-colors group">
+              <button onClick={onSignOut} className="shrink-0 p-1.5 rounded-lg hover:bg-gray-100 transition-colors group" title="Sign out">
                 <LogOut className="h-4 w-4 text-gray-400 group-hover:text-red-500 transition-colors" />
               </button>
             </div>

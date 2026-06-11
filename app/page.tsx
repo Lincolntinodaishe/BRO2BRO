@@ -18,6 +18,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Accordion } from "@/components/ui/accordion";
+import { CountUp, useInView } from "@/components/count-up";
 import { cn } from "@/lib/utils";
 
 /* ─── NAVBAR ─────────────────────────────────────────────── */
@@ -28,9 +29,8 @@ function Navbar() {
 
   const links = [
     { label: "How It Works", href: "#how-it-works", id: "how-it-works" },
-    { label: "Features",     href: "#features",     id: "features"     },
     { label: "Community",    href: "#community",    id: "community"    },
-    { label: "Providers",    href: "#providers",    id: "providers"    },
+    { label: "Features",     href: "#features",     id: "features"     },
   ];
 
   useEffect(() => {
@@ -69,15 +69,15 @@ function Navbar() {
       )}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
+        <div className="flex items-center h-16 gap-4">
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-2.5">
+          <Link href="/" className="flex items-center gap-2.5 shrink-0">
             <BrandLogo size="lg" />
             <span className="text-xl font-black tracking-widest text-gray-900 uppercase">BRO2BRO</span>
           </Link>
 
-          {/* Desktop nav — scroll-spy underline + text magnify on hover */}
-          <div className="hidden lg:flex items-center gap-7">
+          {/* Desktop nav — centered, evenly spaced */}
+          <div className="hidden lg:flex flex-1 items-center justify-center gap-10 xl:gap-14 px-6">
             {links.map((l) => {
               const isActive = activeSection === l.id;
               return (
@@ -89,11 +89,9 @@ function Navbar() {
                     isActive ? "text-black" : "text-gray-500 hover:text-black"
                   )}
                 >
-                  {/* Text with magnify on hover */}
                   <span className="inline-block transition-transform duration-200 origin-bottom group-hover/link:scale-[1.1]">
                     {l.label}
                   </span>
-                  {/* Animated underline */}
                   <span
                     className={cn(
                       "absolute left-0 -bottom-0.5 h-[2px] bg-black rounded-full transition-all duration-300",
@@ -106,7 +104,7 @@ function Navbar() {
           </div>
 
           {/* Auth CTA */}
-          <div className="hidden lg:flex items-center gap-3">
+          <div className="hidden lg:flex items-center gap-3 shrink-0">
             <Link href="/dashboard/chat">
               <Button variant="outline" size="sm" className="gap-1.5 border-amber-300 text-amber-700 hover:bg-amber-50 hover:border-amber-400">
                 <MessageCircle className="h-3.5 w-3.5" />
@@ -124,7 +122,7 @@ function Navbar() {
           {/* Mobile menu toggle */}
           <button
             onClick={() => setMobileOpen((p) => !p)}
-            className="lg:hidden p-2 rounded-xl hover:bg-gray-100 transition-colors"
+            className="lg:hidden ml-auto p-2 rounded-xl hover:bg-gray-100 transition-colors"
           >
             {mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
           </button>
@@ -516,30 +514,38 @@ function TrustBar() {
 
 /* ─── IMPACT STATS ─────────────────────────────────────────── */
 function ImpactStats() {
+  const { ref, inView } = useInView(0.2);
+
   const stats = [
     {
-      value: "4.8 yrs",
+      end: 4.8,
+      decimals: 1,
+      suffix: " yrs",
       label: "Life expectancy gap",
       sub: "Black vs white men — progress stalled since 1980s",
       color: "text-red-600",
       bg: "bg-red-50",
     },
     {
-      value: "43%",
+      end: 43,
+      suffix: "%",
       label: "More ER use",
       sub: "vs preventive care — costlier, later, worse outcomes",
       color: "text-amber-600",
       bg: "bg-amber-50",
     },
     {
-      value: "60%",
+      end: 60,
+      suffix: "%",
       label: "Black Arkansans",
       sub: "have high blood pressure — half completely uncontrolled",
       color: "text-orange-600",
       bg: "bg-orange-50",
     },
     {
-      value: "63.6%",
+      end: 63.6,
+      decimals: 1,
+      suffix: "%",
       label: "BP control rate",
       sub: "barbershop + follow-up vs 11.7% without (LABBPS trial)",
       color: "text-teal-600",
@@ -548,7 +554,7 @@ function ImpactStats() {
   ];
 
   return (
-    <section className="py-20 px-4 sm:px-6 lg:px-8">
+    <section ref={ref} className="py-20 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-14">
           <Badge variant="gold" size="lg" className="mb-4">The Numbers</Badge>
@@ -566,7 +572,14 @@ function ImpactStats() {
               key={s.label}
               className={cn("rounded-2xl p-6 border border-transparent hover:shadow-card-hover transition-all duration-300", s.bg)}
             >
-              <div className={cn("text-4xl font-black mb-2", s.color)}>{s.value}</div>
+              <div className={cn("text-4xl font-black mb-2", s.color)}>
+                <CountUp
+                  end={s.end}
+                  suffix={s.suffix}
+                  decimals={s.decimals ?? 0}
+                  active={inView}
+                />
+              </div>
               <div className="text-base font-semibold text-gray-900 mb-1">{s.label}</div>
               <div className="text-sm text-gray-500 leading-relaxed">{s.sub}</div>
             </div>
