@@ -6,6 +6,8 @@ import uamsHealthLogo from "@/brand_assets/uams-logo_health_horizontal_dark.png"
 import uams1Logo from "@/brand_assets/UAMS 1.png";
 import barbershopTalkLogo from "@/brand_assets/Barbershop-Talk logo.png";
 import bro2broLogo from "@/brand_assets/Bro2Bro logo.png";
+import aiHackathonLogo from "@/brand_assets/ai-hackathon-healthtech-light.png";
+import uaLittleRockLogo from "@/brand_assets/ua-little-rock-light.png";
 import {
   ArrowRight, Heart, Shield, Users, MessageCircle, MapPin,
   Calendar, Star, CheckCircle, Activity, Zap, Phone,
@@ -459,8 +461,8 @@ const partners: Partner[] = [
   { name: "UAMS Barbershop Talk",              logo: barbershopTalkLogo },
   { name: "UAMS Health",                       logo: uams1Logo },
   { name: "UAMS",                              logo: uamsHealthLogo },
-  { name: "UA Little Rock",                    abbr: "UALR", color: "bg-red-100 text-red-700" },
-  { name: "AI Hackathon & HealthTech",         abbr: "HT",   color: "bg-sky-100 text-sky-700" },
+  { name: "UA Little Rock",            logo: uaLittleRockLogo },
+  { name: "AI Hackathon & HealthTech", logo: aiHackathonLogo },
   { name: "BCBS Arkansas",        abbr: "BCBS", color: "bg-indigo-100 text-indigo-700" },
   { name: "UAPB",                 abbr: "UAPB", color: "bg-amber-100 text-amber-700" },
   { name: "Arkansas Dept. of Health", abbr: "ADH", color: "bg-red-100 text-red-700" },
