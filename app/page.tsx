@@ -18,12 +18,14 @@ import { Badge } from "@/components/ui/badge";
 import { Accordion } from "@/components/ui/accordion";
 import { CountUp, useInView } from "@/components/count-up";
 import { cn } from "@/lib/utils";
+import { useAuth } from "@/lib/auth-context";
 
 /* ─── NAVBAR ─────────────────────────────────────────────── */
 function Navbar() {
   const [scrolled, setScrolled]     = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [activeSection, setActive]  = useState("");
+  const { user, loading } = useAuth();
 
   const links = [
     { label: "How It Works", href: "#how-it-works", id: "how-it-works" },
@@ -103,18 +105,28 @@ function Navbar() {
 
           {/* Auth CTA */}
           <div className="hidden lg:flex items-center gap-3 shrink-0">
-            <Link href="/dashboard/chat">
-              <Button variant="outline" size="sm" className="gap-1.5 border-amber-300 text-amber-700 hover:bg-amber-50 hover:border-amber-400">
-                <MessageCircle className="h-3.5 w-3.5" />
-                Chat with Bro.AI
-              </Button>
-            </Link>
-            <Link href="/login">
-              <Button variant="ghost" size="sm">Log in</Button>
-            </Link>
-            <Link href="/signup">
-              <Button size="sm">Get Started <ArrowRight className="ml-1 h-3.5 w-3.5" /></Button>
-            </Link>
+            {!loading && user ? (
+              <Link href="/dashboard">
+                <Button size="sm" className="gap-1.5">
+                  Go to Dashboard <ArrowRight className="ml-1 h-3.5 w-3.5" />
+                </Button>
+              </Link>
+            ) : (
+              <>
+                <Link href="/dashboard/chat">
+                  <Button variant="outline" size="sm" className="gap-1.5 border-amber-300 text-amber-700 hover:bg-amber-50 hover:border-amber-400">
+                    <MessageCircle className="h-3.5 w-3.5" />
+                    Chat with Bro.AI
+                  </Button>
+                </Link>
+                <Link href="/login">
+                  <Button variant="ghost" size="sm">Log in</Button>
+                </Link>
+                <Link href="/signup">
+                  <Button size="sm">Get Started <ArrowRight className="ml-1 h-3.5 w-3.5" /></Button>
+                </Link>
+              </>
+            )}
           </div>
 
           {/* Mobile menu toggle */}
@@ -144,18 +156,28 @@ function Navbar() {
             </a>
           ))}
           <div className="pt-3 flex flex-col gap-2 border-t border-gray-100 mt-2">
-            <Link href="/dashboard/chat" onClick={() => setMobileOpen(false)}>
-              <Button variant="outline" className="w-full gap-1.5 border-amber-300 text-amber-700">
-                <MessageCircle className="h-3.5 w-3.5" />
-                Chat with Bro.AI
-              </Button>
-            </Link>
-            <Link href="/login" onClick={() => setMobileOpen(false)}>
-              <Button variant="outline" className="w-full">Log in</Button>
-            </Link>
-            <Link href="/signup" onClick={() => setMobileOpen(false)}>
-              <Button className="w-full">Get Started Free</Button>
-            </Link>
+            {!loading && user ? (
+              <Link href="/dashboard" onClick={() => setMobileOpen(false)}>
+                <Button className="w-full gap-1.5">
+                  Go to Dashboard <ArrowRight className="ml-1 h-3.5 w-3.5" />
+                </Button>
+              </Link>
+            ) : (
+              <>
+                <Link href="/dashboard/chat" onClick={() => setMobileOpen(false)}>
+                  <Button variant="outline" className="w-full gap-1.5 border-amber-300 text-amber-700">
+                    <MessageCircle className="h-3.5 w-3.5" />
+                    Chat with Bro.AI
+                  </Button>
+                </Link>
+                <Link href="/login" onClick={() => setMobileOpen(false)}>
+                  <Button variant="outline" className="w-full">Log in</Button>
+                </Link>
+                <Link href="/signup" onClick={() => setMobileOpen(false)}>
+                  <Button className="w-full">Get Started Free</Button>
+                </Link>
+              </>
+            )}
           </div>
         </div>
       )}
