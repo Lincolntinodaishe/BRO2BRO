@@ -17,7 +17,7 @@ import {
   signInWithPopup,
 } from "firebase/auth";
 import { auth } from "@/lib/firebase";
-import { isMemberDemoAccount, isBarberDemoAccount } from "@/lib/demo-account";
+import { isMemberDemoAccount, isBarberDemoAccount, isMentorDemoAccount } from "@/lib/demo-account";
 import { getPostAuthPath } from "@/lib/auth-routes";
 import { saveUserProfile } from "@/lib/user-profile-store";
 import { emptyProfile } from "@/lib/demo-data";
@@ -87,6 +87,10 @@ function SignupForm() {
     }
     if (isBarberDemoAccount(form.email)) {
       setError("The barber demo uses Sign in — go to Login and use barber@gmail.com / barber123@.");
+      return;
+    }
+    if (isMentorDemoAccount(form.email)) {
+      setError("The mentor demo uses Sign in — go to Login and use mentor@gmail.com / mentor123@.");
       return;
     }
     const err = validate();

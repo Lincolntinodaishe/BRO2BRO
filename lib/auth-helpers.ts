@@ -11,11 +11,16 @@ import {
   BARBER_DEMO_EMAIL,
   BARBER_DEMO_PASSWORD,
   BARBER_DEMO_DISPLAY_NAME,
+  MENTOR_DEMO_EMAIL,
+  MENTOR_DEMO_PASSWORD,
+  MENTOR_DEMO_DISPLAY_NAME,
   isMemberDemoAccount,
   isBarberDemoAccount,
+  isMentorDemoAccount,
 } from "@/lib/demo-account";
 import { seedDemoAccount } from "@/lib/demo-seed";
 import { seedBarberDemoAccount } from "@/lib/demo-barber-seed";
+import { seedMentorDemoAccount } from "@/lib/demo-mentor-seed";
 
 export async function signInWithEmail(email: string, password: string) {
   const normalized = email.trim().toLowerCase();
@@ -26,6 +31,8 @@ export async function signInWithEmail(email: string, password: string) {
       await seedDemoAccount(cred.user.uid);
     } else if (isBarberDemoAccount(cred.user.email)) {
       await seedBarberDemoAccount(cred.user.uid);
+    } else if (isMentorDemoAccount(cred.user.email)) {
+      await seedMentorDemoAccount(cred.user.uid);
     }
     return cred;
   } catch (err: unknown) {
@@ -50,6 +57,17 @@ export async function signInWithEmail(email: string, password: string) {
       const cred = await createUserWithEmailAndPassword(requireAuth(), BARBER_DEMO_EMAIL, BARBER_DEMO_PASSWORD);
       await updateProfile(cred.user, { displayName: BARBER_DEMO_DISPLAY_NAME });
       await seedBarberDemoAccount(cred.user.uid);
+      return cred;
+    }
+
+    if (
+      isMentorDemoAccount(normalized) &&
+      password === MENTOR_DEMO_PASSWORD &&
+      (code === "auth/user-not-found" || code === "auth/invalid-credential")
+    ) {
+      const cred = await createUserWithEmailAndPassword(requireAuth(), MENTOR_DEMO_EMAIL, MENTOR_DEMO_PASSWORD);
+      await updateProfile(cred.user, { displayName: MENTOR_DEMO_DISPLAY_NAME });
+      await seedMentorDemoAccount(cred.user.uid);
       return cred;
     }
 

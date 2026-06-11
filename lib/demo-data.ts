@@ -81,10 +81,10 @@ export const DEMO_OVERVIEW_APPOINTMENTS: DemoOverviewAppt[] = [
     confirmed: true,
   },
   {
-    title: "Mental Wellness Check-in",
-    provider: "Bro AI",
-    time: "Every Monday · 8:00 AM",
-    type: "Automated",
+    title: "Weekly BP & Wellness Check-in",
+    provider: "Raymond T. — Peer Mentor",
+    time: "Tomorrow · 6:00 PM",
+    type: "Video",
     confirmed: true,
   },
   {
@@ -109,13 +109,14 @@ export const DEMO_MILESTONES: DemoMilestone[] = [
   { label: "Found a Clinic", done: true },
   { label: "30-day Streak", done: false },
   { label: "Book Appointment", done: false },
-  { label: "Connect w/ Mentor", done: false },
+  { label: "Connect w/ Mentor", done: true },
 ];
 
 export const DEMO_NOTIFICATIONS: DemoNotification[] = [
   { id: 1, text: "Your appointment tomorrow at 2pm is confirmed", time: "5m ago", unread: true },
-  { id: 2, text: "Marcus from your crew completed his check-in 🎉", time: "1h ago", unread: true },
-  { id: 3, text: "New resource added near 72201 — Community Health Clinic", time: "3h ago", unread: false },
+  { id: 2, text: "Raymond T. replied to your message — mentor session tomorrow at 6pm", time: "45m ago", unread: true },
+  { id: 3, text: "Joe's Classic Cuts logged your BP screening (128/82) today", time: "2h ago", unread: true },
+  { id: 4, text: "New resource added near 72201 — Community Health Clinic", time: "3h ago", unread: false },
 ];
 
 export const EMPTY_QUICK_STATS: DemoStat[] = [

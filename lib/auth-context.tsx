@@ -5,13 +5,16 @@ import { auth } from "@/lib/firebase";
 import {
   isMemberDemoAccount,
   isBarberDemoAccount,
+  isMentorDemoAccount,
   DEMO_DISPLAY_NAME,
   BARBER_DEMO_DISPLAY_NAME,
   BARBER_DEMO_SHOP_NAME,
+  MENTOR_DEMO_DISPLAY_NAME,
   type UserRole,
 } from "@/lib/demo-account";
 import { seedDemoAccount } from "@/lib/demo-seed";
 import { seedBarberDemoAccount } from "@/lib/demo-barber-seed";
+import { seedMentorDemoAccount } from "@/lib/demo-mentor-seed";
 import { loadUserProfile } from "@/lib/user-profile-store";
 
 const SESSION_COOKIE = "has_session";
@@ -28,6 +31,7 @@ interface AuthContextValue {
   userRole:          UserRole;
   isTestAccount:     boolean;
   isBarberDemo:      boolean;
+  isMentorDemo:      boolean;
   signOut:           () => Promise<void>;
 }
 
@@ -39,6 +43,7 @@ const AuthContext = createContext<AuthContextValue>({
   userRole:          "member",
   isTestAccount:     false,
   isBarberDemo:      false,
+  isMentorDemo:      false,
   signOut:           async () => {},
 });
 
@@ -61,6 +66,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           seedBarberDemoAccount(fbUser.uid).catch(console.error);
           setUserRole("barber");
           setShopName(BARBER_DEMO_SHOP_NAME);
+        } else if (isMentorDemoAccount(fbUser.email)) {
+          seedMentorDemoAccount(fbUser.uid).catch(console.error);
+          setUserRole("mentor");
+          setShopName("");
         } else if (isMemberDemoAccount(fbUser.email)) {
           seedDemoAccount(fbUser.uid).catch(console.error);
           setUserRole("member");
@@ -91,12 +100,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const memberDemo = isMemberDemoAccount(user?.email);
   const barberDemo = isBarberDemoAccount(user?.email);
+  const mentorDemo = isMentorDemoAccount(user?.email);
 
   const displayName = memberDemo
     ? DEMO_DISPLAY_NAME
     : barberDemo
       ? BARBER_DEMO_DISPLAY_NAME
-      : (user?.displayName ?? user?.email?.split("@")[0] ?? "User");
+      : mentorDemo
+        ? MENTOR_DEMO_DISPLAY_NAME
+        : (user?.displayName ?? user?.email?.split("@")[0] ?? "User");
 
   return (
     <AuthContext.Provider value={{
@@ -107,6 +119,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       userRole,
       isTestAccount: memberDemo,
       isBarberDemo: barberDemo,
+      isMentorDemo: mentorDemo,
       signOut,
     }}>
       {children}

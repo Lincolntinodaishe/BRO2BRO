@@ -1,17 +1,21 @@
 "use client";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
-  Bell, Menu, Search, Settings, LogOut, User,
-  LayoutDashboard, MessageCircle, MapPin, Users,
-  UserCheck, Calendar, ChevronRight, Scissors, Activity, Share2, Award,
+  Bell, Menu, Search, Settings, LogOut, User, ChevronRight, X,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Avatar } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { useAuth } from "@/lib/auth-context";
 import { DEMO_NOTIFICATIONS } from "@/lib/demo-data";
+import {
+  filterSearchItems,
+  getDashboardSearchItems,
+  getSettingsPath,
+  type DashboardSearchItem,
+} from "@/lib/dashboard-search";
 
 interface HeaderProps {
   title?: string;
@@ -22,58 +26,34 @@ interface HeaderProps {
 
 const notifications: typeof DEMO_NOTIFICATIONS = [];
 
-/* ── Search palette ─────────────────────────────────────────── */
-const BASE_SEARCH_ITEMS = [
-  { label: "Overview",       href: "/dashboard",              icon: LayoutDashboard, type: "Page" },
-  { label: "Chat with Bro.AI",        href: "/dashboard/chat",         icon: MessageCircle,   type: "Page" },
-  { label: "Find Resources", href: "/dashboard/resources",    icon: MapPin,          type: "Page" },
-  { label: "Community",      href: "/dashboard/community",    icon: Users,           type: "Page" },
-  { label: "Mentors",        href: "/dashboard/mentors",      icon: UserCheck,       type: "Page" },
-  { label: "Appointments",   href: "/dashboard/appointments", icon: Calendar,        type: "Page" },
-  { label: "Settings",       href: "/dashboard/settings",     icon: Settings,        type: "Page" },
-  { label: "Book Appointment",        href: "/dashboard/appointments", icon: Calendar,    type: "Action" },
-  { label: "Chat with Bro.AI",        href: "/dashboard/chat",         icon: MessageCircle, type: "Action" },
-  { label: "Find a clinic near me",   href: "/dashboard/resources",    icon: MapPin,        type: "Action" },
-];
+const TYPE_COLORS: Record<string, string> = {
+  Page:        "text-gray-400",
+  Action:      "text-amber-600",
+  Appointment: "text-blue-600",
+  Mentor:      "text-teal-600",
+};
 
-const DEMO_SEARCH_ITEMS = [
-  { label: "Blood Pressure Check — Tomorrow 2pm", href: "/dashboard/appointments", icon: Calendar, type: "Appointment" },
-  { label: "Mental Wellness Session — Jun 23",    href: "/dashboard/appointments", icon: Calendar, type: "Appointment" },
-];
-
-const BARBER_SEARCH_ITEMS = [
-  { label: "Shop Overview",    href: "/dashboard/barber",             icon: LayoutDashboard, type: "Page" },
-  { label: "Clients",          href: "/dashboard/barber/clients",     icon: Users,           type: "Page" },
-  { label: "Health Screenings",href: "/dashboard/barber/screenings",  icon: Activity,        type: "Page" },
-  { label: "Referrals",        href: "/dashboard/barber/referrals",   icon: Share2,          type: "Page" },
-  { label: "CHW Training",     href: "/dashboard/barber/training",    icon: Award,           type: "Page" },
-  { label: "Barber Settings",  href: "/dashboard/barber/settings",    icon: Settings,        type: "Page" },
-  { label: "Check In Client",  href: "/dashboard/barber/clients?checkin=1", icon: Scissors,  type: "Action" },
-  { label: "Log Screening",    href: "/dashboard/barber/screenings",  icon: Activity,        type: "Action" },
-  { label: "New Referral",     href: "/dashboard/barber/referrals",   icon: Share2,          type: "Action" },
-];
-
-function SearchPalette({ onClose, isTestAccount, isBarberDemo }: { onClose: () => void; isTestAccount: boolean; isBarberDemo: boolean }) {
+function SearchPalette({
+  onClose,
+  items,
+}: {
+  onClose: () => void;
+  items: DashboardSearchItem[];
+}) {
   const [query, setQuery] = useState("");
   const [focused, setFocused] = useState(0);
   const router = useRouter();
   const inputRef = useRef<HTMLInputElement>(null);
-  const SEARCH_ITEMS = isBarberDemo
-    ? BARBER_SEARCH_ITEMS
-    : isTestAccount
-      ? [...BASE_SEARCH_ITEMS, ...DEMO_SEARCH_ITEMS]
-      : BASE_SEARCH_ITEMS;
+
+  const filtered = useMemo(() => filterSearchItems(items, query), [items, query]);
 
   useEffect(() => {
     inputRef.current?.focus();
   }, []);
 
-  const filtered = query.trim()
-    ? SEARCH_ITEMS.filter((i) =>
-        i.label.toLowerCase().includes(query.toLowerCase()) ||
-        i.type.toLowerCase().includes(query.toLowerCase())
-      )
-    : SEARCH_ITEMS;
+  useEffect(() => {
+    setFocused(0);
+  }, [query]);
 
   function go(href: string) {
     router.push(href);
@@ -82,63 +62,76 @@ function SearchPalette({ onClose, isTestAccount, isBarberDemo }: { onClose: () =
 
   function handleKey(e: React.KeyboardEvent) {
     if (e.key === "Escape") { onClose(); return; }
+    if (filtered.length === 0) return;
     if (e.key === "ArrowDown") { e.preventDefault(); setFocused((p) => Math.min(p + 1, filtered.length - 1)); }
     if (e.key === "ArrowUp")   { e.preventDefault(); setFocused((p) => Math.max(p - 1, 0)); }
     if (e.key === "Enter" && filtered[focused]) go(filtered[focused].href);
   }
 
-  const typeColors: Record<string, string> = {
-    Page:        "text-gray-400",
-    Action:      "text-amber-600",
-    Appointment: "text-blue-600",
-  };
-
   return (
     <div
-      className="fixed inset-0 bg-black/50 z-[200] flex items-start justify-center pt-[12vh] px-4"
+      className="fixed inset-0 z-[200] flex items-start justify-center bg-black/50 sm:px-4 sm:pt-[10vh]"
       onClick={onClose}
+      role="dialog"
+      aria-modal="true"
+      aria-label="Search"
     >
       <div
-        className="bg-white rounded-2xl w-full max-w-lg shadow-2xl overflow-hidden animate-fade-in"
+        className={cn(
+          "bg-white flex flex-col w-full shadow-2xl overflow-hidden",
+          "h-full sm:h-auto sm:max-h-[min(70vh,520px)] sm:max-w-lg sm:rounded-2xl"
+        )}
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Input */}
-        <div className="flex items-center gap-3 px-4 py-3.5 border-b border-gray-100">
+        <div className="flex items-center gap-2 sm:gap-3 px-3 sm:px-4 py-3 sm:py-3.5 border-b border-gray-100 shrink-0">
           <Search className="h-4 w-4 text-gray-400 shrink-0" />
           <input
             ref={inputRef}
             value={query}
-            onChange={(e) => { setQuery(e.target.value); setFocused(0); }}
+            onChange={(e) => setQuery(e.target.value)}
             onKeyDown={handleKey}
-            placeholder="Search pages, appointments, actions…"
-            className="flex-1 text-sm outline-none text-gray-900 placeholder:text-gray-400"
+            placeholder="Search pages, actions…"
+            className="flex-1 text-sm outline-none text-gray-900 placeholder:text-gray-400 min-w-0"
+            autoComplete="off"
+            autoCorrect="off"
+            spellCheck={false}
           />
-          <kbd className="text-[10px] text-gray-300 font-mono border border-gray-200 rounded px-1.5 py-0.5">ESC</kbd>
+          <button
+            type="button"
+            onClick={onClose}
+            className="p-2 rounded-lg hover:bg-gray-100 text-gray-500 sm:hidden"
+            aria-label="Close search"
+          >
+            <X className="h-4 w-4" />
+          </button>
+          <kbd className="hidden sm:inline text-[10px] text-gray-300 font-mono border border-gray-200 rounded px-1.5 py-0.5 shrink-0">ESC</kbd>
         </div>
 
-        {/* Results */}
-        <div className="max-h-72 overflow-y-auto py-1.5">
+        <div className="flex-1 overflow-y-auto py-1.5 min-h-0 overscroll-contain">
           {filtered.length === 0 ? (
-            <p className="px-4 py-5 text-sm text-gray-400 text-center">No results for &ldquo;{query}&rdquo;</p>
+            <p className="px-4 py-8 text-sm text-gray-400 text-center">
+              {query.trim() ? `No results for "${query}"` : "No items to show"}
+            </p>
           ) : (
-            filtered.map((item, i) => {
-              const Icon = item.icon;
+            filtered.map((entry, i) => {
+              const Icon = entry.icon;
               return (
                 <button
-                  key={i}
-                  onClick={() => go(item.href)}
+                  key={entry.id}
+                  type="button"
+                  onClick={() => go(entry.href)}
                   onMouseEnter={() => setFocused(i)}
                   className={cn(
-                    "w-full flex items-center gap-3 px-4 py-2.5 transition-colors text-left",
+                    "w-full flex items-center gap-3 px-4 py-3 sm:py-2.5 transition-colors text-left",
                     focused === i ? "bg-gray-50" : "hover:bg-gray-50"
                   )}
                 >
-                  <div className="w-7 h-7 bg-gray-100 rounded-lg flex items-center justify-center shrink-0">
-                    <Icon className="h-3.5 w-3.5 text-gray-500" />
+                  <div className="w-8 h-8 sm:w-7 sm:h-7 bg-gray-100 rounded-lg flex items-center justify-center shrink-0">
+                    <Icon className="h-4 w-4 sm:h-3.5 sm:w-3.5 text-gray-500" />
                   </div>
-                  <span className="flex-1 text-sm text-gray-800">{item.label}</span>
-                  <span className={cn("text-xs font-medium shrink-0", typeColors[item.type] ?? "text-gray-400")}>
-                    {item.type}
+                  <span className="flex-1 text-sm text-gray-800 min-w-0 truncate">{entry.label}</span>
+                  <span className={cn("text-xs font-medium shrink-0 hidden sm:inline", TYPE_COLORS[entry.type] ?? "text-gray-400")}>
+                    {entry.type}
                   </span>
                   <ChevronRight className="h-3.5 w-3.5 text-gray-300 shrink-0" />
                 </button>
@@ -147,7 +140,7 @@ function SearchPalette({ onClose, isTestAccount, isBarberDemo }: { onClose: () =
           )}
         </div>
 
-        <div className="px-4 py-2.5 border-t border-gray-50 flex gap-4 text-[11px] text-gray-400">
+        <div className="hidden sm:flex px-4 py-2.5 border-t border-gray-50 gap-4 text-[11px] text-gray-400 shrink-0">
           <span><kbd className="font-mono border border-gray-200 rounded px-1">↑↓</kbd> navigate</span>
           <span><kbd className="font-mono border border-gray-200 rounded px-1">↵</kbd> open</span>
           <span><kbd className="font-mono border border-gray-200 rounded px-1">ESC</kbd> close</span>
@@ -157,20 +150,25 @@ function SearchPalette({ onClose, isTestAccount, isBarberDemo }: { onClose: () =
   );
 }
 
-/* ── Header ─────────────────────────────────────────────────── */
 export function Header({ title = "Dashboard", onMenuClick, userName = "Marcus J.", onSignOut }: HeaderProps) {
-  const { isTestAccount, isBarberDemo } = useAuth();
+  const { isTestAccount, isBarberDemo, isMentorDemo, userRole } = useAuth();
   const [notifOpen, setNotifOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [notifications_, setNotifications] = useState(isTestAccount ? DEMO_NOTIFICATIONS : notifications);
   const unreadCount = notifications_.filter((n) => n.unread).length;
 
+  const searchItems = useMemo(
+    () => getDashboardSearchItems({ isTestAccount, isBarberDemo, isMentorDemo }),
+    [isTestAccount, isBarberDemo, isMentorDemo]
+  );
+
+  const settingsPath = getSettingsPath({ isBarberDemo, isMentorDemo, userRole });
+
   useEffect(() => {
     setNotifications(isTestAccount ? DEMO_NOTIFICATIONS : []);
   }, [isTestAccount]);
 
-  // Cmd+K opens search
   useEffect(() => {
     function handler(e: KeyboardEvent) {
       if ((e.metaKey || e.ctrlKey) && e.key === "k") {
@@ -179,12 +177,19 @@ export function Header({ title = "Dashboard", onMenuClick, userName = "Marcus J.
         setNotifOpen(false);
         setProfileOpen(false);
       }
+      if (e.key === "Escape") setSearchOpen(false);
     }
     window.addEventListener("keydown", handler);
     return () => window.removeEventListener("keydown", handler);
   }, []);
 
-  // Close dropdowns on outside click
+  useEffect(() => {
+    if (searchOpen) {
+      document.body.style.overflow = "hidden";
+      return () => { document.body.style.overflow = ""; };
+    }
+  }, [searchOpen]);
+
   useEffect(() => {
     function handler(e: MouseEvent) {
       const t = e.target as HTMLElement;
@@ -195,37 +200,56 @@ export function Header({ title = "Dashboard", onMenuClick, userName = "Marcus J.
     return () => document.removeEventListener("mousedown", handler);
   }, []);
 
+  function openSearch() {
+    setSearchOpen(true);
+    setNotifOpen(false);
+    setProfileOpen(false);
+  }
+
   return (
     <>
-      <header className="sticky top-0 z-30 bg-white/90 backdrop-blur-md border-b border-gray-100 px-4 sm:px-5 py-0 flex items-center h-16 gap-3">
-        {/* Mobile menu */}
+      <header className="sticky top-0 z-30 bg-white/90 backdrop-blur-md border-b border-gray-100 px-3 sm:px-5 flex items-center h-14 sm:h-16 gap-2 sm:gap-3">
         <button
+          type="button"
           onClick={onMenuClick}
-          className="lg:hidden p-2 rounded-xl hover:bg-gray-100 transition-colors"
+          className="lg:hidden p-2 -ml-1 rounded-xl hover:bg-gray-100 transition-colors shrink-0"
+          aria-label="Open menu"
         >
           <Menu className="h-5 w-5 text-gray-600" />
         </button>
 
-        {/* Page title */}
-        <h1 className="text-sm font-semibold text-gray-900 flex-1 hidden sm:block">{title}</h1>
+        <h1 className="text-sm font-semibold text-gray-900 flex-1 min-w-0 truncate sm:max-w-none">
+          {title}
+        </h1>
 
-        {/* Right actions */}
-        <div className="flex items-center gap-1.5 ml-auto">
-          {/* Search button */}
+        <div className="flex items-center gap-0.5 sm:gap-1.5 shrink-0">
+          {/* Mobile: icon only */}
           <button
-            onClick={() => { setSearchOpen(true); setNotifOpen(false); setProfileOpen(false); }}
-            className="hidden sm:flex items-center gap-2 px-3 py-2 rounded-xl bg-gray-50 border border-gray-200 text-sm text-gray-400 hover:border-gray-300 transition-colors"
+            type="button"
+            onClick={openSearch}
+            className="sm:hidden p-2 rounded-xl hover:bg-gray-100 transition-colors"
+            aria-label="Search"
           >
-            <Search className="h-4 w-4" />
-            <span className="hidden md:block text-xs">Search…</span>
-            <kbd className="hidden md:inline-flex items-center text-[11px] text-gray-300 font-mono ml-4">⌘K</kbd>
+            <Search className="h-5 w-5 text-gray-600" />
           </button>
 
-          {/* Notifications */}
+          {/* Desktop: search trigger */}
+          <button
+            type="button"
+            onClick={openSearch}
+            className="hidden sm:flex items-center gap-2 px-3 py-2 rounded-xl bg-gray-50 border border-gray-200 text-sm text-gray-400 hover:border-gray-300 hover:text-gray-500 transition-colors max-w-[200px] lg:max-w-xs"
+          >
+            <Search className="h-4 w-4 shrink-0" />
+            <span className="text-xs truncate">Search…</span>
+            <kbd className="hidden lg:inline-flex items-center text-[11px] text-gray-300 font-mono ml-auto shrink-0">⌘K</kbd>
+          </button>
+
           <div className="relative" data-notif>
             <button
+              type="button"
               onClick={() => { setNotifOpen((p) => !p); setProfileOpen(false); }}
               className="relative p-2 rounded-xl hover:bg-gray-100 transition-colors"
+              aria-label="Notifications"
             >
               <Bell className="h-5 w-5 text-gray-600" />
               {unreadCount > 0 && (
@@ -234,7 +258,7 @@ export function Header({ title = "Dashboard", onMenuClick, userName = "Marcus J.
             </button>
 
             {notifOpen && (
-              <div className="absolute right-0 mt-2 w-80 bg-white rounded-2xl shadow-2xl border border-gray-100 z-50 animate-fade-in">
+              <div className="absolute right-0 mt-2 w-[min(calc(100vw-1.5rem),20rem)] bg-white rounded-2xl shadow-2xl border border-gray-100 z-50 animate-fade-in">
                 <div className="px-4 py-3 border-b border-gray-50 flex items-center justify-between">
                   <span className="text-sm font-semibold text-gray-900">Notifications</span>
                   {unreadCount > 0 && <Badge variant="gold" size="sm">{unreadCount} new</Badge>}
@@ -244,76 +268,80 @@ export function Header({ title = "Dashboard", onMenuClick, userName = "Marcus J.
                     <p className="px-4 py-8 text-xs text-gray-400 text-center">No notifications yet.</p>
                   ) : (
                     notifications_.map((n) => (
-                    <div
-                      key={n.id}
-                      className={cn("px-4 py-3 flex gap-3 hover:bg-gray-50 transition-colors cursor-pointer", n.unread && "bg-amber-50/40")}
-                    >
-                      <div className={cn("mt-1 h-2 w-2 rounded-full shrink-0", n.unread ? "bg-amber-500" : "bg-gray-200")} />
-                      <div className="flex-1 min-w-0">
-                        <p className="text-xs text-gray-800 leading-relaxed">{n.text}</p>
-                        <p className="text-xs text-gray-400 mt-0.5">{n.time}</p>
+                      <div
+                        key={n.id}
+                        className={cn("px-4 py-3 flex gap-3 hover:bg-gray-50 transition-colors cursor-pointer", n.unread && "bg-amber-50/40")}
+                      >
+                        <div className={cn("mt-1 h-2 w-2 rounded-full shrink-0", n.unread ? "bg-amber-500" : "bg-gray-200")} />
+                        <div className="flex-1 min-w-0">
+                          <p className="text-xs text-gray-800 leading-relaxed">{n.text}</p>
+                          <p className="text-xs text-gray-400 mt-0.5">{n.time}</p>
+                        </div>
                       </div>
-                    </div>
-                  ))
+                    ))
                   )}
                 </div>
                 {notifications_.length > 0 && (
-                <div className="px-4 py-3 border-t border-gray-50">
-                  <button
-                    onClick={() => setNotifications((p) => p.map((n) => ({ ...n, unread: false })))}
-                    className="text-xs text-gray-500 hover:text-black transition-colors"
-                  >
-                    Mark all as read
-                  </button>
-                </div>
+                  <div className="px-4 py-3 border-t border-gray-50">
+                    <button
+                      type="button"
+                      onClick={() => setNotifications((p) => p.map((n) => ({ ...n, unread: false })))}
+                      className="text-xs text-gray-500 hover:text-black transition-colors"
+                    >
+                      Mark all as read
+                    </button>
+                  </div>
                 )}
               </div>
             )}
           </div>
 
-          {/* Avatar / Profile dropdown */}
           <div className="relative pl-0.5" data-profile>
             <button
+              type="button"
               onClick={() => { setProfileOpen((p) => !p); setNotifOpen(false); }}
               className="rounded-full ring-2 ring-transparent hover:ring-gray-200 transition-all"
+              aria-label="Profile menu"
             >
               <Avatar name={userName} size="sm" online />
             </button>
 
             {profileOpen && (
-              <div className="absolute right-0 mt-2 w-56 bg-white rounded-2xl shadow-2xl border border-gray-100 z-50 animate-fade-in overflow-hidden">
-                {/* User info header */}
+              <div className="absolute right-0 mt-2 w-[min(calc(100vw-1.5rem),14rem)] bg-white rounded-2xl shadow-2xl border border-gray-100 z-50 animate-fade-in overflow-hidden">
                 <div className="px-4 py-3.5 border-b border-gray-50 flex items-center gap-3">
                   <Avatar name={userName} size="sm" online />
                   <div className="min-w-0">
                     <div className="text-sm font-semibold text-gray-900 truncate">{userName}</div>
-                    <div className="text-xs text-gray-400">Men's Health</div>
+                    <div className="text-xs text-gray-400 truncate">BRO2BRO</div>
                   </div>
                 </div>
 
-                {/* Menu items */}
                 <div className="py-1.5">
                   <Link
-                    href="/dashboard/settings"
+                    href={settingsPath}
                     onClick={() => setProfileOpen(false)}
                     className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
                   >
-                    <User className="h-4 w-4 text-gray-400" />
+                    <User className="h-4 w-4 text-gray-400 shrink-0" />
                     View Profile
                   </Link>
                   <Link
-                    href="/dashboard/settings"
+                    href={settingsPath}
                     onClick={() => setProfileOpen(false)}
                     className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
                   >
-                    <Settings className="h-4 w-4 text-gray-400" />
+                    <Settings className="h-4 w-4 text-gray-400 shrink-0" />
                     Settings
                   </Link>
                 </div>
 
                 <div className="border-t border-gray-50 py-1.5">
-                  <button onClick={onSignOut} className="w-full flex items-center gap-2.5 px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 transition-colors">
-                    <LogOut className="h-4 w-4" />
+                  <button
+                    type="button"
+                    onClick={onSignOut}
+                    className="w-full flex items-center gap-2.5 px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 transition-colors"
+                  >
+                    <LogOut className="h-4 w-4 shrink-0" />
                     Sign Out
                   </button>
                 </div>
@@ -323,8 +351,9 @@ export function Header({ title = "Dashboard", onMenuClick, userName = "Marcus J.
         </div>
       </header>
 
-      {/* Search palette */}
-      {searchOpen && <SearchPalette onClose={() => setSearchOpen(false)} isTestAccount={isTestAccount} isBarberDemo={isBarberDemo} />}
+      {searchOpen && (
+        <SearchPalette onClose={() => setSearchOpen(false)} items={searchItems} />
+      )}
     </>
   );
 }

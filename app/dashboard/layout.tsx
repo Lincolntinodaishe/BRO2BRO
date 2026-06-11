@@ -21,9 +21,11 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const pathname = usePathname();
   const router   = useRouter();
-  const { user, loading, displayName, signOut, isBarberDemo, userRole } = useAuth();
+  const { user, loading, displayName, signOut, isBarberDemo, isMentorDemo, userRole } = useAuth();
 
   const isBarberRoute = pathname.startsWith("/dashboard/barber");
+  const isMentorRoute = pathname.startsWith("/dashboard/mentor");
+  const isPortalRoute = isBarberRoute || isMentorRoute;
 
   // Redirect to login if not authenticated (fallback after middleware)
   useEffect(() => {
@@ -32,15 +34,19 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     }
   }, [user, loading, router]);
 
-  // Keep barber demo / barber-role users out of member dashboard
+  // Keep role-specific users in their portal
   useEffect(() => {
-    if (!loading && user && !isBarberRoute && (isBarberDemo || userRole === "barber")) {
-      router.replace("/dashboard/barber");
+    if (!loading && user && !isPortalRoute) {
+      if (isBarberDemo || userRole === "barber") {
+        router.replace("/dashboard/barber");
+      } else if (isMentorDemo || userRole === "mentor") {
+        router.replace("/dashboard/mentor");
+      }
     }
-  }, [user, loading, isBarberDemo, userRole, isBarberRoute, router]);
+  }, [user, loading, isBarberDemo, isMentorDemo, userRole, isPortalRoute, router]);
 
-  // Barber routes use their own layout shell
-  if (isBarberRoute) {
+  // Barber & mentor routes use their own layout shell
+  if (isPortalRoute) {
     return <>{children}</>;
   }
 
@@ -81,7 +87,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           userName={displayName}
           onSignOut={signOut}
         />
-        <main className="flex-1 min-h-0 p-4 sm:p-6 lg:p-8 flex flex-col">
+        <main className="flex-1 min-h-0 p-3 sm:p-6 lg:p-8 flex flex-col overflow-x-hidden">
           <div
             className={cn(
               "max-w-7xl mx-auto w-full",

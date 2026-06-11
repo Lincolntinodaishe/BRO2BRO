@@ -90,7 +90,7 @@ export const DEMO_TODAY_CLIENTS: BarberClient[] = [
 ];
 
 export const DEMO_BARBER_CLIENTS: BarberClient[] = [
-  { id: "1", name: "Marcus Williams", age: 42, lastVisit: "Today", bp: "128/82", status: "monitored", visits: 14, phone: "(501) 555-0101", notes: "Watching BP. Prefers morning slots." },
+  { id: "1", name: "Marcus Williams", age: 42, lastVisit: "Today", bp: "128/82", status: "monitored", visits: 14, phone: "(501) 555-0142", notes: "BRO2BRO member Marcus J. · matched with mentor Raymond T. Watching BP. Prefers morning slots." },
   { id: "2", name: "James Thompson", age: 35, lastVisit: "Today", bp: "118/76", status: "healthy", visits: 8, phone: "(501) 555-0102", notes: "Runs every morning. BP always good." },
   { id: "3", name: "Darius Kennedy", age: 55, lastVisit: "Today", bp: "142/91", status: "referred", visits: 22, phone: "(501) 555-0103", notes: "Referred to Dr. Carter. Follow up needed." },
   { id: "4", name: "DeShawn Mitchell", age: 29, lastVisit: "2 days ago", bp: "122/78", status: "healthy", visits: 5, phone: "(501) 555-0104", notes: "" },

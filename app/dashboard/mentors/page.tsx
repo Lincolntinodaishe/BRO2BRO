@@ -10,6 +10,8 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Avatar } from "@/components/ui/avatar";
 import { cn } from "@/lib/utils";
+import { useAuth } from "@/lib/auth-context";
+import { DEMO_MEMBER_MENTOR } from "@/lib/demo-mentor-data";
 
 interface Mentor {
   id: string;
@@ -24,6 +26,8 @@ interface Mentor {
   available: boolean;
   verified: boolean;
   format: "virtual" | "in-person" | "both";
+  isYourMentor?: boolean;
+  nextSession?: string;
 }
 
 const MENTORS: Mentor[] = [
@@ -119,7 +123,11 @@ function MentorCard({ mentor, onConnect }: { mentor: Mentor; onConnect: (id: str
   const [expanded, setExpanded] = useState(false);
 
   return (
-    <Card className={cn("hover:shadow-card-hover transition-all duration-300", !mentor.available && "opacity-70")}>
+    <Card className={cn(
+      "hover:shadow-card-hover transition-shadow duration-300",
+      !mentor.available && "opacity-70",
+      mentor.isYourMentor && "ring-2 ring-teal-500/30 border-teal-100"
+    )}>
       <CardContent className="p-6">
         <div className="flex items-start gap-4 mb-4">
           <div className="relative shrink-0">
@@ -136,9 +144,11 @@ function MentorCard({ mentor, onConnect }: { mentor: Mentor; onConnect: (id: str
                 <h3 className="text-sm font-bold text-gray-900">{mentor.name}</h3>
                 <p className="text-xs text-gray-500">{mentor.title}</p>
               </div>
-              {mentor.available
-                ? <Badge variant="success" size="sm">Available</Badge>
-                : <Badge variant="secondary" size="sm">Busy</Badge>}
+              {mentor.isYourMentor
+                ? <Badge className="bg-teal-50 text-teal-700 border-teal-200" size="sm">Your Mentor</Badge>
+                : mentor.available
+                  ? <Badge variant="success" size="sm">Available</Badge>
+                  : <Badge variant="secondary" size="sm">Busy</Badge>}
             </div>
             <div className="flex items-center gap-1.5 text-xs text-gray-400 mt-1">
               <MapPin className="h-3 w-3" />
@@ -178,15 +188,21 @@ function MentorCard({ mentor, onConnect }: { mentor: Mentor; onConnect: (id: str
           </button>
         )}
 
+        {mentor.nextSession && (
+          <p className="text-xs text-teal-700 font-medium mt-3 flex items-center gap-1.5">
+            <Calendar className="h-3.5 w-3.5" /> Next session: {mentor.nextSession}
+          </p>
+        )}
+
         <div className="flex gap-2 mt-4">
           <Button
             size="sm"
             className="flex-1"
-            disabled={!mentor.available}
+            disabled={!mentor.available && !mentor.isYourMentor}
             onClick={() => onConnect(mentor.id)}
           >
             <MessageCircle className="h-3.5 w-3.5 mr-1.5" />
-            Connect
+            {mentor.isYourMentor ? "Message" : "Connect"}
           </Button>
           <Button variant="outline" size="sm" className="gap-1.5">
             <Calendar className="h-3.5 w-3.5" />
@@ -203,8 +219,8 @@ function MentorCard({ mentor, onConnect }: { mentor: Mentor; onConnect: (id: str
   );
 }
 
-function ConnectModal({ mentorId, onClose }: { mentorId: string; onClose: () => void }) {
-  const mentor = MENTORS.find((m) => m.id === mentorId);
+function ConnectModal({ mentorId, onClose, mentors }: { mentorId: string; onClose: () => void; mentors: Mentor[] }) {
+  const mentor = mentors.find((m) => m.id === mentorId);
   const [message, setMessage] = useState("");
   const [sent, setSent] = useState(false);
 
@@ -273,12 +289,17 @@ function ConnectModal({ mentorId, onClose }: { mentorId: string; onClose: () => 
 }
 
 export default function MentorsPage() {
+  const { isTestAccount } = useAuth();
   const [search, setSearch] = useState("");
   const [specialty, setSpecialty] = useState("All");
   const [availableOnly, setAvailableOnly] = useState(false);
   const [connectingTo, setConnectingTo] = useState<string | null>(null);
 
-  const filtered = MENTORS.filter((m) => {
+  const allMentors: Mentor[] = isTestAccount
+    ? [DEMO_MEMBER_MENTOR, ...MENTORS.filter((m) => m.name !== DEMO_MEMBER_MENTOR.name)]
+    : MENTORS;
+
+  const filtered = allMentors.filter((m) => {
     if (availableOnly && !m.available) return false;
     if (specialty !== "All" && !m.specialties.some((s) => s.toLowerCase().includes(specialty.toLowerCase()))) return false;
     if (search && !m.name.toLowerCase().includes(search.toLowerCase()) && !m.bio.toLowerCase().includes(search.toLowerCase())) return false;
@@ -290,7 +311,7 @@ export default function MentorsPage() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-black text-gray-900">Mentors</h1>
+          <h1 className="text-xl sm:text-2xl font-black text-gray-900">Mentors</h1>
           <p className="text-gray-500 text-sm mt-1">
             Peer mentors who&apos;ve been through it — real men, real journeys.
           </p>
@@ -371,17 +392,23 @@ export default function MentorsPage() {
         </TabsContent>
 
         <TabsContent value="my">
-          <div className="mt-4 bg-white rounded-2xl border border-gray-100 p-12 text-center">
-            <Heart className="h-10 w-10 text-gray-200 mx-auto mb-4" />
-            <p className="text-base font-semibold text-gray-700 mb-2">No connections yet</p>
-            <p className="text-sm text-gray-500 mb-6">Connect with a mentor and they&apos;ll appear here once they accept.</p>
-            <Button variant="outline" onClick={() => {}}>Browse Mentors</Button>
-          </div>
+          {isTestAccount ? (
+            <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-5">
+              <MentorCard mentor={DEMO_MEMBER_MENTOR} onConnect={setConnectingTo} />
+            </div>
+          ) : (
+            <div className="mt-4 bg-white rounded-2xl border border-gray-100 p-12 text-center">
+              <Heart className="h-10 w-10 text-gray-200 mx-auto mb-4" />
+              <p className="text-base font-semibold text-gray-700 mb-2">No connections yet</p>
+              <p className="text-sm text-gray-500 mb-6">Connect with a mentor and they&apos;ll appear here once they accept.</p>
+              <Button variant="outline" onClick={() => {}}>Browse Mentors</Button>
+            </div>
+          )}
         </TabsContent>
       </Tabs>
 
       {connectingTo && (
-        <ConnectModal mentorId={connectingTo} onClose={() => setConnectingTo(null)} />
+        <ConnectModal mentorId={connectingTo} mentors={allMentors} onClose={() => setConnectingTo(null)} />
       )}
     </div>
   );

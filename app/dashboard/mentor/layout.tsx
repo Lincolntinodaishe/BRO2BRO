@@ -1,41 +1,39 @@
 "use client";
 import { useState, useEffect } from "react";
 import { usePathname, useRouter } from "next/navigation";
-import { BarberSidebar } from "@/components/dashboard/barber-sidebar";
+import { MentorSidebar } from "@/components/dashboard/mentor-sidebar";
 import { Header } from "@/components/dashboard/header";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/lib/auth-context";
-import { canAccessBarberPortal } from "@/lib/auth-routes";
-import { BarberDataProvider } from "@/lib/barber-data-context";
+import { canAccessMentorPortal } from "@/lib/auth-routes";
+import { MentorDataProvider } from "@/lib/mentor-data-context";
 
 const pageTitles: Record<string, string> = {
-  "/dashboard/barber":            "Shop Overview",
-  "/dashboard/barber/clients":    "Clients",
-  "/dashboard/barber/screenings": "Health Screenings",
-  "/dashboard/barber/referrals":  "Referrals",
-  "/dashboard/barber/training":   "Training & Certification",
-  "/dashboard/barber/events":     "Events",
-  "/dashboard/barber/settings":   "Settings",
+  "/dashboard/mentor":           "Mentor Overview",
+  "/dashboard/mentor/mentees":   "Mentees",
+  "/dashboard/mentor/sessions":  "Sessions",
+  "/dashboard/mentor/messages":    "Messages",
+  "/dashboard/mentor/settings":    "Settings",
 };
 
-export default function BarberLayout({ children }: { children: React.ReactNode }) {
+export default function MentorLayout({ children }: { children: React.ReactNode }) {
   const [sidebarOpen, setSidebarOpen]           = useState(false);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const pathname  = usePathname();
   const router    = useRouter();
-  const { user, loading, displayName, shopName, signOut, userRole } = useAuth();
+  const { user, loading, displayName, signOut, userRole } = useAuth();
 
   useEffect(() => {
     if (!loading && !user) {
       router.replace("/login");
       return;
     }
-    if (!loading && user && !canAccessBarberPortal(user.email, userRole)) {
+    if (!loading && user && !canAccessMentorPortal(user.email, userRole)) {
       router.replace("/dashboard");
     }
   }, [user, loading, userRole, router]);
 
-  const title = pageTitles[pathname] ?? "Barber Portal";
+  const title = pageTitles[pathname] ?? "Mentor Portal";
 
   if (loading || !user) {
     return (
@@ -48,18 +46,17 @@ export default function BarberLayout({ children }: { children: React.ReactNode }
     );
   }
 
-  if (!canAccessBarberPortal(user.email, userRole)) {
+  if (!canAccessMentorPortal(user.email, userRole)) {
     return null;
   }
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <BarberSidebar
+      <MentorSidebar
         open={sidebarOpen}
         onClose={() => setSidebarOpen(false)}
         collapsed={sidebarCollapsed}
         onToggleCollapse={() => setSidebarCollapsed((p) => !p)}
-        shopName={shopName || "Your Shop"}
         userName={displayName}
         onSignOut={signOut}
       />
@@ -75,9 +72,9 @@ export default function BarberLayout({ children }: { children: React.ReactNode }
         />
         <main className="flex-1 min-h-0 p-3 sm:p-6 lg:p-8 flex flex-col overflow-x-hidden">
           <div className="max-w-7xl mx-auto w-full">
-            <BarberDataProvider>
+            <MentorDataProvider>
               {children}
-            </BarberDataProvider>
+            </MentorDataProvider>
           </div>
         </main>
       </div>
