@@ -1,0 +1,1296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Bro2Bro — Pitch Deck · Team 7</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --gold: #f59e0b;
+    --gold-light: #fef3c7;
+    --gold-dark: #92400e;
+    --teal: #0d9488;
+    --teal-light: #ccfbf1;
+    --black: #000000;
+    --near-black: #0a0a0a;
+    --white: #ffffff;
+    --off-white: #f9fafb;
+    --gray-100: #f3f4f6;
+    --gray-200: #e5e7eb;
+    --gray-400: #9ca3af;
+    --gray-500: #6b7280;
+  }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: #1a1a1a;
+    padding: 40px 20px;
+    min-height: 100vh;
+  }
+
+  .nav-bar {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    background: #111;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 24px;
+    border-bottom: 1px solid #333;
+  }
+  .nav-bar span { color: var(--gold); font-weight: 700; font-size: 14px; }
+  .nav-slides { display: flex; gap: 6px; flex-wrap: wrap; }
+  .nav-slides a {
+    color: #999; font-size: 11px; text-decoration: none;
+    padding: 2px 7px; border-radius: 4px; border: 1px solid #333;
+    transition: all 0.15s;
+  }
+  .nav-slides a:hover { color: var(--gold); border-color: var(--gold); }
+
+  .slides-container {
+    max-width: 1200px;
+    margin: 70px auto 0;
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+  }
+
+  .slide {
+    width: 100%;
+    aspect-ratio: 16/9;
+    border-radius: 12px;
+    overflow: hidden;
+    position: relative;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+    flex-shrink: 0;
+  }
+
+  .slide-number {
+    position: absolute;
+    top: 16px; right: 20px;
+    font-size: 11px;
+    font-weight: 600;
+    color: rgba(255,255,255,0.3);
+    z-index: 10;
+    letter-spacing: 0.05em;
+  }
+  .slide-dark .slide-number { color: rgba(255,255,255,0.3); }
+  .slide-light .slide-number { color: rgba(0,0,0,0.2); }
+
+  /* ─── UTILITY ─── */
+  .eyebrow {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+  .eyebrow-gold { color: var(--gold); }
+  .eyebrow-teal { color: var(--teal); }
+  .eyebrow-white { color: rgba(255,255,255,0.7); }
+
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    padding: 5px 14px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+  .chip-gold { background: var(--gold-light); color: var(--gold-dark); }
+  .chip-teal { background: var(--teal-light); color: var(--teal); }
+  .chip-black { background: var(--near-black); color: var(--white); }
+  .chip-outline-teal { background: transparent; border: 1.5px solid var(--teal); color: var(--teal); }
+
+  .card {
+    background: var(--white);
+    border: 1px solid var(--gray-200);
+    border-radius: 16px;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.07);
+  }
+
+  /* ─── SLIDE 1 — COVER ─── */
+  #s1 {
+    background: var(--black);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    text-align: center;
+    position: relative;
+  }
+  #s1 .glow {
+    position: absolute;
+    width: 500px; height: 500px;
+    background: radial-gradient(circle, rgba(245,158,11,0.12) 0%, transparent 70%);
+    top: 50%; left: 50%;
+    transform: translate(-50%,-55%);
+    pointer-events: none;
+  }
+  #s1 .logo-mark {
+    font-size: 52px;
+    font-weight: 900;
+    letter-spacing: -0.04em;
+    line-height: 1;
+    z-index: 2;
+    margin-bottom: 20px;
+  }
+  #s1 .logo-mark .bro { color: var(--white); }
+  #s1 .logo-mark .two { color: var(--gold); }
+  #s1 .tagline {
+    font-size: 20px;
+    font-weight: 900;
+    color: var(--white);
+    letter-spacing: -0.02em;
+    line-height: 1.3;
+    max-width: 560px;
+    z-index: 2;
+    margin-bottom: 10px;
+  }
+  #s1 .sub-tag {
+    font-size: 13px;
+    font-weight: 400;
+    color: var(--gray-500);
+    z-index: 2;
+    margin-bottom: 28px;
+  }
+  #s1 .event-row {
+    display: flex; gap: 16px; align-items: center;
+    z-index: 2;
+  }
+  #s1 .event-dot { width: 4px; height: 4px; border-radius: 50%; background: #444; }
+  #s1 .event-text { font-size: 11px; font-weight: 500; color: #555; letter-spacing: 0.06em; text-transform: uppercase; }
+  #s1 .hackathon-badge {
+    position: absolute;
+    bottom: 22px; right: 26px;
+    background: #111;
+    border: 1px solid #333;
+    border-radius: 8px;
+    padding: 6px 14px;
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--gold);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    z-index: 2;
+  }
+
+  /* ─── SLIDE 2 — PROBLEM ─── */
+  #s2 {
+    background: var(--white);
+    display: grid;
+    grid-template-rows: auto 1fr;
+    padding: 44px 54px;
+  }
+  #s2 .hero-stat-block { margin-bottom: 28px; }
+  #s2 .hero-stat {
+    font-size: 88px;
+    font-weight: 900;
+    color: var(--gold);
+    letter-spacing: -0.04em;
+    line-height: 0.9;
+  }
+  #s2 .hero-stat-label {
+    font-size: 14px;
+    font-weight: 400;
+    color: var(--gray-500);
+    margin-top: 8px;
+    max-width: 420px;
+    line-height: 1.5;
+  }
+  #s2 .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; align-items: start; }
+  #s2 .bullet-list { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+  #s2 .bullet-list li {
+    font-size: 13px; font-weight: 400; color: var(--near-black);
+    display: flex; gap: 10px; align-items: flex-start; line-height: 1.5;
+  }
+  #s2 .bullet-list li::before {
+    content: ''; width: 6px; height: 6px; border-radius: 50%;
+    background: var(--gold); flex-shrink: 0; margin-top: 5px;
+  }
+  #s2 .barrier-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  #s2 .barrier-chip {
+    background: var(--teal-light);
+    color: var(--teal);
+    border-radius: 999px;
+    padding: 8px 14px;
+    font-size: 12px;
+    font-weight: 600;
+    text-align: center;
+  }
+  #s2 .barrier-label { font-size: 11px; font-weight: 700; color: var(--gray-500); letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 10px; }
+
+  /* ─── SLIDE 3 — INSIGHT ─── */
+  #s3 {
+    display: grid;
+    grid-template-columns: 55% 45%;
+  }
+  #s3 .left {
+    background: var(--black);
+    padding: 44px 48px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    position: relative;
+  }
+  #s3 .big-pct {
+    font-size: 96px;
+    font-weight: 900;
+    color: var(--gold);
+    letter-spacing: -0.05em;
+    line-height: 0.85;
+  }
+  #s3 .pct-label {
+    font-size: 14px;
+    font-weight: 400;
+    color: rgba(255,255,255,0.75);
+    margin-top: 8px;
+    line-height: 1.5;
+  }
+  #s3 .vs-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--teal-light);
+    border-radius: 999px;
+    padding: 8px 16px;
+    margin-top: 16px;
+    width: fit-content;
+  }
+  #s3 .vs-chip .vs-num { font-size: 20px; font-weight: 900; color: var(--teal); }
+  #s3 .vs-chip .vs-text { font-size: 12px; font-weight: 500; color: var(--teal); }
+  #s3 .source {
+    margin-top: 18px;
+    font-size: 10px;
+    font-weight: 300;
+    color: var(--gray-500);
+    letter-spacing: 0.04em;
+  }
+  #s3 .uams-badge {
+    position: absolute;
+    bottom: 22px;
+    left: 48px;
+    font-size: 10px;
+    font-weight: 700;
+    color: #555;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    border: 1px solid #333;
+    padding: 4px 10px;
+    border-radius: 6px;
+  }
+  #s3 .right {
+    background: var(--white);
+    padding: 40px 36px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  #s3 .right-headline {
+    font-size: 22px;
+    font-weight: 900;
+    color: var(--near-black);
+    letter-spacing: -0.02em;
+    margin-bottom: 18px;
+    line-height: 1.2;
+  }
+  #s3 .insight-list { list-style: none; display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px; }
+  #s3 .insight-list li {
+    font-size: 13px; font-weight: 400; color: var(--gray-500);
+    display: flex; gap: 10px; align-items: flex-start; line-height: 1.5;
+  }
+  #s3 .insight-list li::before {
+    content: ''; width: 6px; height: 6px; border-radius: 50%;
+    background: var(--teal); flex-shrink: 0; margin-top: 5px;
+  }
+  #s3 .quote-chip {
+    background: var(--gold-light);
+    border-radius: 12px;
+    padding: 14px 16px;
+    font-size: 13px;
+    font-style: italic;
+    color: var(--gold-dark);
+    line-height: 1.55;
+  }
+
+  /* ─── SLIDE 4 — SOLUTION ─── */
+  #s4 {
+    background: var(--white);
+    padding: 38px 54px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  #s4 .headline {
+    font-size: 28px; font-weight: 900; color: var(--near-black);
+    letter-spacing: -0.025em; margin-bottom: 6px; line-height: 1.2;
+  }
+  #s4 .one-liner { font-size: 13px; font-weight: 400; color: var(--gray-500); margin-bottom: 24px; }
+  #s4 .pillars { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; flex: 1; }
+  #s4 .pillar {
+    background: var(--white);
+    border: 1px solid var(--gray-200);
+    border-radius: 16px;
+    padding: 20px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  #s4 .pillar-icon {
+    width: 40px; height: 40px;
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px;
+  }
+  #s4 .pillar-icon-gold { background: var(--gold-light); }
+  #s4 .pillar-icon-teal { background: var(--teal-light); }
+  #s4 .pillar-icon-black { background: var(--near-black); }
+  #s4 .pillar-title { font-size: 15px; font-weight: 900; color: var(--near-black); letter-spacing: 0.02em; }
+  #s4 .pillar-desc { font-size: 12px; font-weight: 400; color: var(--gray-500); line-height: 1.6; }
+  #s4 .footnote {
+    font-size: 10px; font-weight: 300; color: var(--gray-400);
+    margin-top: 14px; padding-top: 10px;
+    border-top: 1px solid var(--gray-100);
+    line-height: 1.5;
+  }
+
+  /* ─── SLIDE 5 — FEATURES ─── */
+  #s5 {
+    background: var(--white);
+    padding: 36px 54px;
+    display: flex;
+    flex-direction: column;
+  }
+  #s5 .headline { font-size: 28px; font-weight: 900; color: var(--near-black); letter-spacing: -0.025em; margin-bottom: 20px; }
+  #s5 .feature-grid { display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; gap: 16px; flex: 1; }
+  #s5 .feature-card {
+    background: var(--off-white);
+    border: 1px solid var(--gray-200);
+    border-radius: 16px;
+    padding: 20px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  #s5 .feature-card .fc-label { align-self: flex-start; }
+  #s5 .feature-card .fc-title { font-size: 15px; font-weight: 800; color: var(--near-black); }
+  #s5 .feature-card .fc-desc { font-size: 12px; font-weight: 400; color: var(--gray-500); line-height: 1.6; }
+  #s5 .feature-card .fc-screenshot {
+    flex: 1;
+    background: var(--gray-100);
+    border-radius: 10px;
+    border: 1px dashed var(--gray-200);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    color: var(--gray-400);
+    font-weight: 500;
+    min-height: 60px;
+  }
+
+  /* ─── SLIDE 6 — HOW IT WORKS ─── */
+  #s6 {
+    background: var(--off-white);
+    padding: 40px 54px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  #s6 .headline { font-size: 28px; font-weight: 900; color: var(--near-black); letter-spacing: -0.025em; margin-bottom: 24px; }
+  #s6 .steps { display: grid; grid-template-columns: 1fr 24px 1fr 24px 1fr 24px 1fr; gap: 0; align-items: center; flex: 1; }
+  #s6 .step-card {
+    background: var(--white);
+    border: 1px solid var(--gray-200);
+    border-radius: 16px;
+    padding: 18px 16px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  #s6 .step-num {
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    font-size: 15px; font-weight: 900;
+    color: var(--white);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  #s6 .step-num-gold { background: var(--gold); }
+  #s6 .step-num-teal { background: var(--teal); }
+  #s6 .step-num-black { background: var(--near-black); }
+  #s6 .step-title { font-size: 14px; font-weight: 800; color: var(--near-black); }
+  #s6 .step-desc { font-size: 12px; font-weight: 400; color: var(--gray-500); line-height: 1.6; }
+  #s6 .arrow { text-align: center; font-size: 18px; color: var(--gray-400); }
+
+  /* ─── SLIDE 7 — MARKET ─── */
+  #s7 {
+    background: var(--white);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    padding: 40px 54px;
+    gap: 32px;
+  }
+  #s7 .left { display: flex; flex-direction: column; justify-content: space-between; }
+  #s7 .headline { font-size: 26px; font-weight: 900; color: var(--near-black); letter-spacing: -0.025em; margin-bottom: 20px; line-height: 1.2; grid-column: 1/-1; }
+  #s7 .circles-wrap {
+    position: relative;
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  #s7 .circle {
+    position: absolute;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+  }
+  #s7 .c-tam { width: 220px; height: 220px; background: rgba(245,158,11,0.1); border: 2px solid rgba(245,158,11,0.3); }
+  #s7 .c-sam { width: 155px; height: 155px; background: rgba(13,148,136,0.13); border: 2px solid rgba(13,148,136,0.35); }
+  #s7 .c-som { width: 90px; height: 90px; background: rgba(10,10,10,0.08); border: 2px solid rgba(10,10,10,0.2); }
+  #s7 .c-label { font-size: 11px; font-weight: 800; letter-spacing: 0.06em; }
+  #s7 .c-val { font-size: 10px; font-weight: 400; color: var(--gray-500); text-align: center; padding: 0 6px; line-height: 1.3; }
+  #s7 .tam-label { color: var(--gold); }
+  #s7 .sam-label { color: var(--teal); }
+  #s7 .som-label { color: var(--near-black); }
+  #s7 .right { display: flex; flex-direction: column; justify-content: space-between; gap: 10px; }
+  #s7 .persona {
+    background: var(--white);
+    border: 1px solid var(--gray-200);
+    border-radius: 14px;
+    padding: 14px 16px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.05);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex: 1;
+  }
+  #s7 .persona-icon { font-size: 22px; }
+  #s7 .persona-title { font-size: 14px; font-weight: 800; color: var(--near-black); margin-bottom: 3px; }
+  #s7 .persona-desc { font-size: 12px; font-weight: 400; color: var(--gray-500); line-height: 1.4; }
+  #s7 .footer-chip {
+    background: var(--gold-light);
+    border-radius: 12px;
+    padding: 10px 14px;
+    font-size: 11px;
+    font-style: italic;
+    color: var(--gold-dark);
+    line-height: 1.5;
+    grid-column: 1/-1;
+  }
+
+  /* ─── SLIDE 8 — BUSINESS MODEL ─── */
+  #s8 {
+    display: grid;
+    grid-template-columns: 40% 60%;
+  }
+  #s8 .left {
+    background: var(--black);
+    padding: 48px 40px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  #s8 .big-free {
+    font-size: 52px; font-weight: 900; color: var(--white);
+    letter-spacing: -0.04em; line-height: 0.95; margin-bottom: 10px;
+  }
+  #s8 .free-sub {
+    font-size: 15px; font-weight: 400; color: var(--gold);
+    line-height: 1.5; margin-bottom: 8px;
+  }
+  #s8 .free-note { font-size: 11px; font-weight: 300; color: var(--gray-500); line-height: 1.5; }
+  #s8 .right {
+    background: var(--white);
+    padding: 36px 40px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 12px;
+  }
+  #s8 .revenue-card {
+    background: var(--off-white);
+    border: 1px solid var(--gray-200);
+    border-radius: 14px;
+    padding: 14px 16px;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+  }
+  #s8 .rev-icon { font-size: 20px; flex-shrink: 0; margin-top: 1px; }
+  #s8 .rev-title { font-size: 14px; font-weight: 800; color: var(--near-black); margin-bottom: 2px; }
+  #s8 .rev-desc { font-size: 12px; font-weight: 400; color: var(--gray-500); line-height: 1.5; }
+
+  /* ─── SLIDE 9 — TRACTION ─── */
+  #s9 {
+    background: var(--black);
+    padding: 44px 54px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  #s9 .headline { font-size: 32px; font-weight: 900; color: var(--white); letter-spacing: -0.03em; }
+  #s9 .stats-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 32px; margin: 20px 0; }
+  #s9 .stat-block { text-align: center; }
+  #s9 .stat-num { font-size: 68px; font-weight: 900; color: var(--gold); letter-spacing: -0.04em; line-height: 0.9; }
+  #s9 .stat-label { font-size: 12px; font-weight: 400; color: rgba(255,255,255,0.6); margin-top: 6px; line-height: 1.5; }
+  #s9 .divider { height: 1px; background: #222; margin: 8px 0; }
+  #s9 .partner-label { font-size: 11px; font-weight: 600; color: #555; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 10px; }
+  #s9 .partner-row { display: flex; gap: 20px; align-items: center; flex-wrap: wrap; }
+  #s9 .partner-pill {
+    background: #111;
+    border: 1px solid #2a2a2a;
+    border-radius: 8px;
+    padding: 6px 14px;
+    font-size: 11px;
+    font-weight: 600;
+    color: #666;
+    letter-spacing: 0.04em;
+  }
+  #s9 .footnote { font-size: 10px; font-weight: 300; color: #444; margin-top: 8px; }
+
+  /* ─── SLIDE 10 — COMPETITION ─── */
+  #s10 {
+    background: var(--white);
+    padding: 36px 54px;
+    display: flex;
+    flex-direction: column;
+  }
+  #s10 .headline { font-size: 26px; font-weight: 900; color: var(--near-black); letter-spacing: -0.025em; margin-bottom: 18px; line-height: 1.2; }
+  #s10 .content { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; flex: 1; }
+  #s10 .matrix {
+    position: relative;
+    border: 1.5px solid var(--gray-200);
+    border-radius: 16px;
+    background: var(--off-white);
+    padding: 16px;
+  }
+  #s10 .axis-label {
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--gray-400);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    position: absolute;
+  }
+  #s10 .axis-y { top: 10px; left: 50%; transform: translateX(-50%); }
+  #s10 .axis-x { bottom: 8px; left: 50%; transform: translateX(-50%); }
+  #s10 .axis-yl { top: 50%; left: 10px; transform: translateY(-50%) rotate(-90deg); transform-origin: center; }
+  #s10 .matrix-inner { position: relative; height: 100%; display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; gap: 8px; padding: 28px 20px 20px; }
+  #s10 .q { border-radius: 10px; padding: 10px; display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 4px; font-size: 11px; font-weight: 500; color: var(--gray-500); text-align: center; border: 1px solid var(--gray-200); }
+  #s10 .q-hero { background: rgba(245,158,11,0.08); border-color: rgba(245,158,11,0.3); }
+  #s10 .q-hero .q-name { font-weight: 900; color: var(--near-black); font-size: 14px; }
+  #s10 .q-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--gold); margin-bottom: 4px; box-shadow: 0 0 0 3px rgba(245,158,11,0.2); }
+  #s10 .right-col { display: flex; flex-direction: column; gap: 12px; justify-content: center; }
+  #s10 .adv-chip {
+    background: var(--off-white);
+    border: 1px solid var(--gray-200);
+    border-radius: 14px;
+    padding: 14px 16px;
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  #s10 .adv-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; margin-top: 4px; }
+  #s10 .adv-title { font-size: 13px; font-weight: 800; color: var(--near-black); margin-bottom: 2px; }
+  #s10 .adv-desc { font-size: 12px; font-weight: 400; color: var(--gray-500); line-height: 1.4; }
+
+  /* ─── SLIDE 11 — GTM ─── */
+  #s11 {
+    background: var(--off-white);
+    padding: 36px 54px;
+    display: flex;
+    flex-direction: column;
+  }
+  #s11 .headline { font-size: 26px; font-weight: 900; color: var(--near-black); letter-spacing: -0.025em; margin-bottom: 20px; }
+  #s11 .timeline { display: grid; grid-template-columns: 1fr 32px 1fr 32px 1fr; gap: 0; align-items: stretch; flex: 1; }
+  #s11 .phase-card {
+    background: var(--white);
+    border: 1px solid var(--gray-200);
+    border-radius: 16px;
+    padding: 18px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  #s11 .phase-chip {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 12px;
+    border-radius: 999px;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    width: fit-content;
+  }
+  #s11 .phase-chip-teal { background: var(--teal); color: var(--white); }
+  #s11 .phase-chip-gold { background: var(--gold); color: var(--white); }
+  #s11 .phase-chip-black { background: var(--near-black); color: var(--white); }
+  #s11 .phase-time { font-size: 11px; font-weight: 600; color: var(--gray-400); }
+  #s11 .phase-list { list-style: none; display: flex; flex-direction: column; gap: 6px; }
+  #s11 .phase-list li { font-size: 12px; font-weight: 400; color: var(--gray-500); line-height: 1.5; display: flex; gap: 7px; }
+  #s11 .phase-list li::before { content: '•'; flex-shrink: 0; font-weight: 900; }
+  #s11 .p1 li::before { color: var(--teal); }
+  #s11 .p2 li::before { color: var(--gold); }
+  #s11 .p3 li::before { color: var(--near-black); }
+  #s11 .unlock {
+    margin-top: auto;
+    font-size: 11px; font-weight: 700;
+    padding: 6px 10px; border-radius: 8px;
+    line-height: 1.3;
+  }
+  #s11 .unlock-teal { background: var(--teal-light); color: var(--teal); }
+  #s11 .unlock-gold { background: var(--gold-light); color: var(--gold-dark); }
+  #s11 .unlock-black { background: var(--gray-100); color: var(--near-black); }
+  #s11 .arrow-col { display: flex; align-items: center; justify-content: center; font-size: 22px; color: var(--gray-400); }
+  #s11 .channels { margin-top: 14px; display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+  #s11 .ch-label { font-size: 10px; font-weight: 700; color: var(--gray-400); text-transform: uppercase; letter-spacing: 0.08em; margin-right: 4px; }
+  #s11 .ch-chip { background: var(--white); border: 1px solid var(--gray-200); border-radius: 999px; padding: 4px 12px; font-size: 11px; font-weight: 500; color: var(--gray-500); }
+
+  /* ─── SLIDE 12 — TEAM ─── */
+  #s12 {
+    background: var(--white);
+    padding: 40px 54px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  #s12 .headline { font-size: 28px; font-weight: 900; color: var(--near-black); letter-spacing: -0.025em; margin-bottom: 24px; }
+  #s12 .team-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; flex: 1; }
+  #s12 .member-card {
+    background: var(--white);
+    border: 1px solid var(--gray-200);
+    border-radius: 16px;
+    padding: 20px 16px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 10px;
+  }
+  #s12 .avatar {
+    width: 64px; height: 64px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px; font-weight: 900; color: var(--white);
+    flex-shrink: 0;
+  }
+  #s12 .av-gold { background: var(--gold); }
+  #s12 .av-teal { background: var(--teal); }
+  #s12 .av-black { background: var(--near-black); }
+  #s12 .member-name { font-size: 15px; font-weight: 800; color: var(--near-black); }
+  #s12 .member-role { font-size: 12px; font-weight: 400; color: var(--gray-500); line-height: 1.5; }
+  #s12 .footer-note {
+    font-size: 12px; font-style: italic; font-weight: 400;
+    color: var(--gray-400); text-align: center;
+    padding-top: 14px; border-top: 1px solid var(--gray-100);
+  }
+
+  /* ─── SLIDE 13 — ASK ─── */
+  #s13 {
+    background: var(--black);
+    padding: 40px 54px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  #s13 .headline { font-size: 36px; font-weight: 900; color: var(--white); letter-spacing: -0.03em; margin-bottom: 22px; }
+  #s13 .ask-cards { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; flex: 1; }
+  #s13 .ask-card {
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 16px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  #s13 .ask-icon {
+    width: 40px; height: 40px;
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px;
+  }
+  #s13 .ai-gold { background: rgba(245,158,11,0.2); }
+  #s13 .ai-teal { background: rgba(13,148,136,0.2); }
+  #s13 .ai-white { background: rgba(255,255,255,0.1); }
+  #s13 .ask-title { font-size: 14px; font-weight: 900; color: var(--white); }
+  #s13 .ask-desc { font-size: 12px; font-weight: 400; color: rgba(255,255,255,0.6); line-height: 1.6; }
+  #s13 .ask-note { font-size: 11px; font-weight: 600; color: var(--gold); margin-top: auto; font-style: italic; line-height: 1.4; }
+  #s13 .cta-line {
+    font-size: 14px; font-weight: 700; color: var(--gold);
+    text-align: center; padding-top: 14px; border-top: 1px solid #222;
+  }
+
+  /* ─── SLIDE 14 — CLOSING ─── */
+  #s14 {
+    background: var(--black);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    text-align: center;
+    position: relative;
+  }
+  #s14 .glow {
+    position: absolute;
+    width: 480px; height: 480px;
+    background: radial-gradient(circle, rgba(245,158,11,0.1) 0%, transparent 70%);
+    top: 50%; left: 50%;
+    transform: translate(-50%,-50%);
+  }
+  #s14 .logo-mark {
+    font-size: 56px; font-weight: 900; letter-spacing: -0.04em;
+    line-height: 1; z-index: 2; margin-bottom: 20px;
+  }
+  #s14 .logo-mark .bro { color: var(--white); }
+  #s14 .logo-mark .two { color: var(--gold); }
+  #s14 .line1 { font-size: 22px; font-weight: 900; color: var(--white); letter-spacing: -0.02em; z-index: 2; line-height: 1.2; }
+  #s14 .line2 { font-size: 22px; font-weight: 900; color: var(--gold); letter-spacing: -0.02em; z-index: 2; line-height: 1.2; margin-bottom: 16px; }
+  #s14 .closing { font-size: 14px; font-weight: 400; color: var(--gray-500); z-index: 2; margin-bottom: 24px; font-style: italic; }
+  #s14 .contact-row { display: flex; gap: 20px; align-items: center; z-index: 2; }
+  #s14 .contact-item { font-size: 12px; font-weight: 500; color: #555; }
+  #s14 .badge-row {
+    position: absolute; bottom: 22px; left: 50%; transform: translateX(-50%);
+    display: flex; gap: 12px; align-items: center; z-index: 2;
+  }
+  #s14 .badge-pill {
+    background: #111; border: 1px solid #333; border-radius: 6px;
+    padding: 5px 12px; font-size: 10px; font-weight: 600;
+    color: #555; letter-spacing: 0.04em;
+  }
+</style>
+</head>
+<body>
+
+<div class="nav-bar">
+  <span>BRO2BRO · PITCH DECK · TEAM 7</span>
+  <div class="nav-slides">
+    <a href="#s1">1</a><a href="#s2">2</a><a href="#s3">3</a><a href="#s4">4</a>
+    <a href="#s5">5</a><a href="#s6">6</a><a href="#s7">7</a><a href="#s8">8</a>
+    <a href="#s9">9</a><a href="#s10">10</a><a href="#s11">11</a><a href="#s12">12</a>
+    <a href="#s13">13</a><a href="#s14">14</a>
+  </div>
+</div>
+
+<div class="slides-container">
+
+  <!-- ══════════════ SLIDE 1 — COVER ══════════════ -->
+  <div class="slide" id="s1">
+    <div class="slide-number">01 / 14</div>
+    <div class="glow"></div>
+    <div class="logo-mark"><span class="bro">Bro</span><span class="two">2</span><span class="bro">Bro</span></div>
+    <div class="tagline">The Barbershop Got Men Talking.<br>We Built What Comes Next.</div>
+    <div class="sub-tag">AI-powered wellness for Black men in Arkansas</div>
+    <div class="event-row">
+      <span class="event-text">Team 7</span>
+      <div class="event-dot"></div>
+      <span class="event-text">AI + Health Tech Hackathon</span>
+      <div class="event-dot"></div>
+      <span class="event-text">2026</span>
+    </div>
+    <div class="hackathon-badge">AI Healthtech Hackathon</div>
+  </div>
+
+  <!-- ══════════════ SLIDE 2 — PROBLEM ══════════════ -->
+  <div class="slide slide-light" id="s2">
+    <div class="slide-number" style="color:rgba(0,0,0,0.2)">02 / 14</div>
+    <div class="eyebrow eyebrow-gold" style="margin-bottom:6px">The Problem</div>
+    <div class="hero-stat-block">
+      <div class="hero-stat">4–6 YRS</div>
+      <div class="hero-stat-label">The gap in life expectancy between Black men and white men — from conditions that are fully manageable.</div>
+    </div>
+    <div class="cols">
+      <div>
+        <ul class="bullet-list">
+          <li>Only 1 in 3 Black men controls his hypertension</li>
+          <li>40% higher cardiovascular mortality vs. white men</li>
+          <li>43% avoid healthcare due to deep-seated distrust</li>
+          <li>Arkansas ranks bottom-5 in US health outcomes</li>
+        </ul>
+      </div>
+      <div>
+        <div class="barrier-label">Why they stay away</div>
+        <div class="barrier-grid">
+          <div class="barrier-chip">Healthcare distrust</div>
+          <div class="barrier-chip">Mental health stigma</div>
+          <div class="barrier-chip">No culturally competent care</div>
+          <div class="barrier-chip">Rural access deserts</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════ SLIDE 3 — INSIGHT ══════════════ -->
+  <div class="slide" id="s3">
+    <div class="slide-number">03 / 14</div>
+    <div class="left">
+      <div class="eyebrow eyebrow-teal">Peer-Reviewed Proof</div>
+      <div class="big-pct">63.6%</div>
+      <div class="pct-label">Blood pressure control rate<br>with barbershop + AI follow-up</div>
+      <div class="vs-chip">
+        <span class="vs-num">11.7%</span>
+        <span class="vs-text">without it — a 5× improvement</span>
+      </div>
+      <div class="source">UAMS LABBPS Trial · Jordan et al., 2024 · Peer-reviewed &amp; published</div>
+      <div class="uams-badge">UAMS · Barbershop Talk</div>
+    </div>
+    <div class="right">
+      <div class="eyebrow eyebrow-gold">Why Now</div>
+      <div class="right-headline">The barbershop already works. We just scaled it.</div>
+      <ul class="insight-list">
+        <li>Most trusted institution in Black male culture — more than a clinic</li>
+        <li>AI can now deliver that conversation 24/7, in natural language</li>
+        <li>SMS-first design means it works on any phone, anywhere in rural AR</li>
+        <li>2025 JMIR review: AI motivational interviewing is feasible &amp; effective</li>
+      </ul>
+      <div class="quote-chip">"We didn't invent the trust. We extended the room."</div>
+    </div>
+  </div>
+
+  <!-- ══════════════ SLIDE 4 — SOLUTION ══════════════ -->
+  <div class="slide slide-light" id="s4">
+    <div class="slide-number" style="color:rgba(0,0,0,0.2)">04 / 14</div>
+    <div class="eyebrow eyebrow-gold">Our Solution</div>
+    <div class="headline">Bro2Bro: The barbershop, in your pocket, 24/7.</div>
+    <div class="one-liner">Free for users. Culturally built. Privacy-first. Powered by AI.</div>
+    <div class="pillars">
+      <div class="pillar">
+        <div class="pillar-icon pillar-icon-gold">🗣️</div>
+        <div class="pillar-title">TALK</div>
+        <div class="pillar-desc">Bro.AI: judgment-free, 24/7 wellness chat. No clinical jargon. Motivational interviewing style. 988 crisis escalation built in.</div>
+      </div>
+      <div class="pillar">
+        <div class="pillar-icon pillar-icon-teal">🗺️</div>
+        <div class="pillar-title">CONNECT</div>
+        <div class="pillar-desc">Find free clinics, book appointments via FHIR API, and match with screened peer mentors — all inside the app.</div>
+      </div>
+      <div class="pillar">
+        <div class="pillar-icon pillar-icon-black" style="color:white">👥</div>
+        <div class="pillar-title">CREW</div>
+        <div class="pillar-desc">Accountability groups: shared 90-day health journey, BP milestones, streak tracking, family sharing.</div>
+      </div>
+    </div>
+    <div class="footnote">Peer mentors share personal experience — they do not give medical advice. Screened, trained in scope boundaries, covered under platform terms of service.</div>
+  </div>
+
+  <!-- ══════════════ SLIDE 5 — FEATURES ══════════════ -->
+  <div class="slide slide-light" id="s5">
+    <div class="slide-number" style="color:rgba(0,0,0,0.2)">05 / 14</div>
+    <div class="eyebrow eyebrow-gold">The Product</div>
+    <div class="headline">Everything they need. Nothing they don't.</div>
+    <div class="feature-grid">
+      <div class="feature-card">
+        <span class="chip chip-gold fc-label">Bro.AI Chat</span>
+        <div class="fc-title">AI Wellness Companion</div>
+        <div class="fc-desc">Motivational interviewing · no jargon · emoji-friendly · 988 crisis escalation · no PHI ever sent to LLM</div>
+        <div class="fc-screenshot">📱 Chat screenshot</div>
+      </div>
+      <div class="feature-card">
+        <span class="chip chip-teal fc-label">Resource Finder</span>
+        <div class="fc-title">Care Navigation Map</div>
+        <div class="fc-desc">Leaflet map · free clinics, barbershops, churches, support groups · SMS-accessible · works on any phone</div>
+        <div class="fc-screenshot">🗺️ Map screenshot</div>
+      </div>
+      <div class="feature-card">
+        <span class="chip chip-gold fc-label">Crew Accountability</span>
+        <div class="fc-title">Community Health Groups</div>
+        <div class="fc-desc">Shared 90-day health journey · BP milestone tracking · streak system · family sharing · your guys</div>
+        <div class="fc-screenshot">👥 Crew screenshot</div>
+      </div>
+      <div class="feature-card">
+        <span class="chip chip-black fc-label">CHW Certification</span>
+        <div class="fc-title">Barber → Health Worker</div>
+        <div class="fc-desc">Barbers earn Community Health Worker credentials · Medicaid billing access · certified trusted messengers</div>
+        <div class="fc-screenshot">✂️ Certification screen</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════ SLIDE 6 — HOW IT WORKS ══════════════ -->
+  <div class="slide slide-light" id="s6">
+    <div class="slide-number" style="color:rgba(0,0,0,0.2)">06 / 14</div>
+    <div class="eyebrow eyebrow-teal">How It Works</div>
+    <div class="headline">60 seconds to start. A lifetime of support.</div>
+    <div class="steps">
+      <div class="step-card">
+        <div class="step-num step-num-gold">1</div>
+        <div class="step-title">SIGN UP</div>
+        <div class="step-desc">Choose your role: Member, Barber, Mentor, Provider, or Family. Done in 60 seconds.</div>
+      </div>
+      <div class="arrow">›</div>
+      <div class="step-card">
+        <div class="step-num step-num-teal">2</div>
+        <div class="step-title">TALK TO BRO.AI</div>
+        <div class="step-desc">Tell it what's going on. No judgment. No jargon. It asks the right questions and listens.</div>
+      </div>
+      <div class="arrow">›</div>
+      <div class="step-card">
+        <div class="step-num step-num-black">3</div>
+        <div class="step-title">BUILD YOUR CREW</div>
+        <div class="step-desc">Invite your guys. Health challenges. Shared milestones. Show up for each other.</div>
+      </div>
+      <div class="arrow">›</div>
+      <div class="step-card">
+        <div class="step-num step-num-gold">4</div>
+        <div class="step-title">GET REAL CARE</div>
+        <div class="step-desc">Book a clinic, connect with a mentor, or talk to a provider — all inside the app.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════ SLIDE 7 — MARKET ══════════════ -->
+  <div class="slide slide-light" id="s7" style="display:flex;flex-direction:column;padding:38px 54px;">
+    <div class="slide-number" style="color:rgba(0,0,0,0.2)">07 / 14</div>
+    <div class="eyebrow eyebrow-gold">The Market</div>
+    <div style="font-size:26px;font-weight:900;color:var(--near-black);letter-spacing:-0.025em;margin-bottom:18px;line-height:1.2">
+      An underserved market. A proven playbook.
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:28px;flex:1">
+      <div style="display:flex;flex-direction:column;gap:12px;justify-content:center">
+        <div style="display:flex;gap:12px;align-items:center;background:rgba(245,158,11,0.07);border:1.5px solid rgba(245,158,11,0.25);border-radius:14px;padding:14px 16px">
+          <div style="font-size:28px;font-weight:900;color:var(--gold);min-width:60px">~6M</div>
+          <div>
+            <div style="font-size:11px;font-weight:700;color:var(--gold);letter-spacing:0.06em;text-transform:uppercase">TAM</div>
+            <div style="font-size:12px;font-weight:400;color:var(--gray-500)">Black men with chronic conditions, US</div>
+          </div>
+        </div>
+        <div style="display:flex;gap:12px;align-items:center;background:rgba(13,148,136,0.07);border:1.5px solid rgba(13,148,136,0.25);border-radius:14px;padding:14px 16px">
+          <div style="font-size:28px;font-weight:900;color:var(--teal);min-width:60px">~500K</div>
+          <div>
+            <div style="font-size:11px;font-weight:700;color:var(--teal);letter-spacing:0.06em;text-transform:uppercase">SAM</div>
+            <div style="font-size:12px;font-weight:400;color:var(--gray-500)">Arkansas + neighboring underserved states</div>
+          </div>
+        </div>
+        <div style="display:flex;gap:12px;align-items:center;background:rgba(10,10,10,0.05);border:1.5px solid rgba(10,10,10,0.15);border-radius:14px;padding:14px 16px">
+          <div style="font-size:28px;font-weight:900;color:var(--near-black);min-width:60px">5K</div>
+          <div>
+            <div style="font-size:11px;font-weight:700;color:var(--near-black);letter-spacing:0.06em;text-transform:uppercase">SOM · Year 1</div>
+            <div style="font-size:12px;font-weight:400;color:var(--gray-500)">Little Rock + 3 rural AR counties</div>
+          </div>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px;justify-content:center">
+        <div class="card" style="padding:14px 16px;display:flex;align-items:center;gap:12px">
+          <span style="font-size:22px">👤</span>
+          <div>
+            <div style="font-size:13px;font-weight:800;color:var(--near-black)">Member</div>
+            <div style="font-size:11px;font-weight:400;color:var(--gray-500)">Black men 18–40 · seeking health info through trusted people</div>
+          </div>
+          <span class="chip chip-gold" style="margin-left:auto;font-size:10px">Primary</span>
+        </div>
+        <div class="card" style="padding:14px 16px;display:flex;align-items:center;gap:12px">
+          <span style="font-size:22px">✂️</span>
+          <div>
+            <div style="font-size:13px;font-weight:800;color:var(--near-black)">Barber / Trustee</div>
+            <div style="font-size:11px;font-weight:400;color:var(--gray-500)">~3,000 licensed AR barbers · CHW credentials + Medicaid billing</div>
+          </div>
+          <span class="chip chip-teal" style="margin-left:auto;font-size:10px">Partner</span>
+        </div>
+        <div class="card" style="padding:14px 16px;display:flex;align-items:center;gap:12px">
+          <span style="font-size:22px">🏥</span>
+          <div>
+            <div style="font-size:13px;font-weight:800;color:var(--near-black)">Provider / Insurer</div>
+            <div style="font-size:11px;font-weight:400;color:var(--gray-500)">BCBS AR · AR Medicaid · pay for outcomes, not per-user</div>
+          </div>
+          <span class="chip chip-black" style="margin-left:auto;font-size:10px">Revenue</span>
+        </div>
+        <div style="background:var(--gold-light);border-radius:12px;padding:10px 14px;font-size:11px;font-style:italic;color:var(--gold-dark);line-height:1.5">
+          "This model works anywhere barbershop culture thrives — it's a scalable playbook, not a local experiment."
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════ SLIDE 8 — BUSINESS MODEL ══════════════ -->
+  <div class="slide" id="s8">
+    <div class="slide-number">08 / 14</div>
+    <div class="left">
+      <div class="eyebrow eyebrow-teal" style="margin-bottom:14px">Business Model</div>
+      <div class="big-free">Free<br>for<br>users.</div>
+      <div class="free-sub">Healthcare systems pay.<br>Communities benefit.</div>
+      <div class="free-note">The model inverts the standard health app incentive — aligning revenue with health outcomes, not engagement.</div>
+    </div>
+    <div class="right">
+      <div class="eyebrow eyebrow-gold" style="margin-bottom:16px">Revenue Streams</div>
+      <div class="revenue-card">
+        <div class="rev-icon">💻</div>
+        <div>
+          <div class="rev-title">B2B SaaS — Health Systems</div>
+          <div class="rev-desc">Monthly subscription: patient engagement dashboard, appointment routing, outcomes tracking</div>
+        </div>
+        <span class="chip chip-teal" style="margin-left:auto;white-space:nowrap;font-size:10px">Primary</span>
+      </div>
+      <div class="revenue-card">
+        <div class="rev-icon">🤝</div>
+        <div>
+          <div class="rev-title">Insurer Contracts</div>
+          <div class="rev-desc">BCBS Arkansas, AR Medicaid — pay-for-outcomes model, value-based care contracts</div>
+        </div>
+        <span class="chip chip-gold" style="margin-left:auto;white-space:nowrap;font-size:10px">Scale</span>
+      </div>
+      <div class="revenue-card">
+        <div class="rev-icon">📜</div>
+        <div>
+          <div class="rev-title">CHW Certification Program</div>
+          <div class="rev-desc">Barber certification fees + Medicaid billing integration revenue split</div>
+        </div>
+        <span class="chip chip-black" style="margin-left:auto;white-space:nowrap;font-size:10px">Unique</span>
+      </div>
+      <div class="revenue-card">
+        <div class="rev-icon">🏛️</div>
+        <div>
+          <div class="rev-title">Grant &amp; Institutional Funding</div>
+          <div class="rev-desc">CDC via UAMS, RWJF, Arkansas Dept. of Health — research partnerships</div>
+        </div>
+        <span class="chip chip-teal" style="margin-left:auto;white-space:nowrap;font-size:10px">Near-term</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════ SLIDE 9 — TRACTION ══════════════ -->
+  <div class="slide" id="s9">
+    <div class="slide-number">09 / 14</div>
+    <div>
+      <div class="eyebrow eyebrow-gold">Traction &amp; Validation</div>
+      <div class="headline">Built on proof. Not speculation.</div>
+    </div>
+    <div class="stats-row">
+      <div class="stat-block">
+        <div class="stat-num">63.6%</div>
+        <div class="stat-label">BP control rate<br>UAMS LABBPS Trial</div>
+      </div>
+      <div class="stat-block">
+        <div class="stat-num">5×</div>
+        <div class="stat-label">improvement<br>vs. standard care</div>
+      </div>
+      <div class="stat-block">
+        <div class="stat-num">2024</div>
+        <div class="stat-label">Peer-reviewed publication<br>Jordan et al.</div>
+      </div>
+    </div>
+    <div class="divider"></div>
+    <div>
+      <div class="partner-label">Backed by &amp; built with</div>
+      <div class="partner-row">
+        <div class="partner-pill">UAMS</div>
+        <div class="partner-pill">UA Little Rock</div>
+        <div class="partner-pill">BCBS Arkansas</div>
+        <div class="partner-pill">AR Dept. of Health</div>
+        <div class="partner-pill">Robert Wood Johnson Foundation</div>
+        <div class="partner-pill">Central AR VAHCS</div>
+        <div class="partner-pill">Arkansas Children's</div>
+      </div>
+    </div>
+    <div class="footnote">UAMS BioVentures co-development discussions initiated at this hackathon — June 2026.</div>
+  </div>
+
+  <!-- ══════════════ SLIDE 10 — COMPETITION ══════════════ -->
+  <div class="slide slide-light" id="s10">
+    <div class="slide-number" style="color:rgba(0,0,0,0.2)">10 / 14</div>
+    <div class="eyebrow eyebrow-teal">Competitive Position</div>
+    <div class="headline">There is no culturally built alternative. That's the opportunity.</div>
+    <div class="content">
+      <div class="matrix">
+        <div class="axis-label axis-y" style="top:8px;font-size:9px">← Cultural Competency →</div>
+        <div class="matrix-inner">
+          <div class="q">
+            <div style="font-size:11px;font-weight:500;color:var(--gray-400);text-align:center">BetterHelp / Talkspace</div>
+            <div style="font-size:10px;color:var(--gray-400)">High care · Low access</div>
+          </div>
+          <div class="q q-hero">
+            <div class="q-dot"></div>
+            <div class="q-name">Bro2Bro</div>
+            <div style="font-size:10px;color:var(--gray-500)">High competency · High access</div>
+          </div>
+          <div class="q">
+            <div style="font-size:11px;font-weight:500;color:var(--gray-400);text-align:center">Epic / Patient Portals</div>
+            <div style="font-size:10px;color:var(--gray-400)">Institutional · Inaccessible</div>
+          </div>
+          <div class="q">
+            <div style="font-size:11px;font-weight:500;color:var(--gray-400);text-align:center">Generic Health Apps</div>
+            <div style="font-size:10px;color:var(--gray-400)">Accessible · Generic</div>
+          </div>
+        </div>
+        <div class="axis-label axis-x" style="bottom:8px;font-size:9px">← Accessibility →</div>
+      </div>
+      <div class="right-col">
+        <div style="font-size:12px;font-weight:700;color:var(--gray-500);letter-spacing:0.06em;text-transform:uppercase;margin-bottom:4px">Our Unfair Advantages</div>
+        <div class="adv-chip">
+          <div class="adv-dot" style="background:var(--gold)"></div>
+          <div>
+            <div class="adv-title">Barbershop trust infrastructure</div>
+            <div class="adv-desc">Built in, not bolted on. Years of earned community trust — not copyable at any valuation.</div>
+          </div>
+        </div>
+        <div class="adv-chip">
+          <div class="adv-dot" style="background:var(--teal)"></div>
+          <div>
+            <div class="adv-title">SMS-first design</div>
+            <div class="adv-desc">Works on any phone. No app download required. Reaches rural AR with zero friction.</div>
+          </div>
+        </div>
+        <div class="adv-chip">
+          <div class="adv-dot" style="background:var(--near-black)"></div>
+          <div>
+            <div class="adv-title">Free for users</div>
+            <div class="adv-desc">Revenue from systems, not individuals. Teladoc can't replicate what a trusted barber builds in 5 years.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════ SLIDE 11 — GTM ══════════════ -->
+  <div class="slide slide-light" id="s11">
+    <div class="slide-number" style="color:rgba(0,0,0,0.2)">11 / 14</div>
+    <div class="eyebrow eyebrow-gold">Go-To-Market</div>
+    <div class="headline">IRB data is the unlock. Everything else follows.</div>
+    <div class="timeline">
+      <div class="phase-card">
+        <div class="phase-chip phase-chip-teal">Phase 1</div>
+        <div class="phase-time">Now → 6 Months</div>
+        <ul class="phase-list p1">
+          <li>UAMS IRB-approved pilot launch</li>
+          <li>10 barbershops · 100 men</li>
+          <li>SMS-only MVP — collect BP data</li>
+          <li>Target: 5,000 users</li>
+        </ul>
+        <div class="unlock unlock-teal">🔓 Unlock: CDC grant application</div>
+      </div>
+      <div class="arrow-col">›</div>
+      <div class="phase-card">
+        <div class="phase-chip phase-chip-gold">Phase 2</div>
+        <div class="phase-time">6 → 18 Months</div>
+        <ul class="phase-list p2">
+          <li>CDC Prevention Center grant (via UAMS)</li>
+          <li>AR Medicaid integration</li>
+          <li>50 CHW-certified barbers</li>
+          <li>Target: 25,000 users</li>
+        </ul>
+        <div class="unlock unlock-gold">🔓 Unlock: BCBS AR contract</div>
+      </div>
+      <div class="arrow-col">›</div>
+      <div class="phase-card">
+        <div class="phase-chip phase-chip-black">Phase 3</div>
+        <div class="phase-time">18 → 36 Months</div>
+        <ul class="phase-list p3">
+          <li>BCBS AR pay-for-outcomes contract</li>
+          <li>Jumpstart Nova Series A ($55M)</li>
+          <li>Expand: MS · LA · GA</li>
+          <li>White-label for health equity orgs</li>
+        </ul>
+        <div class="unlock unlock-black">🔓 Unlock: National replication</div>
+      </div>
+    </div>
+    <div class="channels">
+      <span class="ch-label">Channels</span>
+      <span class="ch-chip">Barbershop referrals</span>
+      <span class="ch-chip">UAMS clinical referrals</span>
+      <span class="ch-chip">Church partnerships</span>
+      <span class="ch-chip">Community events</span>
+      <span class="ch-chip">Earned media</span>
+    </div>
+  </div>
+
+  <!-- ══════════════ SLIDE 12 — TEAM ══════════════ -->
+  <div class="slide slide-light" id="s12">
+    <div class="slide-number" style="color:rgba(0,0,0,0.2)">12 / 14</div>
+    <div class="eyebrow eyebrow-gold">The Team</div>
+    <div class="headline">Team 7 — built for this problem.</div>
+    <div class="team-row">
+      <div class="member-card">
+        <div class="avatar av-gold">AH</div>
+        <div class="member-name">Amir Houston</div>
+        <div class="member-role">Project Manager<br>Research · Communications · Presentation</div>
+        <span class="chip chip-gold" style="font-size:10px">Strategy</span>
+      </div>
+      <div class="member-card">
+        <div class="avatar av-teal">BS</div>
+        <div class="member-name">Bryan Smith</div>
+        <div class="member-role">Pitch Team<br>Presentation · Communications</div>
+        <span class="chip chip-teal" style="font-size:10px">Comms</span>
+      </div>
+      <div class="member-card">
+        <div class="avatar av-black">DA</div>
+        <div class="member-name">David Adedeji</div>
+        <div class="member-role">Tech Team<br>Backend · Systems Architecture</div>
+        <span class="chip chip-black" style="font-size:10px">Backend</span>
+      </div>
+      <div class="member-card">
+        <div class="avatar av-teal">TC</div>
+        <div class="member-name">Tinodaishe Chitswa</div>
+        <div class="member-role">Tech Team<br>Frontend · Full-Stack · UI/UX</div>
+        <span class="chip chip-teal" style="font-size:10px">Frontend</span>
+      </div>
+    </div>
+    <div class="footer-note">"We built this because we know someone in the chair. That's not a pitch line — it's why we shipped."</div>
+  </div>
+
+  <!-- ══════════════ SLIDE 13 — ASK ══════════════ -->
+  <div class="slide" id="s13">
+    <div class="slide-number">13 / 14</div>
+    <div class="eyebrow eyebrow-gold">The Ask</div>
+    <div class="headline">Help us take the first step.</div>
+    <div class="ask-cards">
+      <div class="ask-card">
+        <div class="ask-icon ai-gold">🔬</div>
+        <div class="ask-title">UAMS Partnership</div>
+        <div class="ask-desc">Formal pilot agreement: integrate into Barbershop Talk workflow. UAMS brings community relationships + IRB oversight. We bring the technology.</div>
+        <div class="ask-note">IRB data is the unlock for every funding conversation that follows.</div>
+      </div>
+      <div class="ask-card">
+        <div class="ask-icon ai-teal">💰</div>
+        <div class="ask-title">Funding Path</div>
+        <div class="ask-desc">Support our CDC Prevention Center grant application via UAMS. Connect us to AR Medicaid and BCBS innovation teams. 12-month runway target.</div>
+        <div class="ask-note">Grant infrastructure already exists through UAMS — we need the introduction.</div>
+      </div>
+      <div class="ask-card">
+        <div class="ask-icon ai-white">📣</div>
+        <div class="ask-title">Network &amp; Platform</div>
+        <div class="ask-desc">Introductions to 10 pilot barbershops. Media credibility from this hackathon for grant applications. UAMS BioVentures is in this room.</div>
+        <div class="ask-note">Every barber onboarded is a relationship no competitor can replicate.</div>
+      </div>
+    </div>
+    <div class="cta-line">The IRB data is the proof we need. We're asking for the chance to collect it.</div>
+  </div>
+
+  <!-- ══════════════ SLIDE 14 — CLOSING ══════════════ -->
+  <div class="slide" id="s14">
+    <div class="slide-number">14 / 14</div>
+    <div class="glow"></div>
+    <div class="logo-mark"><span class="bro">Bro</span><span class="two">2</span><span class="bro">Bro</span></div>
+    <div class="line1">The Barbershop Got Men Talking.</div>
+    <div class="line2">We Built What Comes Next.</div>
+    <div class="closing">"Health equity isn't a feature. It's the product."</div>
+    <div class="contact-row">
+      <span class="contact-item">team7@hackathon.dev</span>
+      <span class="contact-item" style="color:#333">·</span>
+      <span class="contact-item">bro2bro.app</span>
+    </div>
+    <div class="badge-row">
+      <div class="badge-pill">Team 7</div>
+      <div class="badge-pill">UAMS Barbershop Talk</div>
+      <div class="badge-pill">AI Healthtech Hackathon 2026</div>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>
