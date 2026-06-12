@@ -19,8 +19,13 @@ export async function getPostAuthPath(
   const demoPath = getDemoRedirectPath(email);
   if (demoPath) return demoPath;
 
-  const profile = await loadUserProfile(uid);
-  return getRedirectPathForRole(profile?.role);
+  try {
+    const profile = await loadUserProfile(uid);
+    return getRedirectPathForRole(profile?.role);
+  } catch {
+    // DB not configured or rules block the read — default to member dashboard
+    return "/dashboard";
+  }
 }
 
 export function canAccessBarberPortal(

@@ -36,11 +36,12 @@ function GoogleIcon() {
 
 export default function LoginPage() {
   const router = useRouter();
-  const [email, setEmail]       = useState("");
-  const [password, setPassword] = useState("");
-  const [showPass, setShowPass] = useState(false);
-  const [loading, setLoading]   = useState(false);
-  const [error, setError]       = useState("");
+  const [email, setEmail]             = useState("");
+  const [password, setPassword]       = useState("");
+  const [showPass, setShowPass]       = useState(false);
+  const [loading, setLoading]         = useState(false);
+  const [googleLoading, setGoogleLoading] = useState(false);
+  const [error, setError]             = useState("");
 
   async function handleEmailSignIn(e: React.FormEvent) {
     e.preventDefault();
@@ -60,11 +61,15 @@ export default function LoginPage() {
   async function handleGoogle() {
     setError("");
     if (!auth) { setError("Sign-in is unavailable. Check Firebase configuration."); return; }
+    setGoogleLoading(true);
     try {
       const cred = await signInWithPopup(auth, new GoogleAuthProvider());
       router.push(await getPostAuthPath(cred.user.uid, cred.user.email));
     } catch (err: unknown) {
-      setError(firebaseMsg((err as { code: string }).code));
+      const msg = firebaseMsg((err as { code: string }).code);
+      if (msg) setError(msg);
+    } finally {
+      setGoogleLoading(false);
     }
   }
 
@@ -165,9 +170,13 @@ export default function LoginPage() {
 
           <button
             onClick={handleGoogle}
-            className="w-full flex items-center justify-center gap-3 border border-gray-200 rounded-xl py-3 text-sm font-medium text-gray-700 hover:bg-gray-50 hover:border-gray-300 transition-all focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-1 active:scale-[0.98]"
+            disabled={googleLoading || loading}
+            className="w-full flex items-center justify-center gap-3 border border-gray-200 rounded-xl py-3 text-sm font-medium text-gray-700 hover:bg-gray-50 hover:border-gray-300 transition-all focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-1 active:scale-[0.98] disabled:opacity-60"
           >
-            <GoogleIcon /> Continue with Google
+            {googleLoading
+              ? <span className="h-4 w-4 border-2 border-gray-300 border-t-gray-700 rounded-full animate-spin" />
+              : <GoogleIcon />}
+            Continue with Google
           </button>
 
           <p className="text-xs text-gray-400 text-center mt-8 leading-relaxed">

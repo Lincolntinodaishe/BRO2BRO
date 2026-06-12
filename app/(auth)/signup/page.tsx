@@ -119,7 +119,7 @@ function SignupForm() {
     setGoogleLoading(true);
     try {
       const cred = await signInWithPopup(auth, new GoogleAuthProvider());
-      if (cred.user) {
+      try {
         await saveUserProfile(
           cred.user.uid,
           emptyProfile(
@@ -128,10 +128,15 @@ function SignupForm() {
             selectedRole as UserRole
           )
         );
+      } catch {
+        // Profile save failed (DB rules etc.) — still redirect, role defaults to member
       }
-      router.push(await getPostAuthPath(cred.user.uid, cred.user.email));
+      // Use known role directly instead of re-reading from DB
+      const { getRedirectPathForRole } = await import("@/lib/auth-routes");
+      router.push(getRedirectPathForRole(selectedRole as UserRole));
     } catch (e: unknown) {
-      setError(firebaseMsg((e as { code: string }).code));
+      const msg = firebaseMsg((e as { code: string }).code);
+      if (msg) setError(msg);
     } finally {
       setGoogleLoading(false);
     }
