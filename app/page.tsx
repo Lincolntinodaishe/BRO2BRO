@@ -19,7 +19,6 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Accordion } from "@/components/ui/accordion";
 import { CountUp, useInView } from "@/components/count-up";
-import { HeroStatCard } from "@/components/hero-video";
 import { HeroPhoneMockup } from "@/components/hero-phone-mockup";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/lib/auth-context";
@@ -284,86 +283,9 @@ function Hero() {
                 style={{ background: "radial-gradient(ellipse at 50% 50%, rgba(245,158,11,0.25) 0%, rgba(13,148,136,0.15) 55%, transparent 75%)" }}
               />
 
-              {/* Desktop: phone center, stats in left/right columns */}
-              <div className="hidden md:flex items-center justify-center gap-5 lg:gap-7 px-2">
-                <div className="flex flex-col justify-between gap-20 lg:gap-24 py-8 shrink-0 w-[128px] lg:w-[136px]">
-                  <HeroStatCard className="float-card-1 !bg-white">
-                    <div className="flex items-center gap-1.5 mb-1">
-                      <div className="w-5 h-5 rounded-full bg-amber-100 flex items-center justify-center shrink-0">
-                        <Activity className="h-3 w-3 text-amber-600" />
-                      </div>
-                      <span className="text-[10px] text-gray-400 font-medium leading-tight">Men Screened</span>
-                    </div>
-                    <div className="text-2xl font-black text-amber-500 leading-none">600+</div>
-                    <div className="text-[11px] text-gray-400 mt-1">since Aug 2023</div>
-                  </HeroStatCard>
-
-                  <HeroStatCard className="float-card-3 !bg-teal-50 !border-teal-100">
-                    <div className="flex items-center gap-1.5 mb-1">
-                      <div className="w-5 h-5 rounded-full bg-teal-100 flex items-center justify-center shrink-0">
-                        <Scissors className="h-3 w-3 text-teal-600" />
-                      </div>
-                      <span className="text-[10px] text-teal-600 font-medium leading-tight">Barbershops</span>
-                    </div>
-                    <div className="text-2xl font-black text-teal-700 leading-none">61</div>
-                    <div className="text-[11px] text-teal-600 mt-1 leading-snug">15 AR counties</div>
-                  </HeroStatCard>
-                </div>
-
+              {/* Phone centered — no stat cards */}
+              <div className="flex items-center justify-center">
                 <HeroPhoneMockup />
-
-                <div className="flex flex-col justify-between gap-20 lg:gap-24 py-8 shrink-0 w-[128px] lg:w-[136px]">
-                  <HeroStatCard className="float-card-2 !bg-gray-900 !border-gray-800 text-white">
-                    <div className="flex items-center gap-1.5 mb-1">
-                      <div className="w-5 h-5 rounded-full bg-amber-500/20 flex items-center justify-center shrink-0">
-                        <TrendingUp className="h-3 w-3 text-amber-400" />
-                      </div>
-                      <span className="text-[10px] text-gray-400 font-medium leading-tight">BP Control</span>
-                    </div>
-                    <div className="text-2xl font-black text-amber-400 leading-none">63.6%</div>
-                    <div className="text-[11px] text-gray-500 mt-1 leading-snug">barbershop + AI</div>
-                  </HeroStatCard>
-
-                  <HeroStatCard className="float-card-4 !bg-green-50 !border-green-100">
-                    <div className="flex items-center gap-1.5 mb-1">
-                      <div className="w-5 h-5 rounded-full bg-green-100 flex items-center justify-center shrink-0">
-                        <CheckCircle className="h-3 w-3 text-green-600" />
-                      </div>
-                      <span className="text-[10px] text-green-600 font-medium">Always Free</span>
-                    </div>
-                    <div className="text-xl font-black text-green-700 leading-none">$0/mo</div>
-                    <div className="text-[11px] text-green-600 mt-1">No app required</div>
-                  </HeroStatCard>
-                </div>
-              </div>
-
-              {/* Mobile: phone only, stats below */}
-              <div className="md:hidden flex flex-col items-center">
-                <HeroPhoneMockup />
-              </div>
-
-              <div className="grid grid-cols-2 gap-2.5 mt-5 md:hidden px-1">
-                {[
-                  { icon: Activity, color: "text-amber-600", bg: "bg-amber-50", label: "Men Screened", value: "600+", sub: "since Aug 2023" },
-                  { icon: TrendingUp, color: "text-amber-500", bg: "bg-gray-900", label: "BP Control", value: "63.6%", sub: "barbershop + AI", dark: true },
-                  { icon: Scissors, color: "text-teal-600", bg: "bg-teal-50", label: "Barbershops", value: "61", sub: "15 AR counties" },
-                  { icon: CheckCircle, color: "text-green-600", bg: "bg-green-50", label: "Always Free", value: "$0/mo", sub: "No app required" },
-                ].map(({ icon: Icon, color, bg, label, value, sub, dark }) => (
-                  <div
-                    key={label}
-                    className={cn(
-                      "rounded-xl p-3 border",
-                      dark ? "bg-gray-900 border-gray-800 text-white" : `${bg} border-white/80`
-                    )}
-                  >
-                    <div className="flex items-center gap-1.5 mb-1">
-                      <Icon className={cn("h-3.5 w-3.5 shrink-0", color)} />
-                      <span className={cn("text-[10px] font-medium", dark ? "text-gray-400" : "text-gray-500")}>{label}</span>
-                    </div>
-                    <div className={cn("text-lg font-black leading-none", dark ? "text-amber-400" : "text-gray-900")}>{value}</div>
-                    <div className={cn("text-[10px] mt-0.5", dark ? "text-gray-500" : "text-gray-400")}>{sub}</div>
-                  </div>
-                ))}
               </div>
             </div>
           </div>
