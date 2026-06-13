@@ -22,8 +22,8 @@ BRO2BRO uses the barbershop as a trusted health checkpoint. Barbers log screenin
 
 | Audience | Portal | Highlights |
 |---|---|---|
-| **Member** | `/dashboard` | Bro AI chat, appointments, mentors, resources, community |
-| **Barber / CHW** | `/dashboard/barber` | Client check-in, screenings, referrals, CHW training, events |
+| **Member** | `/dashboard` | Bro AI chat, appointments, mentors, resources, community forum, profile + photo upload |
+| **Barber / CHW** | `/dashboard/barber` | Client check-in, BP screenings, referrals, CHW training, events |
 | **Mentor** | `/dashboard/mentor` | Mentees, sessions, messages, mentor settings |
 
 ---
@@ -128,7 +128,7 @@ flowchart TD
 
 ## Tech stack
 
-Next.js 14 · TypeScript · Tailwind CSS · Radix UI · Firebase Auth · Firebase Realtime Database · Anthropic Claude · Leaflet
+Next.js 14 · TypeScript · Tailwind CSS · Radix UI · Firebase Auth · Firebase Realtime Database · Firebase Storage · Anthropic Claude · Leaflet · Twilio
 
 ---
 
@@ -155,9 +155,12 @@ NEXT_PUBLIC_FIREBASE_PROJECT_ID=your-project
 NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=your-project.appspot.com
 NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=...
 NEXT_PUBLIC_FIREBASE_APP_ID=...
+TWILIO_ACCOUNT_SID=...
+TWILIO_AUTH_TOKEN=...
+TWILIO_PHONE_NUMBER=+1...
 ```
 
-### Firebase rules (minimum)
+### Firebase Realtime Database rules
 
 ```json
 {
@@ -167,6 +170,25 @@ NEXT_PUBLIC_FIREBASE_APP_ID=...
         ".read": "$uid === auth.uid",
         ".write": "$uid === auth.uid"
       }
+    },
+    "community": {
+      "posts": {
+        ".read": "auth != null",
+        ".write": "auth != null"
+      }
+    }
+  }
+}
+```
+
+### Firebase Storage rules
+
+```
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    match /photos/{uid}/{allPaths=**} {
+      allow read, write: if request.auth != null && request.auth.uid == uid;
     }
   }
 }
